@@ -1,0 +1,20 @@
+{
+  "name": "website",
+  "devDependencies": {
+    "autoprefixer": "9.7.4",
+    "cssnano": "4.1.10",
+    "postcss-cli": "7.1.0",
+    "postcss-combine-duplicated-selectors": "8.1.0",
+    "postcss-import": "12.0.1",
+    "postcss-nested": "4.2.1",
+    "postcss-reporter": "6.0.1",
+    "purgecss": "2.0.6",
+    "shadow-cljs": "^2.8.83",
+    "tailwindcss": "1.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serioga/webapp-clojure-2020.git"
+  },
+  "license": "UNLICENSED"
+}
