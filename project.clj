@@ -7,6 +7,7 @@
                  [mount "0.1.16"]
                  [tolitius/mount-up "0.1.2"]
                  ; web server
+                 [metosin/reitit-core "0.4.2"]
                  [org.immutant/web "2.1.10"]
                  [ring/ring-core "1.8.0"]
                  [ring/ring-defaults "0.3.2"]

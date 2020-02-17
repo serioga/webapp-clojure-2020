@@ -1,5 +1,10 @@
 # webapp-clojure-2020
 
+## Features
+
+- `Immutant` web server with multiple webapps, single port, multiple hostnames.
+- Routing: `reitit`.
+
 ## Installation
 
 1. Leiningen https://leiningen.org/
