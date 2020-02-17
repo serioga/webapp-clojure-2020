@@ -1,0 +1,3 @@
+{:linters {:missing-docstring {:level :warning}
+           :unsorted-namespaces {:level :warning}}
+ :lint-as {}}
