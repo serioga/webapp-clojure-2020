@@ -20,7 +20,7 @@
 ### Frontend
 
 - ClojureScript with Shadow CLJS (lein integration).
-- React JS + Rum + Server-side rendering (SSR)
+- React JS + Rum + Server-side rendering (SSR) + Passing component data from server
 - Tailwind CSS
 
 ## Installation
