@@ -2,8 +2,20 @@
 
 ## Features
 
+### System
+
+- Integrant
+- Separate sources for application and development code.
+
+### HTTP Server
+
 - `Immutant` web server with multiple webapps, single port, multiple hostnames.
-- Routing: `reitit`.
+- Routing: `metosin/reitit`.
+
+### ClojureScript
+
+- Shadow CLJS (lein integration).
+- React JS + Rum + Server-side rendering (SSR)
 
 ## Installation
 

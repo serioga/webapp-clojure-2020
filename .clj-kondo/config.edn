@@ -1,3 +1,5 @@
 {:linters {:missing-docstring {:level :warning}
            :unsorted-namespaces {:level :warning}}
- :lint-as {}}
+ :lint-as {rum.core/defc clj-kondo.lint-as/def-catch-all
+           rum.core/defcs clj-kondo.lint-as/def-catch-all
+           rum.core/defcc clj-kondo.lint-as/def-catch-all}}

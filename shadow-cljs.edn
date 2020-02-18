@@ -1,0 +1,7 @@
+;; shadow-cljs configuration
+{:lein true
+ :source-paths ["src"]
+ :builds {:homepage {:target :browser
+                     :modules {:main {:entries [app.web-homepage.main]}}
+                     :asset-path "/app/homepage"
+                     :output-dir "resources/public/app/homepage"}}}
