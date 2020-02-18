@@ -9,7 +9,8 @@
     ; imports
     [app.lib.util.integrant :as ig-util]
     [dev.dev-system.app-system :as app-system]
-    [integrant.core :as ig]))
+    [integrant.core :as ig]
+    [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
 
@@ -42,7 +43,11 @@
    :dev-system/*shadow-cljs {:builds-to-start [:homepage]}
 
    [:dev-system/*watcher :dev-system/*tailwind]
-   {:handler (tailwind/watcher-handler "homepage")
+   {:handler (tailwind/watcher-handler
+               {:webapp "homepage"
+                :on-rebuild (fn []
+                              (mount/stop #'app.web-homepage.impl.html-page/styles-css-uri)
+                              (mount/start #'app.web-homepage.impl.html-page/styles-css-uri))})
     :options {:dirs ["tailwind/app/config" "tailwind/app/web_homepage"]
               :files [".css" ".js$"]}
     :run-handler-on-init? true}})

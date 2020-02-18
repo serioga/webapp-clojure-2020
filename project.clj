@@ -31,6 +31,7 @@
                  [clojurewerkz/propertied "1.3.0"]
                  [com.cognitect/transit-clj "0.8.319"]
                  [com.taoensso/truss "1.5.0"]
+                 [commons-codec/commons-codec "1.14"]
                  [org.apache.commons/commons-lang3 "3.9"]
                  [sablono "0.8.6"]
                  ; daemon

@@ -17,7 +17,7 @@
     (html-page/response
       [:html [:head
               [:title "Homepage"]
-              (html/include-css "/app/homepage/main.css")]
+              (html/include-css html-page/styles-css-uri)]
        [:body
         [:h1 "Homepage"]
         [:p "Request method " (:request-method request)]

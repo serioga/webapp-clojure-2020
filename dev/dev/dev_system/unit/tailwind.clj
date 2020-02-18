@@ -23,17 +23,19 @@
 
 
 (defn build-webapp-css
-  [webapp]
+  [{:keys [webapp on-rebuild]}]
   (let [cmd (tailwind-shell-cmd webapp)
         _ (log/info "Building webapp CSS..." webapp cmd)
         {:keys [out err]} (apply shell/sh cmd)]
     (if (empty? err)
       (do
-        (log/info "[OK] Building webapp CSS" webapp out))
+        (log/info "[OK] Building webapp CSS" webapp out)
+        (when on-rebuild
+          (on-rebuild)))
       (log/error err))))
 
 
 (defn watcher-handler
-  [webapp]
+  [options]
   (fn [& _]
-    (build-webapp-css webapp)))
+    (build-webapp-css options)))
