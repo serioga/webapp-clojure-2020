@@ -8,7 +8,8 @@
 - Parallel start of integrant components.
 - Separate sources for application and development code.
 - Hot reloading on source files changes.
-- `mount` as integrant component for compiled dependencies in code. 
+- `mount` as integrant component for compiled dependencies in code.
+- Configuration in JAVA properties files. 
 
 ### HTTP Server
 
