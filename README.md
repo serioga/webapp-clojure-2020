@@ -7,6 +7,7 @@
 - Integrant for application and development systems.
 - Separate sources for application and development code.
 - Hot reloading on source files changes.
+- `mount` as integrant component for compiled dependencies in code. 
 
 ### HTTP Server
 
