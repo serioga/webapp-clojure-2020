@@ -3,7 +3,8 @@
   (:require
     [app.app-system.core :as app-system]
     [clojure.java.io :as io]
-    [clojure.string :as str])
+    [clojure.string :as str]
+    [ring.middleware.lint :as lint])
   (:import
     (java.io File)))
 
@@ -29,11 +30,25 @@
     (prepare-prop-files '("dev-resources/dev/config/default.props")))
 
 
+(defn wrap-webapp-handler
+  [_webapp]
+  (fn [handler]
+    (-> handler
+      lint/wrap-lint)))
+
+
+(defn prepare-webapp
+  [webapp]
+  (-> webapp
+    (update :handler (wrap-webapp-handler webapp))))
+
+
 (defn prepare-system-config
   [config]
   (assoc config
     :app-system/dev-mode? true
-    :app-system.dev/prepare-prop-files prepare-prop-files))
+    :app-system.dev/prepare-prop-files prepare-prop-files
+    :app-system.dev/prepare-webapp prepare-webapp))
 
 
 (defn start!
