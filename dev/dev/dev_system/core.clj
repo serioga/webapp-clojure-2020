@@ -3,6 +3,7 @@
     ; systems
     [dev.dev-system.unit.app-reload]
     [dev.dev-system.unit.nrepl]
+    [dev.dev-system.unit.shadow-cljs]
     [dev.dev-system.unit.watcher]
     ; imports
     [app.lib.util.integrant :as ig-util]
@@ -35,7 +36,9 @@
 
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :exclude will leave out files that match this pattern.
-              :exclude []}}})
+              :exclude []}}
+
+   :dev-system/*shadow-cljs {:builds-to-start [:homepage]}})
 
 
 (defn stop!
