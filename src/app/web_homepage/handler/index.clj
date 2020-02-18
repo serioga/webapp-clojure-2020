@@ -16,9 +16,11 @@
         (react-mount/new-registry-mounter request)]
     (html-page/response
       [:html [:head
-              [:title "Homepage"]]
-
-       [:body (str (:method request) " Homepage")
+              [:title "Homepage"]
+              (html/include-css "/app/homepage/main.css")]
+       [:body
+        [:h1 "Homepage"]
+        [:p "Request method " (:request-method request)]
         [:ul
          [:li [:a {:href "/ru"} "RU"]]
          [:li [:a {:href "/en"} "EN"]]]

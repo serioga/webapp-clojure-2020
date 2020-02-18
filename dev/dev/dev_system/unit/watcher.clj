@@ -44,15 +44,29 @@
         (time (stop-watcher w)))))
 
 
-(defmethod ig/init-key :dev-system/watcher
+(defn wrap-handler-with-delay
+  [handler]
+  (let [*waiting? (atom false)]
+    (fn
+      [& reason]
+      (when (compare-and-set! *waiting? false true)
+        ; pause just in case if several events occurs simultaneously
+        (Thread/sleep 200)
+        (reset! *waiting? false)
+        (handler reason)))))
+
+
+(defmethod ig/init-key :dev-system/*watcher
   [_ {:keys [handler, options, run-handler-on-init?]}]
-  (let [watcher (start-watcher handler options)]
-    (when run-handler-on-init?
-      (exec/try-log-error ["Run handler on init" handler (pr-str options)]
-        (handler :init-watcher)))
-    watcher))
+  (exec/future
+    (let [watcher (start-watcher (wrap-handler-with-delay handler) options)]
+      (when run-handler-on-init?
+        (exec/try-wrap-ex ["Run handler on init" handler (pr-str options)]
+          (handler :init-watcher)))
+      watcher)))
 
 
-(defmethod ig/halt-key! :dev-system/watcher
-  [_ watcher]
-  (stop-watcher watcher))
+(defmethod ig/halt-key! :dev-system/*watcher
+  [_ *watcher]
+  (exec/future
+    (stop-watcher @*watcher)))

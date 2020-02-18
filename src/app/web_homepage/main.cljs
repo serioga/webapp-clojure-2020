@@ -13,8 +13,6 @@
 (react-mount/mount-all)
 
 
-;TODO Reload hooks
-
 (defn ^:dev/after-load ^:private teardown
   []
   (println #'teardown)

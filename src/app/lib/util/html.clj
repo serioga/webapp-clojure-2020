@@ -3,6 +3,11 @@
 (set! *warn-on-reflection* true)
 
 
+(defn include-css
+  [href]
+  [:link {:type "text/css", :href href, :rel "stylesheet"}])
+
+
 (defn include-js
   ([src]
    (include-js src nil))

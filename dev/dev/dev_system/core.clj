@@ -4,6 +4,7 @@
     [dev.dev-system.unit.app-reload]
     [dev.dev-system.unit.nrepl]
     [dev.dev-system.unit.shadow-cljs]
+    [dev.dev-system.unit.tailwind :as tailwind]
     [dev.dev-system.unit.watcher]
     ; imports
     [app.lib.util.integrant :as ig-util]
@@ -26,7 +27,7 @@
                            :app-stop #'app-system/stop!
                            :always-reload-ns []}
 
-   [:dev-system/watcher :dev-system/app-reload-watcher]
+   [:dev-system/*watcher :dev-system/*app-reload-watcher]
    {:handler (ig/ref :dev-system/app-reload)
     :options {:dirs ["src" "dev" "dev-resources/dev"]
 
@@ -38,7 +39,13 @@
               ; :exclude will leave out files that match this pattern.
               :exclude []}}
 
-   :dev-system/*shadow-cljs {:builds-to-start [:homepage]}})
+   :dev-system/*shadow-cljs {:builds-to-start [:homepage]}
+
+   [:dev-system/*watcher :dev-system/*tailwind]
+   {:handler (tailwind/watcher-handler "homepage")
+    :options {:dirs ["tailwind/app/config" "tailwind/app/web_homepage"]
+              :files [".css" ".js$"]}
+    :run-handler-on-init? true}})
 
 
 (defn stop!

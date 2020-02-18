@@ -1,0 +1,13 @@
+#hello-world {
+  @apply mt-4;
+  @apply py-2 px-3;
+  @apply bg-gray-100;
+  @apply rounded;
+  @apply shadow;
+  @apply text-center;
+
+  &:hover {
+    @apply bg-yellow-200;
+  }
+}
+

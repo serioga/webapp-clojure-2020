@@ -1,0 +1,22 @@
+html {
+  @apply bg-gray-200;
+}
+
+body {
+  @apply m-4;
+  @apply p-4;
+  @apply rounded;
+  @apply shadow-md;
+  @apply bg-white;
+}
+
+h1 {
+  @apply font-bold;
+  @apply text-lg;
+  @apply mb-4;
+}
+
+a {
+  @apply text-blue-500;
+  @apply underline;
+}

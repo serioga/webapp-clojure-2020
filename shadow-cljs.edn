@@ -4,4 +4,5 @@
  :builds {:homepage {:target :browser
                      :modules {:main {:entries [app.web-homepage.main]}}
                      :asset-path "/app/homepage"
-                     :output-dir "resources/public/app/homepage"}}}
+                     :output-dir "resources/public/app/homepage"
+                     :devtools {:watch-dir "resources/public"}}}}

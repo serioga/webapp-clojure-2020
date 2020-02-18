@@ -4,18 +4,21 @@
 
 ### System
 
-- Integrant
+- Integrant for application and development systems.
 - Separate sources for application and development code.
+- Hot reloading on source files changes.
 
 ### HTTP Server
 
 - `Immutant` web server with multiple webapps, single port, multiple hostnames.
 - Routing: `metosin/reitit`.
+- Page-rendering: `hiccup`.
 
-### ClojureScript
+### Frontend
 
-- Shadow CLJS (lein integration).
+- ClojureScript with Shadow CLJS (lein integration).
 - React JS + Rum + Server-side rendering (SSR)
+- Tailwind CSS
 
 ## Installation
 

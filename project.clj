@@ -39,7 +39,7 @@
   :main ^:skip-aot app.main
   :test-paths ["test" "src"]
   :target-path "target/%s"
-  :plugins []
+  :plugins [[lein-shell "0.5.0"]]
 
   :clean-targets ^{:protect false} ["target"
                                     "resources/public/app"]
@@ -47,7 +47,16 @@
   :repl-options {:init-ns dev.main
                  :init (-main)}
 
-  :aliases {"shadow-cljs" ["run" "-m" "shadow.cljs.devtools.cli"]}
+  :shell {:commands
+          {"node_modules/.bin/postcss"
+           {:windows "node_modules/.bin/postcss.cmd"}}}
+  
+  :aliases {"shadow-cljs" ["run" "-m" "shadow.cljs.devtools.cli"]
+
+            "css-homepage" ["shell"
+                            "node_modules/.bin/postcss"
+                            "tailwind/app/web_homepage/main.css"
+                            "-o" "resources/public/app/homepage/main.css"]}
 
   :profiles {:dev {:jvm-opts ["-Dconfig.file=dev-resources/dev/config/default.props"]
                    :main ^:skip-aot dev.main
@@ -55,12 +64,14 @@
                                   [ns-tracker "0.4.0"]
                                   [ring/ring-devel "1.8.0"]
                                   [zcaudate/hara.io.watch "2.8.7"]]
-                   :source-paths ["dev"]}
+                   :source-paths ["dev" "tailwind"]}
 
              :test-release [:uberjar
                             {:jvm-opts ["-Dconfig.file=dev-resources/dev/config/default.props"]}]
 
              :uberjar {:aot :all
-                       :prep-tasks ["compile" ["shadow-cljs" "release" "homepage"]]}}
+                       :prep-tasks ["compile"
+                                    ["shadow-cljs" "release" "homepage"]
+                                    "css-homepage"]}}
 
   :uberjar-name "website.jar")
