@@ -1,8 +1,8 @@
 (ns app.web-example.core
   (:require
     ; route handlers
+    [app.web-example.handler.example-react]
     [app.web-example.handler.index]
-    [app.web-example.handler.index-lang]
     ; react components
     [app.web-example.config.react-components]
     ; imports
@@ -15,7 +15,7 @@
 (defn example-routes
   []
   [["/" :route/index]
-   ["/:lang" :route/index-lang]])
+   ["/example-react" :route/example-react]])
 
 
 (defn example-http-handler

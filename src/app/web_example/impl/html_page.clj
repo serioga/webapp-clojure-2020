@@ -25,3 +25,7 @@
     (render-html)
     (ring-util/html-response)))
 
+
+(defn link-to-index
+  []
+  [:p.mt-4 [:a {:href "/"} "< index"]])

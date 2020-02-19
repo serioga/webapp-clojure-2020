@@ -1,4 +1,6 @@
 (ns app.web-example.react-component.hello-world
+  "Example react component, modification of
+   https://github.com/tonsky/rum/blob/gh-pages/examples/rum/examples/local_state.cljc"
   (:require
     [app.lib.react.component :as impl]
     [rum.core :as rum]))
