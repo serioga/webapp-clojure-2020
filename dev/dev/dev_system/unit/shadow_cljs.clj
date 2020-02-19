@@ -38,9 +38,9 @@
 #_(comment
     (server/start!)
     (server/stop!)
-    (foo :homepage)
-    (shadow/compile :homepage)
-    (shadow/repl :homepage)
-    (shadow/watch :homepage)
+    (foo :example)
+    (shadow/compile :example)
+    (shadow/repl :example)
+    (shadow/watch :example)
     (shadow/watch-compile-all!))
 

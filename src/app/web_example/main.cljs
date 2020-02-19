@@ -1,7 +1,7 @@
-(ns app.web-homepage.main
+(ns app.web-example.main
   (:require
     ; react components
-    [app.web-homepage.config.react-components]
+    [app.web-example.config.react-components]
     ; imports
     [app.lib.react.mount :as react-mount]))
 

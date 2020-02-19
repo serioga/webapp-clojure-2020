@@ -54,10 +54,10 @@
   
   :aliases {"shadow-cljs" ["run" "-m" "shadow.cljs.devtools.cli"]
 
-            "css-homepage" ["shell"
-                            "node_modules/.bin/postcss"
-                            "tailwind/app/web_homepage/main.css"
-                            "-o" "resources/public/app/homepage/main.css"]}
+            "css-example" ["shell"
+                           "node_modules/.bin/postcss"
+                           "tailwind/app/web_example/main.css"
+                           "-o" "resources/public/app/example/main.css"]}
 
   :profiles {:dev {:jvm-opts ["-Dconfig.file=dev-resources/dev/config/default.props"]
                    :main ^:skip-aot dev.main
@@ -72,7 +72,7 @@
 
              :uberjar {:aot :all
                        :prep-tasks ["compile"
-                                    ["shadow-cljs" "release" "homepage"]
-                                    "css-homepage"]}}
+                                    ["shadow-cljs" "release" "example"]
+                                    "css-example"]}}
 
   :uberjar-name "website.jar")

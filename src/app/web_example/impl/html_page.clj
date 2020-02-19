@@ -1,4 +1,4 @@
-(ns app.web-homepage.impl.html-page
+(ns app.web-example.impl.html-page
   (:require
     [app.lib.util.html :as html]
     [app.lib.util.ring :as ring-util]
@@ -10,7 +10,7 @@
 
 (mount/defstate ^{:on-reload :noop} styles-css-uri
   :start
-  (html/static-uri-with-hash "/app/homepage/main.css"))
+  (html/static-uri-with-hash "/app/example/main.css"))
 
 
 (defn render-html

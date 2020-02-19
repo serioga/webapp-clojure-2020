@@ -1,7 +1,7 @@
 (ns app.app-system.service.webapp-http-handler
   (:require
     [app.lib.util.exec :as exec]
-    [app.web-homepage.core :as homepage]
+    [app.web-example.core :as example]
     [integrant.core :as ig]))
 
 (set! *warn-on-reflection* true)
@@ -17,9 +17,9 @@
   (exec/throw-ex-info "Webapp handler is not found for name" name))
 
 
-(defmethod webapp-http-handler "homepage"
+(defmethod webapp-http-handler "example"
   [config]
-  (homepage/homepage-http-handler config))
+  (example/example-http-handler config))
 
 
 (defmethod ig/init-key :app-system.service/webapp-http-handler

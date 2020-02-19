@@ -50,20 +50,20 @@
 
    ; Webapps
 
-   [:app-system.core/init-map :app-system.config/homepage-http-handler]
-   {:init-map {:name "homepage"
+   [:app-system.core/init-map :app-system.config/example-http-handler]
+   {:init-map {:name "example"
                :dev-mode? (ig/ref :app-system/dev-mode?)}
     :import-from (ig/ref :app-system.service/app-config)
-    :import-keys {:hosts "Webapp.Hosts(homepage)"}}
+    :import-keys {:hosts "Webapp.Hosts(example)"}}
 
-   [:app-system.service/webapp-http-handler :app-system.service/homepage-http-handler]
-   (ig/ref :app-system.config/homepage-http-handler)
+   [:app-system.service/webapp-http-handler :app-system.service/example-http-handler]
+   (ig/ref :app-system.config/example-http-handler)
 
    :app-system.dev/prepare-webapp nil
 
    [:app-system.core/init-map :app-system.config/http-server]
    {:init-map {:options {}
-               :webapps [(ig/ref :app-system.service/homepage-http-handler)]
+               :webapps [(ig/ref :app-system.service/example-http-handler)]
                :dev/prepare-webapp (ig/ref :app-system.dev/prepare-webapp)
                :await-before-start (ig/ref :app-system.config/await-before-start)}
     :import-from (ig/ref :app-system.service/app-config)

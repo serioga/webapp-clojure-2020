@@ -40,15 +40,15 @@
               ; :exclude will leave out files that match this pattern.
               :exclude []}}
 
-   :dev-system/*shadow-cljs {:builds-to-start [:homepage]}
+   :dev-system/*shadow-cljs {:builds-to-start [:example]}
 
    [:dev-system/*watcher :dev-system/*tailwind]
    {:handler (tailwind/watcher-handler
-               {:webapp "homepage"
+               {:webapp "example"
                 :on-rebuild (fn []
-                              (mount/stop #'app.web-homepage.impl.html-page/styles-css-uri)
-                              (mount/start #'app.web-homepage.impl.html-page/styles-css-uri))})
-    :options {:dirs ["tailwind/app/config" "tailwind/app/web_homepage"]
+                              (mount/stop #'app.web-example.impl.html-page/styles-css-uri)
+                              (mount/start #'app.web-example.impl.html-page/styles-css-uri))})
+    :options {:dirs ["tailwind/app/config" "tailwind/app/web_example"]
               :files [".css" ".js$"]}
     :run-handler-on-init? true}})
 

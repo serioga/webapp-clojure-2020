@@ -1,4 +1,4 @@
 # suppress inspection "UnusedProperty" for whole file
 
-Webapp.ListEnabled=homepage
-Webapp.Hosts(homepage)=homepage.localtest.me
+Webapp.ListEnabled=example
+Webapp.Hosts(example)=example.localtest.me

@@ -1,4 +1,4 @@
-(ns app.web-homepage.react-component.hello-world
+(ns app.web-example.react-component.hello-world
   (:require
     [app.lib.react.component :as impl]
     [rum.core :as rum]))
