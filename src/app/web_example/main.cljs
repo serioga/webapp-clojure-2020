@@ -15,10 +15,6 @@
 
 (defn ^:dev/after-load ^:private teardown
   []
-  (println #'teardown)
-  (js/setTimeout
-    (fn []
-      (println "reloading page...")
-      (.reload (-> js/window .-location) true))
-    500))
+  (println "reloading page...")
+  (.reload (-> js/window .-location) true))
 
