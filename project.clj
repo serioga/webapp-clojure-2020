@@ -21,6 +21,15 @@
                  [org.immutant/web "2.1.10"]
                  [ring/ring-core "1.8.0"]
                  [ring/ring-defaults "0.3.2"]
+                 ; sql database
+                 [com.h2database/h2 "1.4.200"]
+                 [com.layerware/hugsql "0.5.1"]
+                 [com.layerware/hugsql-adapter-next-jdbc "0.5.1"]
+                 [com.mattbertolini/liquibase-slf4j "2.0.0"]
+                 [com.zaxxer/HikariCP "3.4.2"]
+                 [org.liquibase/liquibase-core "3.8.5"]
+                 [seancorfield/next.jdbc "1.0.13"]
+                 [p6spy/p6spy "3.8.7"]
                  ; logging (clojure)
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [ch.qos.logback/logback-core "1.2.3"]

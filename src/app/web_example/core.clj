@@ -15,6 +15,7 @@
 (defn example-routes
   []
   [["/" :route/index]
+   ["/example-database" :route/example-database]
    ["/example-react" :route/example-react]])
 
 

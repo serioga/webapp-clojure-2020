@@ -2,6 +2,7 @@
 *.jar
 .cache/
 .cpcache/
+.database.*.db
 .idea/
 .lein-deps-sum
 .lein-failures
@@ -11,10 +12,10 @@
 .shadow-cljs/
 /checkouts/
 /classes/
-/dev-resources/dev/config/user.*.props
 /lib/
-/node_modules/
-/resources/public/app/
 /target/
+dev-resources/dev/config/user.*.props
+node_modules/
 pom.xml
 pom.xml.asc
+resources/public/app/

@@ -26,7 +26,7 @@
                            :app-suspend #'app-system/suspend!
                            :app-resume #'app-system/resume!
                            :app-stop #'app-system/stop!
-                           :always-reload-ns []}
+                           :always-reload-ns ['app.database.core]}
 
    [:dev-system/*watcher :dev-system/*app-reload-watcher]
    {:handler (ig/ref :dev-system/app-reload)
@@ -34,7 +34,7 @@
 
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :filter will pick out only files that match this pattern.
-              :files [".props$" ".clj$" ".cljc$" ".cljs$"]
+              :files [".props$" ".clj$" ".cljc$" ".cljs$" ".sql$"]
 
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :exclude will leave out files that match this pattern.

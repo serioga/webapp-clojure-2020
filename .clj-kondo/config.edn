@@ -1,5 +1,8 @@
 {:linters {:missing-docstring {:level :warning}
            :unsorted-namespaces {:level :warning}}
- :lint-as {rum.core/defc clj-kondo.lint-as/def-catch-all
+ :lint-as {app.lib.database.hugsql/declare-fn clojure.core/declare
+           mount.core/defstate clojure.core/def
+           mount.tools.macrovich/deftime clojure.core/do
+           rum.core/defc clj-kondo.lint-as/def-catch-all
            rum.core/defcs clj-kondo.lint-as/def-catch-all
            rum.core/defcc clj-kondo.lint-as/def-catch-all}}

@@ -9,7 +9,8 @@
 - Separate sources for application and development code.
 - Hot reloading on source files changes.
 - `mount` as integrant component for compiled dependencies in code.
-- Configuration in JAVA properties files. 
+- Configuration in JAVA properties files.
+- Daemon interface to be run as service with `jsvc`.  
 
 ### HTTP Server
 
@@ -22,6 +23,15 @@
 - ClojureScript with Shadow CLJS (lein integration).
 - React JS + Rum + Server-side rendering (SSR) + Passing component data from server
 - Tailwind CSS
+
+### SQL Database
+
+- `next.jdbc` JDBC wrapper.
+- `HugSQL` “query builder”.
+- `HikariCP` connection pool.
+- Log database queries via `p6spy`.
+- Database migrations with `Liquibase`.
+- Separate read-write and read-only database connections. 
 
 ## Installation
 

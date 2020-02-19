@@ -16,4 +16,5 @@
      [:body
       [:h1 "Examples"]
       [:ul
-       [:li [:a {:href "/example-react"} "React Component"]]]]]))
+       [:li [:a {:href "/example-react"} "React Component"]]
+       [:li [:a {:href "/example-database"} "SQL Database"]]]]]))

@@ -2,3 +2,8 @@
 
 Webapp.ListEnabled=example
 Webapp.Hosts(example)=example.localtest.me
+
+Database.DataSourceClassName=org.h2.jdbcx.JdbcDataSource
+Database.Url=jdbc:h2:file:./.database
+Database.User=
+Database.Password=
