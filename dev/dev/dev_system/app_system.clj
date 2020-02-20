@@ -4,6 +4,7 @@
     [app.app-system.core :as app-system]
     [clojure.java.io :as io]
     [clojure.string :as str]
+    [dev.dev-system.unit.ring-refresh :as ring-refresh]
     [ring.middleware.lint :as lint])
   (:import
     (java.io File)))
@@ -34,7 +35,8 @@
   [_webapp]
   (fn [handler]
     (-> handler
-      lint/wrap-lint)))
+      lint/wrap-lint
+      ring-refresh/wrap-refresh)))
 
 
 (defn prepare-webapp
@@ -56,23 +58,27 @@
    (start! {}))
   ([{:keys [system-keys]}]
    (app-system/start! (cond-> {:prepare-config prepare-system-config}
-                        system-keys (assoc :system-keys system-keys)))))
+                        system-keys (assoc :system-keys system-keys)))
+   (ring-refresh/send-refresh! true)))
 
 
 (defn stop!
   []
+  (ring-refresh/send-refresh! false)
   (app-system/stop!))
 
 
 (defn suspend!
   []
+  (ring-refresh/send-refresh! false)
   (app-system/suspend!))
 
 
 (defn resume!
   []
   (app-system/resume!
-    {:prepare-config prepare-system-config}))
+    {:prepare-config prepare-system-config})
+  (ring-refresh/send-refresh! true))
 
 
 #_(comment

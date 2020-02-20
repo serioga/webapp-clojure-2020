@@ -13,8 +13,8 @@
 (react-mount/mount-all)
 
 
-(defn ^:dev/after-load ^:private teardown
-  []
-  (println "reloading page...")
-  (.reload (-> js/window .-location) true))
+#_(defn ^:dev/after-load ^:private teardown
+    []
+    (println "reloading page...")
+    (.reload (-> js/window .-location) true))
 

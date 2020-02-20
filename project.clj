@@ -72,6 +72,7 @@
                    :main ^:skip-aot dev.main
                    :dependencies [[nrepl "0.6.0"]
                                   [ns-tracker "0.4.0"]
+                                  [ring-refresh "0.1.1"]
                                   [ring/ring-devel "1.8.0"]
                                   [zcaudate/hara.io.watch "2.8.7"]]
                    :source-paths ["dev" "tailwind"]}

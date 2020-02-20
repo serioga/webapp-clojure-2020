@@ -5,4 +5,4 @@
                     :modules {:main {:entries [app.web-example.main]}}
                     :asset-path "/app/example"
                     :output-dir "resources/public/app/example"
-                    :devtools {:watch-dir "resources/public"}}}}
+                    #_#_:devtools {:watch-dir "resources/public"}}}}

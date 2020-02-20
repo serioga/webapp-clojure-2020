@@ -4,6 +4,7 @@
     [dev.dev-system.unit.app-reload]
     [dev.dev-system.unit.nrepl]
     [dev.dev-system.unit.shadow-cljs]
+    [dev.dev-system.unit.ring-refresh :as ring-refresh]
     [dev.dev-system.unit.tailwind :as tailwind]
     [dev.dev-system.unit.watcher]
     ; imports
@@ -47,7 +48,8 @@
                {:webapp "example"
                 :on-rebuild (fn []
                               (mount/stop #'app.web-example.impl.html-page/styles-css-uri)
-                              (mount/start #'app.web-example.impl.html-page/styles-css-uri))})
+                              (mount/start #'app.web-example.impl.html-page/styles-css-uri)
+                              (ring-refresh/send-refresh!))})
     :options {:dirs ["tailwind/app/config" "tailwind/app/web_example"]
               :files [".css" ".js$"]}
     :run-handler-on-init? true}})
