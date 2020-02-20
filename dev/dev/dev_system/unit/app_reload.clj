@@ -10,16 +10,12 @@
 (set! *warn-on-reflection* true)
 
 
-#_(defn reload-on-enter
-    [handler]
-    (print "\n\nPress ENTER to reload application: ")
-    (flush)
-    (when (some? (read-line))
-      (handler :force-reload "ENTER key pressed...")))
-
-
 (defn reload-on-enter
-  [_])
+  [handler]
+  (print "\n\n***** Press ENTER to reload application *****\n\n\n")
+  (flush)
+  (when (some? (read-line))
+    (handler :force-reload "ENTER key pressed...")))
 
 
 (defn exception-log-msg
