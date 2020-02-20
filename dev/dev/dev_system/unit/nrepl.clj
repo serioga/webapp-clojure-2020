@@ -1,6 +1,7 @@
 (ns dev.dev-system.unit.nrepl
   (:require
     [app.lib.util.exec :as exec]
+    [clojure.java.io :as io]
     [clojure.tools.logging :as log]
     [integrant.core :as ig]
     [nrepl.server :as nrepl]))
@@ -9,9 +10,15 @@
 
 
 (defn start-server
-  [{:keys [port]}]
+  [{:keys [port, write-port-file]}]
   (let [server (nrepl/start-server :port port)]
     (log/info "[DONE] Start nREPL server" server)
+
+    (when (some? write-port-file)
+      (let [nrepl-port-file (io/file write-port-file)]
+        (spit nrepl-port-file (str (:port server)))
+        (.deleteOnExit nrepl-port-file)))
+
     server))
 
 

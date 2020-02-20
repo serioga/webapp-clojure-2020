@@ -20,7 +20,7 @@
 
 
 (defn config []
-  {#_#_:dev-system/*nrepl {:port 0}
+  {:dev-system/*nrepl {:write-port-file ".nrepl-port"}
 
    :dev-system/app-reload {:ns-tracker-dirs ["src" "dev"]
                            :app-start #'app-system/start!

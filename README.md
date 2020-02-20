@@ -44,7 +44,7 @@
 
 Run for development:
 
-    lein repl
+    lein run
 
 Run to check build with release options:
 

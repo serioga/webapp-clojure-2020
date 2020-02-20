@@ -1,5 +1,6 @@
 ;; shadow-cljs configuration
 {:lein true
+ :nrepl false
  :source-paths ["src"]
  :builds {:example {:target :browser
                     :modules {:main {:entries [app.web-example.main]}}

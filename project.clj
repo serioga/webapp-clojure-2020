@@ -54,8 +54,7 @@
   :clean-targets ^{:protect false} ["target"
                                     "resources/public/app"]
 
-  :repl-options {:init-ns dev.main
-                 :init (-main)}
+  :repl-options {:init-ns dev.main}
 
   :shell {:commands
           {"node_modules/.bin/postcss"
