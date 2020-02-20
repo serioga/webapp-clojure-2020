@@ -1,6 +1,7 @@
 (ns app.web-example.core
   (:require
     ; route handlers
+    [app.web-example.handler.example-database]
     [app.web-example.handler.example-react]
     [app.web-example.handler.index]
     ; react components
