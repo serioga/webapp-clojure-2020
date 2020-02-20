@@ -2,8 +2,8 @@
   (:require
     [app.lib.react.component :as react-component]
     [app.lib.util.transit :as transit]
-    [rum.core :as rum]
-    [clojure.string :as str]))
+    [clojure.string :as str]
+    [rum.core :as rum]))
 
 #?(:clj (set! *warn-on-reflection* true) :cljs (set! *warn-on-infer* true))
 

@@ -2,8 +2,8 @@
   (:require
     ; systems
     [app.app-system.service.app-config]
-    [app.app-system.service.immutant-web]
     [app.app-system.service.hikari-data-source]
+    [app.app-system.service.immutant-web]
     [app.app-system.service.mount]
     [app.app-system.service.webapp-http-handler]
     [app.app-system.task.database-migration]

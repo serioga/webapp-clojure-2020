@@ -1,8 +1,8 @@
 (ns app.database.core
   (:require
     [app.lib.database.hugsql :as hugsql]
-    [next.jdbc :as jdbc]
     [mount.core :as mount]
+    [next.jdbc :as jdbc]
     [taoensso.truss :as truss])
   (:import
     (java.sql Connection)))

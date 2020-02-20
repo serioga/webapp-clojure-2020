@@ -2,8 +2,8 @@
   (:require
     [app.lib.react.mount :as react-mount]
     [app.lib.util.html :as html]
-    [app.web-example.impl.html-page :as html-page]
-    [app.web-example.impl.handler :as impl]))
+    [app.web-example.impl.handler :as impl]
+    [app.web-example.impl.html-page :as html-page]))
 
 (set! *warn-on-reflection* true)
 

@@ -1,8 +1,8 @@
 (ns app.app-system.service.mount
   (:require
     [integrant.core :as ig]
-    [mount.core :as mount]
-    [mount-up.core :as mu]))
+    [mount-up.core :as mu]
+    [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
 
