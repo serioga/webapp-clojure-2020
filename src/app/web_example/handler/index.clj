@@ -8,7 +8,7 @@
 
 
 (defmethod impl/example-handler :route/index
-  [request]
+  [{:keys [route-tag/path-for-route]}]
   (html-page/response
     [:html [:head
             [:title "Homepage"]
@@ -16,5 +16,7 @@
      [:body
       [:h1 "Examples"]
       [:ul
-       [:li [:a {:href "/example-react"} "React Component"]]
-       [:li [:a {:href "/example-database"} "SQL Database"]]]]]))
+       [:li [:a {:href (path-for-route :route/example-react )} "React Component"]]
+       [:li [:a {:href (path-for-route :route/example-database)} "SQL Database"]]
+       [:li [:a {:href (path-for-route :route/example-path-param {:name "Test Name"
+                                                                  :value "Test Value"})} "Path Parameter"]]]]]))

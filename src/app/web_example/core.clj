@@ -2,6 +2,7 @@
   (:require
     ; route handlers
     [app.web-example.handler.example-database]
+    [app.web-example.handler.example-path-param]
     [app.web-example.handler.example-react]
     [app.web-example.handler.index]
     ; react components
@@ -17,7 +18,8 @@
   []
   [["/" :route/index]
    ["/example-database" :route/example-database]
-   ["/example-react" :route/example-react]])
+   ["/example-react" :route/example-react]
+   ["/example-path-param/:name" :route/example-path-param]])
 
 
 (defn example-http-handler
