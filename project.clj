@@ -27,7 +27,7 @@
                  [com.layerware/hugsql-adapter-next-jdbc "0.5.1"]
                  [com.mattbertolini/liquibase-slf4j "2.0.0"]
                  [com.zaxxer/HikariCP "3.4.2"]
-                 [org.liquibase/liquibase-core "3.8.5"]
+                 [org.liquibase/liquibase-core "3.8.6"]
                  [seancorfield/next.jdbc "1.0.13"]
                  [p6spy/p6spy "3.8.7"]
                  ; logging (clojure)
@@ -38,7 +38,7 @@
                  [org.slf4j/jul-to-slf4j "1.7.30"]
                  ; libs
                  [clojurewerkz/propertied "1.3.0"]
-                 [com.cognitect/transit-clj "0.8.319"]
+                 [com.cognitect/transit-clj "1.0.324"]
                  [com.taoensso/truss "1.5.0"]
                  [commons-codec/commons-codec "1.14"]
                  [org.apache.commons/commons-lang3 "3.9"]
@@ -71,7 +71,7 @@
                    :main ^:skip-aot dev.main
                    :dependencies [[nrepl "0.6.0"]
                                   [ns-tracker "0.4.0"]
-                                  [ring-refresh "0.1.1"]
+                                  [ring-refresh "0.1.2"]
                                   [ring/ring-devel "1.8.0"]
                                   [zcaudate/hara.io.watch "2.8.7"]]
                    :source-paths ["dev" "tailwind"]}
