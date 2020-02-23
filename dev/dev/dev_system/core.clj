@@ -31,7 +31,7 @@
 
    [:dev-system/*watcher :dev-system/*app-reload-watcher]
    {:handler (ig/ref :dev-system/app-reload)
-    :options {:dirs ["src" "dev" "dev-resources/dev"]
+    :options {:dirs ["src" "dev" "dev-resources/dev" "resources/app"]
 
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :filter will pick out only files that match this pattern.
