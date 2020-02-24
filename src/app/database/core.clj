@@ -1,6 +1,6 @@
 (ns app.database.core
   (:require
-    [app.lib.database.hugsql :as hugsql]
+    [app.database.hugsql :as hugsql]
     [mount.core :as mount]
     [next.jdbc :as jdbc]
     [taoensso.truss :as truss])

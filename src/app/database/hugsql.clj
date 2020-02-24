@@ -1,4 +1,4 @@
-(ns app.lib.database.hugsql
+(ns app.database.hugsql
   (:require
     [app.lib.util.exec :as exec]
     [clojure.java.io :as io]
