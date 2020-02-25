@@ -43,7 +43,23 @@ So in about 2 years I've gradually built this prototype for my own needs.
 - `HikariCP` connection pool.
 - Log database queries via `p6spy`.
 - Database migrations with `Liquibase`.
-- Separate read-write and read-only database connections. 
+- Separate read-write and read-only database connections.
+
+## Q&A
+
+### Why mount _and_ integrant?
+
+During migration of my setup from mount to integrant I found:
+- that integrant is good for 
+  - managing “big” components like web server, database connection pool and so on, 
+    which don't require direct reference in the code,
+  - managing multiple systems like application and development once. 
+- but passing integrant state around as map to access it from code is
+  - annoying,
+  - not so performant as mount,
+  - harder to trace dependencies in code using IDE's navigation tools.
+  
+So I decided to take best from both worlds and use mount and integrant simultaneously.   
 
 ## Installation
 
