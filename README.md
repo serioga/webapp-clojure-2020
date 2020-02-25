@@ -1,5 +1,16 @@
 # webapp-clojure-2020
 
+## Rationale
+
+I needed project setup to support following workflow:
+
+- The application running in development mode behave like application running in production 
+  (as much as possible). So all development code is addictive and excluded from production build.
+- The application state keep running and reloading automatically on changes.
+- Developer can easily extend development environment with any required tools.
+
+So in about 2 years I've gradually built this prototype for my own needs. 
+
 ## Features
 
 ### System
