@@ -110,7 +110,8 @@
    ; Wrap up
 
    [:app-system.core/init-map :app-system.config/await-before-start]
-   {:init-map {:mount (ig/ref :app-system.service/mount)}}})
+   {:init-map {:database-migration (ig/ref :app-system.task/ref'database-migration)
+               :mount (ig/ref :app-system.service/mount)}}})
 
 
 (defn stop!
