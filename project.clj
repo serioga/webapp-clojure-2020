@@ -69,7 +69,8 @@
 
   :profiles {:dev {:jvm-opts ["-Dconfig.file=dev-resources/dev/config/default.props"]
                    :main ^:skip-aot dev.main
-                   :dependencies [[nrepl "0.6.0"]
+                   :dependencies [[compojure "1.6.1" #_"For ring-refresh"]
+                                  [nrepl "0.6.0"]
                                   [ns-tracker "0.4.0"]
                                   [ring-refresh "0.1.2"]
                                   [ring/ring-devel "1.8.0"]
