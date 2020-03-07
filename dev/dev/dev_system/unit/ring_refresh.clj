@@ -35,7 +35,7 @@
     (let [timestamp (Long/parseLong since)]
       (str (watch-until var'refresh-state
              (fn [{:keys [last-modified, reload?]}]
-               (when (> (.getTime last-modified) timestamp)
+               (when (> (.getTime ^Date last-modified) timestamp)
                  reload?))
              60000)))))
 
