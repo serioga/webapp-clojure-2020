@@ -47,11 +47,11 @@
   (web/stop server))
 
 
-(defmethod ig/init-key :app-system.service/*immutant-web
+(defmethod ig/init-key :app-system.service/ref'immutant-web
   [_ options]
   (exec/future (start-server options)))
 
 
-(defmethod ig/halt-key! :app-system.service/*immutant-web
-  [_ *server]
-  (exec/future (stop-server @*server)))
+(defmethod ig/halt-key! :app-system.service/ref'immutant-web
+  [_ ref'server]
+  (exec/future (stop-server @ref'server)))

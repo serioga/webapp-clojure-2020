@@ -33,14 +33,14 @@
             (time (stop-server server)))))
 
 
-(defmethod ig/init-key :dev-system/*nrepl
+(defmethod ig/init-key :dev-system/ref'nrepl
   [_ options]
   (exec/future
     (start-server options)))
 
 
-(defmethod ig/halt-key! :dev-system/*nrepl
-  [_ *server]
-  (stop-server @*server))
+(defmethod ig/halt-key! :dev-system/ref'nrepl
+  [_ ref'server]
+  (stop-server @ref'server))
 
 

@@ -16,11 +16,11 @@
 (set! *warn-on-reflection* true)
 
 
-(defonce dev-system (atom nil))
+(defonce var'dev-system (atom nil))
 
 
 (defn config []
-  {:dev-system/*nrepl {:write-port-file ".nrepl-port"}
+  {:dev-system/ref'nrepl {:write-port-file ".nrepl-port"}
 
    :dev-system/app-reload {:ns-tracker-dirs ["src" "dev"]
                            :app-start #'app-system/start!
@@ -29,7 +29,7 @@
                            :app-stop #'app-system/stop!
                            :always-reload-ns ['app.database.core]}
 
-   [:dev-system/*watcher :dev-system/*app-reload-watcher]
+   [:dev-system/ref'watcher :dev-system/ref'app-reload-watcher]
    {:handler (ig/ref :dev-system/app-reload)
     :options {:dirs ["src" "dev" "dev-resources/dev" "resources/app"]
 
@@ -41,9 +41,9 @@
               ; :exclude will leave out files that match this pattern.
               :exclude []}}
 
-   :dev-system/*shadow-cljs {:builds-to-start [:example]}
+   :dev-system/ref'shadow-cljs {:builds-to-start [:example]}
 
-   [:dev-system/*watcher :dev-system/*tailwind]
+   [:dev-system/ref'watcher :dev-system/ref'tailwind]
    {:handler (tailwind/watcher-handler
                {:webapp "example"
                 :on-rebuild (fn []
@@ -58,7 +58,7 @@
 (defn stop!
   "Stop global system."
   []
-  (swap! dev-system #(some-> % ig-util/halt!)))
+  (swap! var'dev-system #(some-> % ig-util/halt!)))
 
 
 (defn start!
@@ -69,12 +69,12 @@
    (start! config nil))
   ([config, init-keys]
    (stop!)
-   (reset! dev-system (ig-util/init config, (or init-keys (keys config))))))
+   (reset! var'dev-system (ig-util/init config, (or init-keys (keys config))))))
 
 
 (defn reload-on-enter
   []
-  (when-some [reload (some-> @dev-system
+  (when-some [reload (some-> @var'dev-system
                        :dev-system/app-reload
                        meta :reload-on-enter)]
     (reload)))
@@ -82,8 +82,8 @@
 
 (defn nrepl-server
   []
-  (some-> @dev-system
-    :dev-system/*nrepl
+  (some-> @var'dev-system
+    :dev-system/ref'nrepl
     deref))
 
 

@@ -25,13 +25,13 @@
   (.close ^Closeable (.unwrap spy-wrapped-ds Closeable)))
 
 
-(derive :app-system.service/*hikari-data-source-read-write
-  :app-system.service/*hikari-data-source)
-(derive :app-system.service/*hikari-data-source-read-only
-  :app-system.service/*hikari-data-source)
+(derive :app-system.service/ref'hikari-data-source-read-write
+  :app-system.service/ref'hikari-data-source)
+(derive :app-system.service/ref'hikari-data-source-read-only
+  :app-system.service/ref'hikari-data-source)
 
 
-(defmethod ig/init-key :app-system.service/*hikari-data-source
+(defmethod ig/init-key :app-system.service/ref'hikari-data-source
   [k {:keys [dev-mode?] :as options}]
   (exec/future
     (init-data-source
@@ -42,14 +42,14 @@
         (cond->
           dev-mode? (assoc :max-lifetime 300000 :idle-timeout 60000))
         (merge options)
-        (assoc :read-only? (= k :app-system.service/*hikari-data-source-read-only))))))
+        (assoc :read-only? (= k :app-system.service/ref'hikari-data-source-read-only))))))
 
 
-(defmethod ig/halt-key! :app-system.service/*hikari-data-source
-  [_ *ds]
+(defmethod ig/halt-key! :app-system.service/ref'hikari-data-source
+  [_ ref'ds]
   (exec/future
-    (close-data-source! @*ds)))
+    (close-data-source! @ref'ds)))
 
 
-(derive :app-system.service/*hikari-data-source
+(derive :app-system.service/ref'hikari-data-source
   :app-system.core/keep-running-on-suspend)

@@ -34,7 +34,7 @@
                         (clojure.set/difference
                           (set always-reload-ns)
                           (set modified)))
-        reload-errors (volatile! [])
+        var'reload-errors (volatile! [])
         reload-fn (fn
                     [ns-sym]
                     (try
@@ -42,12 +42,12 @@
                       (log/info "[OK]" "Reload" ns-sym)
                       (catch Throwable ex
                         (let [msg (exception-log-msg ex)]
-                          (vswap! reload-errors conj [ns-sym msg])
+                          (vswap! var'reload-errors conj [ns-sym msg])
                           (log/info "[FAIL]" "Reload" ns-sym)))))]
     (when-let [namespaces (seq (concat modified reload-always))]
       (log/info "Reloading namespaces:" (string/join ", " namespaces))
       (run! reload-fn namespaces))
-    @reload-errors))
+    @var'reload-errors))
 
 
 (defn watcher-handler
@@ -57,7 +57,7 @@
          app-suspend (constantly nil)
          app-resume (constantly nil)
          app-start (constantly nil)}}]
-  (let [now-reloading? (atom false)
+  (let [var'reloading? (atom false)
         ns-tracker (ns-tracker/ns-tracker ns-tracker-dirs)
         app-reload
         (fn app-reload
@@ -65,7 +65,7 @@
           (let [[start stop] (if (= :force-reload (first reason))
                                [app-start app-stop]
                                [app-resume app-suspend])]
-            (when (compare-and-set! now-reloading? false true)
+            (when (compare-and-set! var'reloading? false true)
               (Thread/sleep 200) ; pause just in case if several files were updated
               (log/info reason)
               (log/info "[START]" "Application reload")
@@ -82,7 +82,7 @@
                   (catch Throwable ex
                     (log/error (exec/ex-message-all ex))
                     (log/info "[FAIL]" "Application reload"))))
-              (reset! now-reloading? false)
+              (reset! var'reloading? false)
               (reload-on-enter app-reload))))]
     (with-meta app-reload
       {:reload-on-enter (fn [] (reload-on-enter app-reload))})))

@@ -10,7 +10,7 @@
 (set! *warn-on-reflection* true)
 
 
-(def ^:private refresh-state
+(def ^:private var'refresh-state
   (atom {:last-modified (Date.)
          :reload? false}))
 
@@ -33,7 +33,7 @@
 (def ^:private source-changed-route
   (compojure/GET "/__source_changed" [since]
     (let [timestamp (Long/parseLong since)]
-      (str (watch-until refresh-state
+      (str (watch-until var'refresh-state
              (fn [{:keys [last-modified, reload?]}]
                (when (> (.getTime last-modified) timestamp)
                  reload?))
@@ -52,10 +52,10 @@
 (defn send-refresh!
   "Send response to pages with flag if they should
    reload page or just reconnect to __source_changed."
-  ([] (send-refresh! (:reload? @refresh-state)))
+  ([] (send-refresh! (:reload? @var'refresh-state)))
   ([reload?]
    (when reload?
      (log/info "Send refresh command to browser pages"))
-   (reset! refresh-state {:last-modified (Date.)
-                          :reload? reload?})))
+   (reset! var'refresh-state {:last-modified (Date.)
+                              :reload? reload?})))
 

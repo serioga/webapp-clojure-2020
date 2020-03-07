@@ -8,9 +8,9 @@
 (set! *warn-on-reflection* true)
 
 
-(defmethod ig/init-key :app-system.task/*database-migration
-  [_ {:keys [*data-source changelog-path enabled?] :as config}]
+(defmethod ig/init-key :app-system.task/ref'database-migration
+  [_ {:keys [ref'data-source changelog-path enabled?] :as config}]
   (log/info "Database migrations" (pr-str config))
   (exec/future
     (when enabled?
-      (liquibase/update-database @*data-source, changelog-path))))
+      (liquibase/update-database @ref'data-source, changelog-path))))

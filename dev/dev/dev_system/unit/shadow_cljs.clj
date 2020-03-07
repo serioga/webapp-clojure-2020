@@ -23,16 +23,16 @@
   (server/stop!))
 
 
-(defmethod ig/init-key :dev-system/*shadow-cljs
+(defmethod ig/init-key :dev-system/ref'shadow-cljs
   [_ options]
   (exec/future
     (start-shadow! options)))
 
 
-(defmethod ig/halt-key! :dev-system/*shadow-cljs
-  [_ *system]
+(defmethod ig/halt-key! :dev-system/ref'shadow-cljs
+  [_ ref'system]
   (exec/future
-    (stop-shadow! @*system)))
+    (stop-shadow! @ref'system)))
 
 
 #_(comment

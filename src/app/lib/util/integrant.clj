@@ -41,7 +41,7 @@
 (defn ^:private build-halt-key
   "Produce wrapped version of integrant's halt-key!
    with logging and handling of returned futures."
-  [*futures]
+  [var'futures]
   (fn halt-key!
     [key value]
     (when-some [method (exec/when-pred not-default-halt-key?
@@ -56,14 +56,14 @@
           (let [ret (exec/try-log-error ["Stopping" key]
                       (method key value))]
             (when (future? ret)
-              (swap! *futures conj [key ret]))
+              (swap! var'futures conj [key ret]))
             ret))))))
 
 
 (defn ^:private build-suspend-key
   "Produce wrapped version of integrant's suspend-key!
    with logging and handling of returned futures."
-  [*futures]
+  [var'futures]
   (fn suspend-key!
     [key value]
     (when-some [method (or
@@ -81,7 +81,7 @@
           (let [ret (exec/try-log-error ["Suspending" key]
                       (method key value))]
             (when (future? ret)
-              (swap! *futures conj [key ret]))
+              (swap! var'futures conj [key ret]))
             ret))))))
 
 
@@ -123,9 +123,9 @@
   "Deref all future suspend results.
    Log errors for failed exceptions."
   [futures, log-key-error]
-  (doseq [[key *f] futures]
+  (doseq [[key ref'future] futures]
     (try
-      (deref *f)
+      (deref ref'future)
       (catch Throwable ex
         (log-key-error (ex-in-future ex) key)))))
 
@@ -137,9 +137,9 @@
    (halt! system (keys system)))
   ([system keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
-   (let [*futures (atom [])]
-     (ig/reverse-run! system keys (build-halt-key *futures))
-     (await-futures @*futures
+   (let [var'futures (atom [])]
+     (ig/reverse-run! system keys (build-halt-key var'futures))
+     (await-futures @var'futures
        (fn [ex key]
          (logging-context/with-logging-context {:halt key}
            (exec/log-error ex "Stopping" key)))))))
@@ -152,9 +152,9 @@
    (suspend! system (keys system)))
   ([system keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
-   (let [*futures (atom [])]
-     (ig/reverse-run! system keys (build-suspend-key *futures))
-     (await-futures @*futures
+   (let [var'futures (atom [])]
+     (ig/reverse-run! system keys (build-suspend-key var'futures))
+     (await-futures @var'futures
        (fn [ex key]
          (logging-context/with-logging-context {:suspend key}
            (exec/log-error ex "Suspending" key)))))))

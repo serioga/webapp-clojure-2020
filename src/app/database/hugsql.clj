@@ -3,13 +3,15 @@
     [app.lib.util.exec :as exec]
     [clojure.java.io :as io]
     [hugsql.adapter.next-jdbc :as hugsql-adapter]
-    [hugsql.core :as hugsql]))
+    [hugsql.core :as hugsql]
+    [next.jdbc.result-set :as rs]))
 
 (set! *warn-on-reflection* true)
 
 
 (def def-db-fns-opts
-  {:adapter (hugsql-adapter/hugsql-adapter-next-jdbc)})
+  {:adapter (hugsql-adapter/hugsql-adapter-next-jdbc {:builder-fn rs/as-modified-maps
+                                                      :label-fn #(str "my_qualifier/" %)})})
 
 
 (def sql-rc-path "app/database/sql/")

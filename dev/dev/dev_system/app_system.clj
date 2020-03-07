@@ -90,5 +90,5 @@
             (keys (resume!))))
     (time (stop!))
 
-    (time (meta @(:app-system.service/*immutant-web
-                   (start! {:system-keys [:app-system.service/*immutant-web]})))))
+    (time (meta @(:app-system.service/ref'immutant-web
+                   (start! {:system-keys [:app-system.service/ref'immutant-web]})))))

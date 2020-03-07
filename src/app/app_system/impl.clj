@@ -11,7 +11,7 @@
 (defn log-running-webapps
   [system]
   (let [webapps (some-> system
-                  :app-system.service/*immutant-web
+                  :app-system.service/ref'immutant-web
                   (deref)
                   (meta)
                   :running-webapps)]

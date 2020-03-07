@@ -19,13 +19,13 @@
     :arglists '([] [options])}
   get-read-write-connection
   :start
-  (let [*data-source (truss/have! future?
-                       (::*data-source-read-write (mount/args)))]
+  (let [ref'data-source (truss/have! future?
+                          (::ref'data-source-read-write (mount/args)))]
     (fn get-read-write-connection
       ([]
        (get-read-write-connection {}))
       ([options]
-       (jdbc/get-connection @*data-source options)))))
+       (jdbc/get-connection @ref'data-source options)))))
 
 
 (mount/defstate
@@ -35,13 +35,13 @@
     :arglists '([] [options])}
   get-read-only-connection
   :start
-  (let [*data-source (truss/have! future?
-                       (::*data-source-read-only (mount/args)))]
+  (let [ref'data-source (truss/have! future?
+                          (::ref'data-source-read-only (mount/args)))]
     (fn get-read-only-connection
       ([]
        (get-read-only-connection {}))
       ([options]
-       (jdbc/get-connection @*data-source options)))))
+       (jdbc/get-connection @ref'data-source options)))))
 
 
 ; with-open connection helpers
