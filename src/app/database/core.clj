@@ -66,7 +66,7 @@
 
 ; HugSQL query functions
 
-(hugsql/declare-fn example-user--select)
+(hugsql/declare-fn example-user--select :example-user/_)
 
 
 #_(comment
