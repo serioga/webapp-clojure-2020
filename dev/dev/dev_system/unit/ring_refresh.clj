@@ -16,18 +16,18 @@
 
 
 (defn ^:private watch-until
-  [reference, pred, timeout-ms]
+  [ref'state, pred, timeout-ms]
   (let [result (promise)
         watch-key (str (UUID/randomUUID))]
     (try
-      (add-watch reference watch-key
+      (add-watch ref'state watch-key
         (fn [_ _ _ value]
           (deliver result (pred value))))
-      (if-some [v (pred @reference)]
+      (if-some [v (pred @ref'state)]
         v
         (deref result timeout-ms false))
       (finally
-        (remove-watch reference watch-key)))))
+        (remove-watch ref'state watch-key)))))
 
 
 (def ^:private source-changed-route

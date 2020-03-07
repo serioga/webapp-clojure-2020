@@ -16,9 +16,9 @@
 
        :cljs
        (fn [state]
-         (let [local-state (atom (initial-fn state))
+         (let [var'local-state (atom (initial-fn state))
                component (:rum/react-component state)]
-           (add-watch local-state key
+           (add-watch var'local-state key
              (fn [_ _ _ _]
                (rum/request-render component)))
-           (assoc state key local-state))))}))
+           (assoc state key var'local-state))))}))

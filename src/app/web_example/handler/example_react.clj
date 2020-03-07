@@ -12,7 +12,7 @@
 
 (defmethod impl/example-handler :route/example-react
   [request]
-  (let [[registry, mount-component] (react-mount/new-registry-mounter request)
+  (let [[ref'registry, mount-component] (react-mount/new-registry-mounter request)
         title "React Component example"]
     (html-page/response
       [:html [:head
@@ -22,5 +22,5 @@
         [:h1 title]
         (mount-component :react-component/hello-world {:name "World"})
         (html-page/link-to-index)
-        (react-mount/react-mount-data-js @registry)
+        (react-mount/react-mount-data-js @ref'registry)
         (html/include-js "/app/example/main.js")]])))
