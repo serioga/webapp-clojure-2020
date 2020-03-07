@@ -17,15 +17,15 @@
 
 (defn ^:private watch-until
   [ref'state, pred, timeout-ms]
-  (let [result (promise)
+  (let [ref'result (promise)
         watch-key (str (UUID/randomUUID))]
     (try
       (add-watch ref'state watch-key
         (fn [_ _ _ value]
-          (deliver result (pred value))))
+          (deliver ref'result (pred value))))
       (if-some [v (pred @ref'state)]
         v
-        (deref result timeout-ms false))
+        (deref ref'result timeout-ms false))
       (finally
         (remove-watch ref'state watch-key)))))
 
