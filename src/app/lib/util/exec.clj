@@ -155,7 +155,8 @@
   "Throw ex-info.
    Create message from separate tokens similar to `print`.
    Attach last item of `msg+data` as ex-data if it is inline map.
-   Accept optional exception to rethrow as first argument."
+   Accept optional exception to rethrow as first argument.
+   Merge ex-data of the optional exception."
   {:arglists '([msg*, ex-data-map?]
                [exception, msg*, ex-data-map?])}
   [ex & msg+data]
@@ -167,7 +168,7 @@
     `(let [ex# ~ex
            msg# (expand-msg* ~msg)]
        (if (throwable? ex#)
-         (throw (ex-info msg# ~data ex#))
+         (throw (ex-info msg# (merge (ex-data ex#) ~data) ex#))
          (throw (ex-info (print-str* ex# msg#) ~data))))))
 
 #_(comment
