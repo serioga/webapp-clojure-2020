@@ -38,7 +38,7 @@
   (not= f (get-method ig/suspend-key! :default)))
 
 
-(defn ^:private build-halt-key
+(defn ^:private fn'halt-key!
   "Produce wrapped version of integrant's halt-key!
    with logging and handling of returned futures."
   [var'futures]
@@ -60,7 +60,7 @@
             ret))))))
 
 
-(defn ^:private build-suspend-key
+(defn ^:private fn'suspend-key!
   "Produce wrapped version of integrant's suspend-key!
    with logging and handling of returned futures."
   [var'futures]
@@ -138,7 +138,7 @@
   ([system keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [var'futures (atom [])]
-     (ig/reverse-run! system keys (build-halt-key var'futures))
+     (ig/reverse-run! system keys (fn'halt-key! var'futures))
      (await-futures @var'futures
        (fn [ex key]
          (logging-context/with-logging-context {:halt key}
@@ -153,7 +153,7 @@
   ([system keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [var'futures (atom [])]
-     (ig/reverse-run! system keys (build-suspend-key var'futures))
+     (ig/reverse-run! system keys (fn'suspend-key! var'futures))
      (await-futures @var'futures
        (fn [ex key]
          (logging-context/with-logging-context {:suspend key}

@@ -22,7 +22,7 @@
    {:adapter (hugsql-adapter/hugsql-adapter-next-jdbc {:builder-fn builder-fn})}))
 
 
-(defn sql-fn-body
+(defn db-fn-string
   "Read SQL query from resource file for passing to `def-db-fns-from-string`.
    The name of HugSQL function is the same as file name."
   [name]
@@ -41,6 +41,6 @@
    If `namespace` (string or namespaced keyword) provided
    then all keys in result set are namespaced."
   ([sym]
-   `(hugsql/def-db-fns-from-string (sql-fn-body '~sym) (def-db-fns-opts)))
+   `(hugsql/def-db-fns-from-string (db-fn-string '~sym) (def-db-fns-opts)))
   ([sym, namespace]
-   `(hugsql/def-db-fns-from-string (sql-fn-body '~sym) (def-db-fns-opts (rs/as-namespaced-maps ~namespace)))))
+   `(hugsql/def-db-fns-from-string (db-fn-string '~sym) (def-db-fns-opts (rs/as-namespaced-maps ~namespace)))))

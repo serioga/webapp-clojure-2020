@@ -64,15 +64,6 @@
    (response-type-charset* html "text/html" status)))
 
 
-(defn update-session
-  "Update :session field in `response`
-  applying `session-data-fn` function
-  to session data in `request`."
-  [response request session-data-fn]
-  (assoc response
-    :session (session-data-fn (:session request))))
-
-
 (defn set-cookie [response cookie-name cookie]
   (let [c (assoc cookie :path "/"
                         #_#_#_#_:http-only true

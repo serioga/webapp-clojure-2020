@@ -5,12 +5,12 @@
 
 (defn static-args-mixin
   "Avoid re-render if specific component’s arguments have not changed."
-  [get-arg-fn]
+  [get-arg]
   {:should-update
    (fn [old-state new-state]
      (not=
-       (get-arg-fn (:rum/args old-state))
-       (get-arg-fn (:rum/args new-state))))})
+       (get-arg (:rum/args old-state))
+       (get-arg (:rum/args new-state))))})
 
 
 (def static-first-arg-mixin

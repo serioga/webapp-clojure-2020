@@ -48,20 +48,20 @@
 
 (defn with-read-write
   "Execute single HugSQL query with auto opened read-write connection."
-  ([query-fn] (with-read-write query-fn {} {}))
-  ([query-fn param-data] (with-read-write query-fn param-data {}))
-  ([query-fn param-data opts]
+  ([db-fn] (with-read-write db-fn {} {}))
+  ([db-fn param-data] (with-read-write db-fn param-data {}))
+  ([db-fn param-data opts]
    (with-open [conn (get-read-write-connection)]
-     (query-fn conn param-data opts))))
+     (db-fn conn param-data opts))))
 
 
 (defn with-read-only
   "Execute single HugSQL query with auto opened read-only connection."
-  ([query-fn] (with-read-only query-fn {} {}))
-  ([query-fn param-data] (with-read-only query-fn param-data {}))
-  ([query-fn param-data opts]
+  ([db-fn] (with-read-only db-fn {} {}))
+  ([db-fn param-data] (with-read-only db-fn param-data {}))
+  ([db-fn param-data opts]
    (with-open [conn (get-read-only-connection)]
-     (query-fn conn param-data opts))))
+     (db-fn conn param-data opts))))
 
 
 ; HugSQL query functions

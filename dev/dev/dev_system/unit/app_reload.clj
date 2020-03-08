@@ -35,7 +35,7 @@
                           (set always-reload-ns)
                           (set modified)))
         var'reload-errors (volatile! [])
-        reload-fn (fn
+        reload-ns (fn
                     [ns-sym]
                     (try
                       (require ns-sym :reload)
@@ -46,7 +46,7 @@
                           (log/info "[FAIL]" "Reload" ns-sym)))))]
     (when-let [namespaces (seq (concat modified reload-always))]
       (log/info "Reloading namespaces:" (string/join ", " namespaces))
-      (run! reload-fn namespaces))
+      (run! reload-ns namespaces))
     @var'reload-errors))
 
 
