@@ -10,7 +10,7 @@
 
 
 (defmethod impl/example-handler :route/example-database
-  [request]
+  [_]
   (let [title "SQL Database example"
         result (db/with-read-only db/example-user--select)]
     (html-page/response

@@ -1,9 +1,11 @@
 (ns app.lib.react.mount
+  #?(:clj  (:require
+             [clojure.string :as str])
+     :cljs (:require
+             [rum.core :as rum]))
   (:require
     [app.lib.react.component :as react-component]
-    [app.lib.util.transit :as transit]
-    [clojure.string :as str]
-    [rum.core :as rum]))
+    [app.lib.util.transit :as transit]))
 
 #?(:clj (set! *warn-on-reflection* true) :cljs (set! *warn-on-infer* true))
 
@@ -47,7 +49,7 @@
 
 #?(:clj
    (defn new-registry-mounter
-     [request]
+     [_]
      (let [var'registry (atom [])]
        [var'registry (partial mount-component var'registry)])))
 

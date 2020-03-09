@@ -1,8 +1,8 @@
 (ns app.lib.util.exec
   "Execution control utility."
   (:require
-    [clojure.tools.logging :as log]
-    [app.lib.util.logging-context :as logging-context])
+    [app.lib.util.logging-context :as logging-context]
+    [clojure.tools.logging :as log])
   (:refer-clojure :exclude [future]))
 
 (set! *warn-on-reflection* true)

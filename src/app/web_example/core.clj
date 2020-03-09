@@ -1,13 +1,12 @@
 (ns app.web-example.core
-  (:require
-    ; route handlers
+  (:require ; route handlers
     [app.web-example.handler.example-database]
     [app.web-example.handler.example-path-param]
     [app.web-example.handler.example-react]
-    [app.web-example.handler.index]
-    ; react components
-    [app.web-example.config.react-components]
-    ; imports
+    [app.web-example.handler.index])
+  (:require ; react components
+    [app.web-example.config.react-components])
+  (:require ; imports
     [app.lib.http-handler.core :as http-handler]
     [app.web-example.impl.handler :as handler]))
 

@@ -1,7 +1,7 @@
 (ns app.lib.react.mixin.local
   "Similar to rum/local but but with function of state as initial value."
-  (:require
-    [rum.core :as rum]))
+  #?(:cljs (:require
+             [rum.core :as rum])))
 
 (defn local-mixin
   "Mixin constructor. Adds an atom to component’s state that can be used to keep stuff

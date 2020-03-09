@@ -2,7 +2,8 @@
   (:require
     [app.lib.util.html :as html]
     [app.web-example.impl.handler :as impl]
-    [app.web-example.impl.html-page :as html-page]))
+    [app.web-example.impl.html-page :as html-page]
+    [clojure.walk :as walk]))
 
 (set! *warn-on-reflection* true)
 
@@ -19,9 +20,9 @@
         [:h1 title]
         [:div
          [:div.border.p-2.mb-4
-          [:tt (str (clojure.walk/prewalk-replace {'name name 'value value}
-                                                  '(path-for-route :route/example-path-param
-                                                                   {:name name :value value})))]]
+          [:tt (str (walk/prewalk-replace {'name name 'value value}
+                                          '(path-for-route :route/example-path-param
+                                                           {:name name :value value})))]]
          [:ul
           [:li "Name: " [:tt.bg-gray-200 name]]
           [:li "Value: " [:tt.bg-gray-200 value]]]

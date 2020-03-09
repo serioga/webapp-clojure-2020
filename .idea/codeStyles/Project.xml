@@ -9,7 +9,6 @@
   :app.lib.util.perf/fast-assoc 1
   :clojure.core/cond-&gt; 1
   :clojure.core/defmulti 1
-  :cursive.formatting/align-conditionals false
   :cursive.formatting/align-maps false
 }</ClojureCodeStyleSettings>
   </code_scheme>
