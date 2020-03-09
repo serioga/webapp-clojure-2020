@@ -71,10 +71,9 @@
               (exec/try-log-error ["Stop application before namespace reloading"]
                 (stop))
               (if-some [reload-errors (seq (reload-modified-namespaces ns-tracker always-reload-ns))]
-                (do
-                  (log/info "[FAIL]" "Application reload")
-                  (doseq [[ns err] reload-errors]
-                    (log/error "[FAIL]" "Reload" ns (str "\n\n" err "\n"))))
+                (do (log/info "[FAIL]" "Application reload")
+                    (doseq [[ns err] reload-errors]
+                      (log/error "[FAIL]" "Reload" ns (str "\n\n" err "\n"))))
                 (try
                   (start)
                   (log/info "[DONE]" "Application reload")

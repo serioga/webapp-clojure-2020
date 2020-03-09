@@ -279,10 +279,9 @@
    Log error on exception.
    Returns nil."
   [context-msg & body]
-  `(do
-     (future
-       (try-log-error ~context-msg ~@body))
-     nil))
+  `(do (future
+         (try-log-error ~context-msg ~@body))
+       nil))
 
 
 (defmacro thread-off!
@@ -290,10 +289,9 @@
    Don't care about exceptions!
    Returns nil."
   [& body]
-  `(do
-     (future
-       ~@body)
-     nil))
+  `(do (future
+         ~@body)
+       nil))
 
 #_(comment
     (logging-context/with-logging-context {:outside 1}

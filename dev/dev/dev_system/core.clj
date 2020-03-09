@@ -93,6 +93,5 @@
 
     (time (stop!))
 
-    (time (do
-            (start!)
-            (stop!))))
+    (time (do (start!)
+              (stop!))))
