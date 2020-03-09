@@ -21,19 +21,18 @@
 (defn exception-log-msg
   [ex]
   (-> ex
-    (Throwable->map)
-    (main/ex-triage)
-    (main/ex-str)))
+      (Throwable->map)
+      (main/ex-triage)
+      (main/ex-str)))
 
 
 (defn reload-modified-namespaces
   "Return vector of reload errors."
   [ns-tracker always-reload-ns]
   (let [modified (ns-tracker)
-        reload-always (into '()
-                        (clojure.set/difference
-                          (set always-reload-ns)
-                          (set modified)))
+        reload-always (into '() (clojure.set/difference
+                                  (set always-reload-ns)
+                                  (set modified)))
         var'reload-errors (volatile! [])
         reload-ns (fn
                     [ns-sym]
@@ -85,7 +84,7 @@
               (reset! var'reloading? false)
               (reload-on-enter app-reload))))]
     (with-meta app-reload
-      {:reload-on-enter (fn [] (reload-on-enter app-reload))})))
+               {:reload-on-enter (fn [] (reload-on-enter app-reload))})))
 
 
 #_(comment

@@ -75,16 +75,16 @@
 (defn reload-on-enter
   []
   (when-some [reload (some-> @var'dev-system
-                       :dev-system/app-reload
-                       meta :reload-on-enter)]
+                             :dev-system/app-reload
+                             meta :reload-on-enter)]
     (reload)))
 
 
 (defn nrepl-server
   []
   (some-> @var'dev-system
-    :dev-system/ref'nrepl
-    deref))
+          :dev-system/ref'nrepl
+          deref))
 
 
 #_(comment

@@ -36,14 +36,13 @@
   [& tokens]
   (if-some [tokens (seq tokens)]
     (->
-      ^StringBuilder (reduce (fn
-                               [^StringBuilder sb, ^Object x]
+      ^StringBuilder (reduce (fn [^StringBuilder sb, ^Object x]
                                (if-some [s (some-> x
-                                             (.toString)
-                                             (as-> s (when-not (.isEmpty s) s)))]
+                                                   (.toString)
+                                                   (as-> s (when-not (.isEmpty s) s)))]
                                  (-> sb (.append " "), (.append s))
                                  sb))
-                       (StringBuilder.) tokens)
+                             (StringBuilder.) tokens)
       (.substring 1)
       (str))
     ""))

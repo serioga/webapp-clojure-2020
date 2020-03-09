@@ -12,15 +12,15 @@
   [request, dev-mode?]
   (ring-util/plain-text-response
     (str "[HTTP 404] Resource not found.\n\n"
-      "URL: "
-      (ring-request/request-url request)
-      (when dev-mode?
-        (str
-          "\n\n" "---" "\n"
-          "Default not-found handler, dev mode."
-          "\n\n"
-          (with-out-str
-            (pprint/pprint request)))))
+         "URL: "
+         (ring-request/request-url request)
+         (when dev-mode?
+           (str
+             "\n\n" "---" "\n"
+             "Default not-found handler, dev mode."
+             "\n\n"
+             (with-out-str
+               (pprint/pprint request)))))
     404))
 
 

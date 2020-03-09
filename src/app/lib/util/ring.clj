@@ -11,8 +11,8 @@
 (defn request-uri
   [request]
   (str (:uri request)
-    (if-let [query (:query-string request)]
-      (str "?" query))))
+       (if-let [query (:query-string request)]
+         (str "?" query))))
 
 
 (defn url-for-path-in-request
@@ -28,8 +28,7 @@
 
 (defn url-for-current-path
   [request]
-  (url-for-path-in-request request
-    (request-uri request)))
+  (url-for-path-in-request request (request-uri request)))
 
 
 (defn ^:private response-type-charset*
@@ -37,10 +36,10 @@
    (response-type-charset* body content-type 200))
   ([body content-type status]
    (-> body
-     (ring-response/response)
-     (ring-response/content-type content-type)
-     (ring-response/charset "utf-8")
-     (ring-response/status status))))
+       (ring-response/response)
+       (ring-response/content-type content-type)
+       (ring-response/charset "utf-8")
+       (ring-response/status status))))
 
 
 (defn plain-text-response

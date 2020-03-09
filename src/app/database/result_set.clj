@@ -14,7 +14,7 @@
   qualified by the `column-ns`."
   [^ResultSetMetaData rsmeta]
   (mapv (fn [^Integer i] (keyword (.getColumnLabel rsmeta i)))
-    (range 1 (inc (.getColumnCount rsmeta)))))
+        (range 1 (inc (.getColumnCount rsmeta)))))
 
 (defn as-simple-maps
   "Given a `ResultSet` and options, return a `RowBuilder` / `ResultSetBuilder`
@@ -30,9 +30,8 @@
   "Given `ResultSetMetaData`, return a vector of modified column names, each
   qualified by the `column-ns`."
   [^ResultSetMetaData rsmeta, column-ns]
-  (mapv (fn [^Integer i] (keyword column-ns
-                           (.getColumnLabel rsmeta i)))
-    (range 1 (inc (.getColumnCount rsmeta)))))
+  (mapv (fn [^Integer i] (keyword column-ns (.getColumnLabel rsmeta i)))
+        (range 1 (inc (.getColumnCount rsmeta)))))
 
 (defn as-namespaced-maps
   "Given a `ResultSet` and options, return a `RowBuilder` / `ResultSetBuilder`

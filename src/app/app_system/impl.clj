@@ -11,37 +11,37 @@
 (defn log-running-webapps
   [system]
   (let [webapps (some-> system
-                  :app-system.service/ref'immutant-web
-                  (deref)
-                  (meta)
-                  :running-webapps)]
+                        :app-system.service/ref'immutant-web
+                        (deref)
+                        (meta)
+                        :running-webapps)]
     (doseq [[name {:keys [port ssl-port virtual-host]}] webapps
             host (cond
                    (sequential? virtual-host) virtual-host
                    (string? virtual-host) [virtual-host]
                    :else ["localhost"])]
       (log/info "Running" "webapp" (pr-str name)
-        (str (when port (str "- http://" host ":" port "/")))
-        (str (when ssl-port (str "- https://" host ":" ssl-port "/")))))))
+                (str (when port (str "- http://" host ":" port "/")))
+                (str (when ssl-port (str "- https://" host ":" ssl-port "/")))))))
 
 
 (defn log-prop-files
   [system]
   (let [prop-files (some-> system
-                     :app-system.service/app-config
-                     (meta)
-                     :prop-files)]
+                           :app-system.service/app-config
+                           (meta)
+                           :prop-files)]
     (log/info "Running config from" (pr-str prop-files))))
 
 
 (defn log-running-rpc-service
   [system key]
   (let [{:keys [enabled? service rpc]} (some-> system
-                                         (get key)
-                                         (meta))]
+                                               (get key)
+                                               (meta))]
     (when enabled?
       (log/info "Running server" (pr-str service)
-        "-" "rpc-server" (pr-str (select-keys rpc [:host :product :instance]))))))
+                "-" "rpc-server" (pr-str (select-keys rpc [:host :product :instance]))))))
 
 
 (defn deep-merge
@@ -54,13 +54,12 @@
 
 (defn import-map [m from]
   (into {}
-    (keep (fn [[k v]]
-            (cond
-              (map? v) [k (import-map v from)]
-              (fn? v) [k (v from)]
-              :else (when (contains? from v)
-                      [k (from v)])))
-      m)))
+        (keep (fn [[k v]] (cond
+                            (map? v) [k (import-map v from)]
+                            (fn? v) [k (v from)]
+                            :else (when (contains? from v)
+                                    [k (from v)])))
+              m)))
 
 
 (defmethod ig/init-key :app-system.core/identity [_ v] v)
@@ -78,9 +77,9 @@
 #_(comment
     (deep-merge {:a true} {:a false})
     (ig/init-key :app-system.core/init-map
-      {:init-map {:x 0 :c {:x 1 :d true}}
-       :import-from {"a" 1 "b" 2 "c.d" false}
-       :import-keys {:a "a" :b "b" :c {:d "c.d"} :e "missing" :f (constantly :f)}}))
+                 {:init-map {:x 0 :c {:x 1 :d true}}
+                  :import-from {"a" 1 "b" 2 "c.d" false}
+                  :import-keys {:a "a" :b "b" :c {:d "c.d"} :e "missing" :f (constantly :f)}}))
 
 
 (defmethod ig/init-key :app-system.core/system-property

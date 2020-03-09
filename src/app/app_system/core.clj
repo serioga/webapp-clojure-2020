@@ -20,11 +20,11 @@
 
 
 (add-watch var'app-system :log-system-status
-  (fn [_ _ _ system]
-    (some-> system impl/log-prop-files)
-    (some-> system
-      (impl/log-running-rpc-service :app-system.service/ref'rpc-server))
-    (some-> system impl/log-running-webapps)))
+           (fn [_ _ _ system]
+             (some-> system impl/log-prop-files)
+             (some-> system
+                     (impl/log-running-rpc-service :app-system.service/ref'rpc-server))
+             (some-> system impl/log-running-webapps)))
 
 
 (defn system-config
@@ -136,8 +136,7 @@
      :or {prepare-config identity}}]
    (stop!)
    (let [config (prepare-config (system-config))]
-     (reset! var'app-system
-       (ig-util/init config, (or system-keys (keys config)))))))
+     (reset! var'app-system (ig-util/init config, (or system-keys (keys config)))))))
 
 
 (defn resume!
@@ -150,8 +149,7 @@
      (do
        (reset! var'app-system nil)
        (let [config (prepare-config (system-config))]
-         (reset! var'app-system
-           (ig-util/resume config, system, (or system-keys (keys system))))))
+         (reset! var'app-system (ig-util/resume config, system, (or system-keys (keys system))))))
      (start! options))))
 
 #_(comment

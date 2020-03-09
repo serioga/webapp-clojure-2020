@@ -42,8 +42,8 @@
   [m & kvs]
   (assert (even? (count kvs)))
   `(-> ~m
-     ~@(map (fn [[k v]] (list 'app.lib.util.perf/fast-assoc* k v))
-         (partition 2 kvs))))
+       ~@(map (fn [[k v]] (list 'app.lib.util.perf/fast-assoc* k v))
+              (partition 2 kvs))))
 
 
 (defn fast-merge*
@@ -61,14 +61,14 @@
    Multiple maps are merged with multiple calls to `fast-merge*`."
   [m & maps]
   `(-> ~m
-     ~@(map #(list 'app.lib.util.perf/fast-merge* %) maps)))
+       ~@(map #(list 'app.lib.util.perf/fast-merge* %) maps)))
 
 
 (defmacro inline-dissoc
   "Call `clojure.core/dissoc` for multiple keys without loop over collection."
   [m & ks]
   `(-> ~m
-     ~@(map (fn [k] (list 'clojure.core/dissoc k)) ks)))
+       ~@(map (fn [k] (list 'clojure.core/dissoc k)) ks)))
 
 
 (defn fast-select-keys
@@ -79,7 +79,7 @@
     (associative? m) (reduce (fn [acc k] (if-some [v (m k)]
                                            (fast-assoc* acc k v)
                                            acc))
-                       {} ks)
+                             {} ks)
     :else {}))
 
 
@@ -124,8 +124,8 @@
 
     (macroexpand-1 '(fast-merge {:a 1} {:b 2} {:c 3}))
     #_(clojure.core/-> {:a 1}
-        (app.lib.util.perf/fast-merge* {:b 2})
-        (app.lib.util.perf/fast-merge* {:c 3}))
+                       (app.lib.util.perf/fast-merge* {:b 2})
+                       (app.lib.util.perf/fast-merge* {:c 3}))
 
     (macroexpand '(fast-merge {:a 1} {:b 2} {:c 3}))
     #_(app.lib.util.perf/fast-merge* (app.lib.util.perf/fast-merge* {:a 1} {:b 2}) {:c 3})
@@ -226,10 +226,10 @@
                         (or (symbol? %) (list? %)), (list '.append (list 'clojure.core/str %))
                         (nil? %) nil
                         :else (list '.append %))
-                 args)]
+                     args)]
     `(-> (StringBuilder.)
-       ~@append
-       (.toString))))
+         ~@append
+         (.toString))))
 
 #_(comment
     (macroexpand-1 '(inline-str "String" 0 (inc 1) x nil {}))
@@ -237,7 +237,7 @@
       (inline-str "String" 0 (inc 1) x nil {}))
 
     (criterium.core/quick-bench
-     (str 1 2 3))
+      (str 1 2 3))
     #_"Execution time mean : 143,570889 ns"
 
     (criterium.core/quick-bench

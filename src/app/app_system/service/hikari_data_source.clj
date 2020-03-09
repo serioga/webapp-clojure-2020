@@ -26,9 +26,9 @@
 
 
 (derive :app-system.service/ref'hikari-data-source-read-write
-  :app-system.service/ref'hikari-data-source)
+        :app-system.service/ref'hikari-data-source)
 (derive :app-system.service/ref'hikari-data-source-read-only
-  :app-system.service/ref'hikari-data-source)
+        :app-system.service/ref'hikari-data-source)
 
 
 (defmethod ig/init-key :app-system.service/ref'hikari-data-source
@@ -39,10 +39,10 @@
            :maximum-pool-size 10
            :connection-timeout 5000
            :leak-detection-threshold 30000}
-        (cond->
-          dev-mode? (assoc :max-lifetime 300000 :idle-timeout 60000))
-        (merge options)
-        (assoc :read-only? (= k :app-system.service/ref'hikari-data-source-read-only))))))
+          (cond->
+            dev-mode? (assoc :max-lifetime 300000 :idle-timeout 60000))
+          (merge options)
+          (assoc :read-only? (= k :app-system.service/ref'hikari-data-source-read-only))))))
 
 
 (defmethod ig/halt-key! :app-system.service/ref'hikari-data-source
@@ -52,4 +52,4 @@
 
 
 (derive :app-system.service/ref'hikari-data-source
-  :app-system.core/keep-running-on-suspend)
+        :app-system.core/keep-running-on-suspend)

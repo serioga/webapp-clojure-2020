@@ -30,9 +30,8 @@
 
 (defn ^:private fn'path-for-route
   [reitit-router]
-  (let [compiled (reduce (fn [m tag]
-                           (assoc m tag (fn'route->path reitit-router, tag)))
-                   {} (reitit/route-names reitit-router))]
+  (let [compiled (reduce (fn [m tag] (assoc m tag (fn'route->path reitit-router, tag)))
+                         {} (reitit/route-names reitit-router))]
     (fn path-for-route
       ([route-tag]
        (when-some [route->path (compiled route-tag)]
@@ -60,7 +59,6 @@
                  (perf/fast-assoc :route-tag name)
 
                  (perf/not-empty-coll? path-params)
-                 (update :params (fn merge-route-params
-                                   [params]
+                 (update :params (fn merge-route-params [params]
                                    (perf/fast-merge params path-params))))))))
 

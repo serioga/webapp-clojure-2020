@@ -16,14 +16,14 @@
 (defn render-html
   [hiccup]
   (str "<!DOCTYPE html>\n"
-    (rum/render-static-markup hiccup)))
+       (rum/render-static-markup hiccup)))
 
 
 (defn response
   [hiccup]
   (-> hiccup
-    (render-html)
-    (ring-util/html-response)))
+      (render-html)
+      (ring-util/html-response)))
 
 
 (defn link-to-index

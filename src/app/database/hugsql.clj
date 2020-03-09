@@ -30,7 +30,7 @@
         body (slurp (or
                       (io/resource path)
                       (exec/throw-ex-info "Missing SQL query file" path
-                        {:name name :resource-path path})))]
+                                          {:name name :resource-path path})))]
     (str "-- :name " name "\r\n" body)))
 
 

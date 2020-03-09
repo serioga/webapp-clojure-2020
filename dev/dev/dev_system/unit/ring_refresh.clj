@@ -20,12 +20,10 @@
   (let [ref'result (promise)
         watch-key (str (UUID/randomUUID))]
     (try
-      (add-watch ref'state watch-key
-        (fn [_ _ _ value]
-          (deliver ref'result (pred value))))
-      (if-some [v (pred @ref'state)]
-        v
-        (deref ref'result timeout-ms false))
+      (add-watch ref'state watch-key (fn [_ _ _ value]
+                                       (deliver ref'result (pred value))))
+      (if-some [v (pred @ref'state)] v
+                                     (deref ref'result timeout-ms false))
       (finally
         (remove-watch ref'state watch-key)))))
 
@@ -33,11 +31,10 @@
 (def ^:private source-changed-route
   (compojure/GET "/__source_changed" [since]
     (let [timestamp (Long/parseLong since)]
-      (str (watch-until var'refresh-state
-             (fn [{:keys [last-modified, reload?]}]
-               (when (> (.getTime ^Date last-modified) timestamp)
-                 reload?))
-             60000)))))
+      (str (watch-until var'refresh-state (fn [{:keys [last-modified, reload?]}]
+                                            (when (> (.getTime ^Date last-modified) timestamp)
+                                              reload?))
+                        60000)))))
 
 
 (defn wrap-refresh

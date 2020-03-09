@@ -15,7 +15,7 @@
    (defn mount-all
      []
      (let [components (some-> (aget js/window data-js-var)
-                        (transit/read-transit-string))]
+                              (transit/read-transit-string))]
        (js-delete js/window data-js-var)
        (doseq [comp-data components]
          (let [instance-id (react-component/instance-id comp-data)]
@@ -38,7 +38,7 @@
 
      ([var'registry, tag, comp-id, comp-data]
       (let [comp-data (-> comp-data
-                        (react-component/set-component-id comp-id))]
+                          (react-component/set-component-id comp-id))]
         (swap! var'registry conj comp-data)
         [tag
          {:id (react-component/instance-id comp-data)}
@@ -61,6 +61,6 @@
         (str
           "window." data-js-var "=`"
           (-> (transit/write-transit-string react-data)
-            (str/replace "\\" "\\\\")
-            (str/replace "`" "\\`"))
+              (str/replace "\\" "\\\\")
+              (str/replace "`" "\\`"))
           "`;")}}]))

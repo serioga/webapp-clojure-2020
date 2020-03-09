@@ -16,9 +16,9 @@
   "Load props from single file as map."
   [file]
   (some-> file
-    (io/file)
-    (p/load-from)
-    (p/properties->map)))
+          (io/file)
+          (p/load-from)
+          (p/properties->map)))
 
 
 (defn ^:private string->filenames
@@ -36,8 +36,8 @@
     (log/debug "Load properties from" (pr-str filenames))
     (with-meta
       (->> filenames
-        (map load-map-from-props-file)
-        (reduce merge {}))
+           (map load-map-from-props-file)
+           (reduce merge {}))
       {:prop-files filenames})))
 
 #_(comment
@@ -54,12 +54,12 @@
     (re-matches #"System\.Switch\..+" "System.Switch.BackendService")
     (keyword "Webapp.Hosts(ok)")
     (into (sorted-map)
-      (ig/init-key :app-system.service/app-config
-        {:prop-files "dev-resources/dev/config/default.props"
-         :conform-rules {"Mailer.Smtp.Port" :edn
-                         "Mailer.Smtp.Options" :edn
-                         #"System\.Switch\..+" :edn
-                         #"Webapp\.Hosts\(.+\)" :set}})))
+          (ig/init-key :app-system.service/app-config
+                       {:prop-files "dev-resources/dev/config/default.props"
+                        :conform-rules {"Mailer.Smtp.Port" :edn
+                                        "Mailer.Smtp.Options" :edn
+                                        #"System\.Switch\..+" :edn
+                                        #"Webapp\.Hosts\(.+\)" :set}})))
 
 
 (defmulti conform-prop-val

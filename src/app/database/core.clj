@@ -19,8 +19,7 @@
     :arglists '([] [options])}
   get-read-write-connection
   :start
-  (let [ref'data-source (truss/have! future?
-                          (::ref'data-source-read-write (mount/args)))]
+  (let [ref'data-source (truss/have! future? (::ref'data-source-read-write (mount/args)))]
     (fn get-read-write-connection
       ([]
        (get-read-write-connection {}))
@@ -35,8 +34,7 @@
     :arglists '([] [options])}
   get-read-only-connection
   :start
-  (let [ref'data-source (truss/have! future?
-                          (::ref'data-source-read-only (mount/args)))]
+  (let [ref'data-source (truss/have! future? (::ref'data-source-read-only (mount/args)))]
     (fn get-read-only-connection
       ([]
        (get-read-only-connection {}))

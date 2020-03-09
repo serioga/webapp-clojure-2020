@@ -15,7 +15,7 @@
 
   (with-open [jdbc-conn (JdbcConnection. (.getConnection ds))]
     (let [db (-> (DatabaseFactory/getInstance)
-               (.findCorrectDatabaseImplementation jdbc-conn))
+                 (.findCorrectDatabaseImplementation jdbc-conn))
           contexts (Contexts.)
           resource-accessor (ClassLoaderResourceAccessor.)
           liquibase (Liquibase. changelog-path resource-accessor ^Database db)]

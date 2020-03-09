@@ -59,7 +59,7 @@
   :shell {:commands
           {"node_modules/.bin/postcss"
            {:windows "node_modules/.bin/postcss.cmd"}}}
-  
+
   :aliases {"shadow-cljs" ["run" "-m" "shadow.cljs.devtools.cli"]
 
             "css-example" ["shell"

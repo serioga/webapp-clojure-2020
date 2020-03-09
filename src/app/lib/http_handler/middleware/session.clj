@@ -9,6 +9,5 @@
 (defn wrap-session
   [handler]
   (-> handler
-    ring-flash/wrap-flash
-    (immutant/wrap-session
-      {:cookie-attrs {:http-only true}})))
+      ring-flash/wrap-flash
+      (immutant/wrap-session {:cookie-attrs {:http-only true}})))

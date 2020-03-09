@@ -15,13 +15,12 @@
 (defn webapp-http-handler
   [http-handler, routes, {:keys [dev-mode?]}]
   (-> http-handler
-    (default-not-found/wrap-default-not-found dev-mode?)
-    (debug-response/wrap-debug-response)
-    (logging-context/wrap-logging-context)
-    (route-tag/wrap-route-tag (reitit/router routes))
-    (ring-defaults/wrap-defaults
-      (-> ring-defaults/site-defaults
-        (assoc-in [:security :anti-forgery] false)
-        (assoc-in [:security :frame-options] false)
-        (dissoc :session)))
-    (exceptions/wrap-exceptions dev-mode?)))
+      (default-not-found/wrap-default-not-found dev-mode?)
+      (debug-response/wrap-debug-response)
+      (logging-context/wrap-logging-context)
+      (route-tag/wrap-route-tag (reitit/router routes))
+      (ring-defaults/wrap-defaults (-> ring-defaults/site-defaults
+                                       (assoc-in [:security :anti-forgery] false)
+                                       (assoc-in [:security :frame-options] false)
+                                       (dissoc :session)))
+      (exceptions/wrap-exceptions dev-mode?)))

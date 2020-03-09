@@ -21,7 +21,7 @@
       (not user-file-exists?), prop-files
       (string? prop-files), (str/join "," [prop-files user-file])
       (sequential? prop-files), (-> (into [] prop-files)
-                                  (conj user-file))
+                                    (conj user-file))
       :else user-file)))
 
 #_(comment
@@ -35,22 +35,21 @@
   [_webapp]
   (fn [handler]
     (-> handler
-      lint/wrap-lint
-      ring-refresh/wrap-refresh)))
+        lint/wrap-lint
+        ring-refresh/wrap-refresh)))
 
 
 (defn prepare-webapp
   [webapp]
   (-> webapp
-    (update :handler (wrap-webapp-handler webapp))))
+      (update :handler (wrap-webapp-handler webapp))))
 
 
 (defn prepare-system-config
   [config]
-  (assoc config
-    :app-system/dev-mode? true
-    :app-system.dev/prepare-prop-files prepare-prop-files
-    :app-system.dev/prepare-webapp prepare-webapp))
+  (assoc config :app-system/dev-mode? true
+                :app-system.dev/prepare-prop-files prepare-prop-files
+                :app-system.dev/prepare-webapp prepare-webapp))
 
 
 (defn start!

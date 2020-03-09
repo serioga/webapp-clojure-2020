@@ -13,11 +13,11 @@
   (log/info "Start watcher" options)
   (watch/start-watcher
     (watch/watcher dirs
-      (fn [& args] (handler args))
-      {#_#_:types #{:modify}
-       :filter files
-       :exclude exclude
-       :mode :async})))
+                   (fn [& args] (handler args))
+                   {#_#_:types #{:modify}
+                    :filter files
+                    :exclude exclude
+                    :mode :async})))
 
 
 (defn stop-watcher
@@ -30,16 +30,16 @@
     (time
       (let [w (time (start-watcher (fn [& reason] (println reason))
 
-                      {:dirs ["src" "resources/app" "dev" "dev-resources/dev"]
+                                   {:dirs ["src" "resources/app" "dev" "dev-resources/dev"]
 
-                       ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
-                       ; :filter will pick out only files that match this pattern.
-                       :files [".props$" ".clj$" ".cljc$" ".js$" ".xml$"
-                               ".sql$" ".properties$" ".mustache$" ".yaml"]
+                                    ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
+                                    ; :filter will pick out only files that match this pattern.
+                                    :files [".props$" ".clj$" ".cljc$" ".js$" ".xml$"
+                                            ".sql$" ".properties$" ".mustache$" ".yaml"]
 
-                       ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
-                       ; :exclude will leave out files that match this pattern.
-                       :exclude []}))]
+                                    ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
+                                    ; :exclude will leave out files that match this pattern.
+                                    :exclude []}))]
 
         (time (stop-watcher w)))))
 

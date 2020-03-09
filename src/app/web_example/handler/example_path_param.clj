@@ -20,7 +20,8 @@
         [:div
          [:div.border.p-2.mb-4
           [:tt (str (clojure.walk/prewalk-replace {'name name 'value value}
-                      '(path-for-route :route/example-path-param {:name name :value value})))]]
+                                                  '(path-for-route :route/example-path-param
+                                                                   {:name name :value value})))]]
          [:ul
           [:li "Name: " [:tt.bg-gray-200 name]]
           [:li "Value: " [:tt.bg-gray-200 value]]]

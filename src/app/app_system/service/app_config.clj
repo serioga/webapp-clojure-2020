@@ -19,26 +19,25 @@
   [_ {:keys [prop-files conform-rules prop-defaults :dev/prepare-prop-files]}]
   (let [prepare-prop-files (or prepare-prop-files identity)
         loaded (-> prop-files
-                 (prepare-prop-files)
-                 (props/load-prop-files))
-        merged (merge
-                 prop-defaults
-                 (-> loaded
-                   (merge (System/getProperties))
-                   (props/apply-conform-rules conform-rules)))]
+                   (prepare-prop-files)
+                   (props/load-prop-files))
+        merged (merge prop-defaults
+                      (-> loaded
+                          (merge (System/getProperties))
+                          (props/apply-conform-rules conform-rules)))]
     (with-meta merged (meta loaded))))
 
 
 #_(comment
     (into (sorted-map)
-      (ig/init-key :app-system.service/app-config
-        {:prop-files "dev-resources/dev/config/default.props"
-         :prop-defaults {"xxx" :xxx
-                         "Vk.App.Id" nil}
-         :conform-rules {"Mailer.Smtp.Port" :edn
-                         "Mailer.Smtp.Options" :edn
-                         #"System\.Switch\..+" :edn
-                         #"Webapp\.Hosts\(.+\)" :set}})))
+          (ig/init-key :app-system.service/app-config
+                       {:prop-files "dev-resources/dev/config/default.props"
+                        :prop-defaults {"xxx" :xxx
+                                        "Vk.App.Id" nil}
+                        :conform-rules {"Mailer.Smtp.Port" :edn
+                                        "Mailer.Smtp.Options" :edn
+                                        #"System\.Switch\..+" :edn
+                                        #"Webapp\.Hosts\(.+\)" :set}})))
 
 #_(comment
     (System/getProperties)
