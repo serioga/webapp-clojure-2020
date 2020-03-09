@@ -46,10 +46,10 @@
     (t/test-var #'read-secret))
 
 
-(t/deftest test-secret
+(t/deftest test'secret
   (let [v "secret value"
         test (->Secret v)]
     (t/is (= (.value ^Secret test), v))))
 
 #_(comment
-    (test-secret))
+    (test'secret))
