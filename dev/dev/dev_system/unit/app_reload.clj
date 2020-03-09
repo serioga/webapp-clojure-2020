@@ -65,7 +65,7 @@
                                [app-start app-stop]
                                [app-resume app-suspend])]
             (when (compare-and-set! var'reloading? false true)
-              (Thread/sleep 200) ; pause just in case if several files were updated
+              (Thread/sleep 200)                            ; pause just in case if several files were updated
               (log/info reason)
               (log/info "[START]" "Application reload")
               (exec/try-log-error ["Stop application before namespace reloading"]

@@ -20,9 +20,8 @@
   "Instance ID to differentiate several components with same component.
   Optional, defaults to `component-id`."
   [data]
-  (or
-    (::instance-id data)
-    (component-id data)))
+  (or (::instance-id data)
+      (component-id data)))
 
 
 (defn set-component-id

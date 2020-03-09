@@ -66,11 +66,10 @@
   [var'futures]
   (fn suspend-key!
     [key value]
-    (when-some [method (or
-                         (exec/when-pred not-default-suspend-key?
-                                         (get-method ig/suspend-key! (#'ig/normalize-key key)))
-                         (exec/when-pred not-default-halt-key?
-                                         (get-method ig/halt-key! (#'ig/normalize-key key))))]
+    (when-some [method (or (exec/when-pred not-default-suspend-key?
+                                           (get-method ig/suspend-key! (#'ig/normalize-key key)))
+                           (exec/when-pred not-default-halt-key?
+                                           (get-method ig/halt-key! (#'ig/normalize-key key))))]
       (logging-context/with-logging-context {:suspend key}
         (log/info ">> suspending.." key)
         (exec/try-ignore

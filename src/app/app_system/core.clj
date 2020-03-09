@@ -16,7 +16,7 @@
 
 
 (defonce ^{:doc "Global reference to the running system"}
-  var'app-system (atom nil))
+         var'app-system (atom nil))
 
 
 (add-watch var'app-system :log-system-status

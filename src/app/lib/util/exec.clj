@@ -129,10 +129,9 @@
     `(let [ex# ~ex
            msg# (expand-msg* ~msg)
            msg# (if (throwable? ex#)
-                  (print-str*
-                    (when (not= "" msg#) (print-str* msg# _->_))
-                    (ex-message-all ex#)
-                    (some-> ex# ex-data ex-data->log-str))
+                  (print-str* (when (not= "" msg#) (print-str* msg# _->_))
+                              (ex-message-all ex#)
+                              (some-> ex# ex-data ex-data->log-str))
                   msg#)]
        (log/error ex# msg#))))
 

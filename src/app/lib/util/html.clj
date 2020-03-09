@@ -27,11 +27,9 @@
 (defn static-uri-with-hash
   [uri]
   (let [path (str "public" uri)
-        content (slurp (or
-                         (io/resource path)
-                         (throw (ex-info
-                                  (print-str "Missing static resource" (pr-str path))
-                                  {:name name :resource-path path}))))
+        content (slurp (or (io/resource path)
+                           (throw (ex-info (print-str "Missing static resource" (pr-str path))
+                                           {:name name :resource-path path}))))
         hash (DigestUtils/sha256Hex content)]
     (str uri "?" hash)))
 

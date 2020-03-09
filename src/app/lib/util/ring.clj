@@ -18,9 +18,8 @@
 (defn url-for-path-in-request
   [request path]
   (str
-    (or
-      (get-in request [:headers "x-forwarded-proto"])
-      (-> request :scheme name))
+    (or (get-in request [:headers "x-forwarded-proto"])
+        (-> request :scheme name))
     "://"
     (get-in request [:headers "host"])
     path))
