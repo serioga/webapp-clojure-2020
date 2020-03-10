@@ -6,7 +6,7 @@
     [app.app-system.service.mount]
     [app.app-system.service.webapp-http-handler]
     [app.app-system.task.database-migration])
-  (:require                                                 ; imports
+  (:require
     [app.app-system.impl :as impl]
     [app.lib.util.integrant :as ig-util]
     [integrant.core :as ig]))

@@ -2,12 +2,13 @@
   (:require                                                 ; systems
     [dev.dev-system.unit.app-reload]
     [dev.dev-system.unit.nrepl]
-    [dev.dev-system.unit.shadow-cljs]
     [dev.dev-system.unit.ring-refresh :as ring-refresh]
+    [dev.dev-system.unit.shadow-cljs]
     [dev.dev-system.unit.tailwind :as tailwind]
     [dev.dev-system.unit.watcher])
-  (:require                                                 ; imports
+  (:require
     [app.lib.util.integrant :as ig-util]
+    [app.web-example.impl.html-page :as html-page]
     [dev.dev-system.app-system :as app-system]
     [integrant.core :as ig]
     [mount.core :as mount]))
@@ -45,8 +46,8 @@
    [:dev-system/ref'watcher :dev-system/ref'tailwind]
    {:handler (tailwind/watcher-handler {:webapp "example"
                                         :on-rebuild (fn []
-                                                      (mount/stop #'app.web-example.impl.html-page/styles-css-uri)
-                                                      (mount/start #'app.web-example.impl.html-page/styles-css-uri)
+                                                      (mount/stop #'html-page/styles-css-uri)
+                                                      (mount/start #'html-page/styles-css-uri)
                                                       (ring-refresh/send-refresh!))})
     :options {:dirs ["tailwind/app/config" "tailwind/app/web_example"]
               :files [".css" ".js$"]}
