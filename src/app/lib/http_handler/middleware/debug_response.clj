@@ -15,10 +15,9 @@
                 server-name]} request
         {:keys [status]} response
         uri (ring-util/request-uri request)]
-    (perf/inline-str
-      "HTTP " status " < "
-      server-name " " route-tag " " request-method " " uri " " params
-      " (" time-millis " ms)")))
+    (perf/inline-str "HTTP " status " < "
+                     server-name " " route-tag " " request-method " " uri " " params
+                     " (" time-millis " ms)")))
 
 
 (defn session-update-description [response]
@@ -44,13 +43,10 @@
           response (handler request)
           time-millis (- (System/currentTimeMillis) start-millis)]
       (log/debug (response-description request response time-millis))
-      (some->
-        (session-update-description response)
-        (log/debug))
-      (some->
-        (flash-update-description response)
-        (log/debug))
-      (some->
-        (cookies-update-description response)
-        (log/debug))
+      (some-> (session-update-description response)
+              (log/debug))
+      (some-> (flash-update-description response)
+              (log/debug))
+      (some-> (cookies-update-description response)
+              (log/debug))
       response)))

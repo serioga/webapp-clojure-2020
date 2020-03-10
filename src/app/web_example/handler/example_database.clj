@@ -13,13 +13,13 @@
   [_]
   (let [title "SQL Database example"
         result (db/with-read-only db/example-user--select)]
-    (html-page/response
-      [:html [:head
-              [:title title]
-              (html/include-css html-page/styles-css-uri)]
-       [:body
-        [:h1 title]
-        [:div
-         [:pre
-          (with-out-str (pprint/pprint result))]
-         (html-page/link-to-index)]]])))
+    (-> [:html [:head
+                [:title title]
+                (html/include-css html-page/styles-css-uri)]
+         [:body
+          [:h1 title]
+          [:div
+           [:pre (with-out-str (pprint/pprint result))]
+           (html-page/link-to-index)]]]
+        (html-page/response))))
+

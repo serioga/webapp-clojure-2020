@@ -75,8 +75,7 @@
 
 (defn resume!
   []
-  (app-system/resume!
-    {:prepare-config prepare-system-config})
+  (app-system/resume! {:prepare-config prepare-system-config})
   (ring-refresh/send-refresh! true))
 
 
@@ -84,8 +83,9 @@
     (time (keys (start!)))
     (time (suspend!))
     (time (keys (resume!)))
-    (time (do (suspend!)
-              (keys (resume!))))
+    (time (do
+            (suspend!)
+            (keys (resume!))))
     (time (stop!))
 
     (time (meta @(:app-system.service/ref'immutant-web

@@ -21,9 +21,8 @@
        (js-delete js/window data-js-var)
        (doseq [comp-data components]
          (let [instance-id (react-component/instance-id comp-data)]
-           (rum/hydrate
-             (react-component/create-component comp-data)
-             (js/document.getElementById (name instance-id))))))))
+           (rum/hydrate (react-component/create-component comp-data)
+                        (js/document.getElementById (name instance-id))))))))
 
 
 ; TODO Push state
@@ -60,9 +59,8 @@
      [:script
       {:dangerouslySetInnerHTML
        {:__html
-        (str
-          "window." data-js-var "=`"
-          (-> (transit/write-transit-string react-data)
-              (str/replace "\\" "\\\\")
-              (str/replace "`" "\\`"))
-          "`;")}}]))
+        (str "window." data-js-var "=`"
+             (-> (transit/write-transit-string react-data)
+                 (str/replace "\\" "\\\\")
+                 (str/replace "`" "\\`"))
+             "`;")}}]))

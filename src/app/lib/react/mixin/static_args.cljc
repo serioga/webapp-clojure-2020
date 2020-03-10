@@ -8,9 +8,8 @@
   [get-arg]
   {:should-update
    (fn [old-state new-state]
-     (not=
-       (get-arg (:rum/args old-state))
-       (get-arg (:rum/args new-state))))})
+     (not= (get-arg (:rum/args old-state))
+           (get-arg (:rum/args new-state))))})
 
 
 (def static-first-arg-mixin

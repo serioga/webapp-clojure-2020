@@ -171,8 +171,9 @@
          (cond
            ; integrant's exception on non-future key
            (= reason ::ig/build-threw-exception)
-           (do (log-key-error cause key)
-               (some-> system halt!))
+           (do
+             (log-key-error cause key)
+             (some-> system halt!))
            ; exception after failed future keys
            (= reason ::failed-futures)
            (some-> system

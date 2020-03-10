@@ -35,8 +35,7 @@
 
 (defmethod ig/init-key :dev-system/ref'nrepl
   [_ options]
-  (exec/future
-    (start-server options)))
+  (exec/future (start-server options)))
 
 
 (defmethod ig/halt-key! :dev-system/ref'nrepl

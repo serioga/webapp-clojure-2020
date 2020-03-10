@@ -40,10 +40,8 @@
 (defn wrap-refresh
   "Modified `ring.middleware.refresh/wrap-refresh`."
   [handler]
-  (params/wrap-params
-    (compojure/routes
-      source-changed-route
-      (@#'refresh/wrap-with-script handler @#'refresh/refresh-script))))
+  (params/wrap-params (compojure/routes source-changed-route
+                                        (@#'refresh/wrap-with-script handler @#'refresh/refresh-script))))
 
 
 (defn send-refresh!
