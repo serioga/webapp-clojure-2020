@@ -1,22 +1,18 @@
 (ns app.lib.util.secret
   (:require
     [clojure.spec.alpha :as s]
-    [clojure.test :as t])
-  (:import
-    (java.io Writer)))
+    [clojure.test :as t]))
 
 (set! *warn-on-reflection* true)
 
 
-(deftype Secret [value])
-
-
-(defmethod print-method Secret
-  [_ ^Writer writer]
-  (.write writer "#<Secret>"))
+(deftype Secret [value]
+  Object
+  (toString [_] "******"))
 
 #_(comment
     (str (->Secret "xxx"))
+    (str "My secret: " (->Secret "xxx"))
     (pr-str (->Secret "xxx"))
     (.value (->Secret "xxx"))
     (= (->Secret "xxx") (->Secret "xxx")))
@@ -49,7 +45,10 @@
 (t/deftest test'secret
   (let [v "secret value"
         test (->Secret v)]
-    (t/is (= (.value ^Secret test), v))))
+    (t/is (= "******"
+             (str test)))
+    (t/is (= v
+             (read-secret test)))))
 
 #_(comment
     (test'secret))
