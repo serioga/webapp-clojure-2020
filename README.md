@@ -13,6 +13,11 @@ So in about 2 years I've gradually built this prototype for my own needs.
 
 ## Features
 
+### Project
+
+- Leiningen based project.
+- Code style settings for IntelliJ IDEA with Cursive.
+
 ### System
 
 - Integrant for application and development systems.
