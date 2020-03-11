@@ -11,11 +11,11 @@
 
 (defn start-webapp
   [server, {:keys [name handler options]}, server-options]
-  (let [options (merge server-options options)
-        meta' (update (meta server) :running-webapps conj [name options])]
+  (let [options (merge server-options options)]
     (log/debug "Start webapp" (pr-str name) (pr-str options))
-    (with-meta
-      (web/run handler (merge server options)), meta')))
+    (-> (web/run handler (merge server options))
+        (with-meta (update (meta server) :running-webapps
+                           conj [name options])))))
 
 
 (defn skip-webapp
@@ -33,13 +33,13 @@
   (impl/await-before-start await-before-start)
 
   (let [prepare-webapp (or prepare-webapp identity)]
-    (reduce
-      (fn [server, {:keys [enabled?] :or {enabled? true} :as webapp}]
-        (if enabled?
-          (start-webapp server (prepare-webapp webapp) options)
-          (skip-webapp server webapp)))
-      (with-meta (or options {}) {:running-webapps []})
-      webapps)))
+    (reduce (fn [server, {:keys [enabled?] :or {enabled? true} :as webapp}]
+              (if enabled?
+                (start-webapp server (prepare-webapp webapp) options)
+                (skip-webapp server webapp)))
+            (-> (or options {})
+                (with-meta {:running-webapps []}))
+            webapps)))
 
 
 (defn stop-server

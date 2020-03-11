@@ -10,8 +10,7 @@
 
 (defn wrap-logging-context [handler]
   (fn [request]
-    (logging-context/with-logging-context
-      (-> request
-          (perf/fast-select-keys [:server-name :route-tag :session])
-          (perf/fast-assoc :request-id (UUID/randomUUID)))
+    (logging-context/with-logging-context (-> request
+                                              (perf/fast-select-keys [:server-name :route-tag :session])
+                                              (perf/fast-assoc :request-id (UUID/randomUUID)))
       (handler request))))

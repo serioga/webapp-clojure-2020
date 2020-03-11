@@ -12,11 +12,10 @@
         message (str "[HTTP " status "] "
                      (exec/ex-message-all ex)
                      (when dev-mode?
-                       (str
-                         "\n\n" "---" "\n"
-                         "Default exception handler, dev mode."
-                         "\n\n"
-                         (prn-str ex))))]
+                       (str "\n\n" "---" "\n"
+                            "Default exception handler, dev mode."
+                            "\n\n"
+                            (prn-str ex))))]
     (ring-util/plain-text-response message status)))
 
 

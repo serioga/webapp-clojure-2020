@@ -24,11 +24,17 @@
 (s/def ::leak-detection-threshold int?)
 
 
-(s/def ::options
-  (s/keys
-    :req-un [::data-source-class ::database-url ::database-user ::database-password]
-    :opt-un [::minimum-idle ::maximum-pool-size ::connection-timeout ::idle-timeout ::max-lifetime
-             ::read-only? ::leak-detection-threshold]))
+(s/def ::options (s/keys :req-un [::data-source-class
+                                  ::database-url
+                                  ::database-user
+                                  ::database-password]
+                         :opt-un [::minimum-idle
+                                  ::maximum-pool-size
+                                  ::connection-timeout
+                                  ::idle-timeout
+                                  ::max-lifetime
+                                  ::read-only?
+                                  ::leak-detection-threshold]))
 
 
 (defn ^:private init-hikari-data-source
@@ -60,7 +66,6 @@
       max-lifetime (doto (.setMaxLifetime max-lifetime))
       leak-detection-threshold (doto (.setLeakDetectionThreshold leak-detection-threshold)))
     (.setReadOnly read-only?)
-    (.setPoolName (str
-                    (when pool-name (str pool-name " "))
-                    (if read-only? "RO" "RW")))
+    (.setPoolName (str (when pool-name (str pool-name " "))
+                       (if read-only? "RO" "RW")))
     (init-hikari-data-source)))

@@ -6,7 +6,7 @@
     [app.web-example.handler.index])
   (:require ; react components
     [app.web-example.config.react-components])
-  (:require ; imports
+  (:require
     [app.lib.http-handler.core :as http-handler]
     [app.web-example.impl.handler :as handler]))
 

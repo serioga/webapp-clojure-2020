@@ -70,9 +70,8 @@
 
 (defmethod ig/init-key :app-system.core/init-map
   [_ {:keys [import-from import-keys init-map]}]
-  (deep-merge
-    (or init-map {})
-    (import-map import-keys import-from)))
+  (deep-merge (or init-map {})
+              (import-map import-keys import-from)))
 
 #_(comment
     (deep-merge {:a true} {:a false})

@@ -25,14 +25,12 @@
 
 (defmethod ig/init-key :dev-system/ref'shadow-cljs
   [_ options]
-  (exec/future
-    (start-shadow! options)))
+  (exec/future (start-shadow! options)))
 
 
 (defmethod ig/halt-key! :dev-system/ref'shadow-cljs
   [_ ref'system]
-  (exec/future
-    (stop-shadow! @ref'system)))
+  (exec/future (stop-shadow! @ref'system)))
 
 
 #_(comment

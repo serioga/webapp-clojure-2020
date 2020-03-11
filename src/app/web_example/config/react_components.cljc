@@ -2,6 +2,5 @@
 
   "Setup react-component multi-methods."
 
-  (:require
-    ; components
+  (:require ; components
     [app.web-example.react-component.hello-world]))

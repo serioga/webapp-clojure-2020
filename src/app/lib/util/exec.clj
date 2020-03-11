@@ -35,16 +35,15 @@
   "Similar to `print-str` but ignoring nils and empty strings."
   [& tokens]
   (if-some [tokens (seq tokens)]
-    (->
-      ^StringBuilder (reduce (fn [^StringBuilder sb, ^Object x]
-                               (if-some [s (some-> x
-                                                   (.toString)
-                                                   (as-> s (when-not (.isEmpty s) s)))]
-                                 (-> sb (.append " "), (.append s))
-                                 sb))
-                             (StringBuilder.) tokens)
-      (.substring 1)
-      (str))
+    (-> ^StringBuilder (reduce (fn [^StringBuilder sb, ^Object x]
+                                 (if-some [s (some-> x
+                                                     (.toString)
+                                                     (as-> s (when-not (.isEmpty s) s)))]
+                                   (-> sb (.append " "), (.append s))
+                                   sb))
+                               (StringBuilder.) tokens)
+        (.substring 1)
+        (str))
     ""))
 
 #_(comment
@@ -136,16 +135,13 @@
        (log/error ex# msg#))))
 
 #_(comment
-    (log-error
-      (ex-info "One" {:x :one :y "y"} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three})))
-      "A" "B" "C" (str "D" "E" "F"))
+    (log-error (ex-info "One" {:x :one :y "y"} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three})))
+               "A" "B" "C" (str "D" "E" "F"))
     #_"A B C \"DEF\" -> One -> Two -> Three ~//~ {:x :one}"
-    (log-error
-      (ex-info "One" {:x :one} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three})))
-      ["A" "B" "C" (str "D" "E" "F")])
+    (log-error (ex-info "One" {:x :one} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three})))
+               ["A" "B" "C" (str "D" "E" "F")])
     #_"[\"A\" \"B\" \"C\" \"DEF\"] -> One -> Two -> Three ~//~ {:x :one}"
-    (log-error
-      (ex-info "One" {:x :one} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three}))))
+    (log-error (ex-info "One" {:x :one} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three}))))
     #_"One -> Two -> Three ~//~ {:x :one}")
 
 
@@ -279,9 +275,9 @@
    Log error on exception.
    Returns nil."
   [context-msg & body]
-  `(do (future
-         (try-log-error ~context-msg ~@body))
-       nil))
+  `(do
+     (future (try-log-error ~context-msg ~@body))
+     nil))
 
 
 (defmacro thread-off!
@@ -289,17 +285,15 @@
    Don't care about exceptions!
    Returns nil."
   [& body]
-  `(do (future
-         ~@body)
-       nil))
+  `(do
+     (future ~@body)
+     nil))
 
 #_(comment
     (logging-context/with-logging-context {:outside 1}
-      (future
-        (log/error "inside")))
+      (future (log/error "inside")))
 
-    (macroexpand
-      '(thread-off :msg :body-a :body-b :body-c))
+    (macroexpand '(thread-off :msg :body-a :body-b :body-c))
 
     (thread-off ["Test message"]
       (println "xxx")

@@ -1,7 +1,7 @@
 (ns app.web-example.main
   (:require ; react components
     [app.web-example.config.react-components])
-  (:require ; imports
+  (:require
     [app.lib.react.mount :as react-mount]))
 
 (set! *warn-on-infer* true)

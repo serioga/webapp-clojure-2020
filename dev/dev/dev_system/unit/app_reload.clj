@@ -2,6 +2,7 @@
   (:require
     [app.lib.util.exec :as exec]
     [clojure.main :as main]
+    [clojure.set :as set]
     [clojure.string :as string]
     [clojure.tools.logging :as log]
     [integrant.core :as ig]
@@ -30,12 +31,10 @@
   "Return vector of reload errors."
   [ns-tracker always-reload-ns]
   (let [modified (ns-tracker)
-        reload-always (into '() (clojure.set/difference
-                                  (set always-reload-ns)
-                                  (set modified)))
+        reload-always (into '() (set/difference (set always-reload-ns)
+                                                (set modified)))
         var'reload-errors (volatile! [])
-        reload-ns (fn
-                    [ns-sym]
+        reload-ns (fn [ns-sym]
                     (try
                       (require ns-sym :reload)
                       (log/info "[OK]" "Reload" ns-sym)
@@ -71,9 +70,10 @@
               (exec/try-log-error ["Stop application before namespace reloading"]
                 (stop))
               (if-some [reload-errors (seq (reload-modified-namespaces ns-tracker always-reload-ns))]
-                (do (log/info "[FAIL]" "Application reload")
-                    (doseq [[ns err] reload-errors]
-                      (log/error "[FAIL]" "Reload" ns (str "\n\n" err "\n"))))
+                (do
+                  (log/info "[FAIL]" "Application reload")
+                  (doseq [[ns err] reload-errors]
+                    (log/error "[FAIL]" "Reload" ns (str "\n\n" err "\n"))))
                 (try
                   (start)
                   (log/info "[DONE]" "Application reload")
@@ -87,17 +87,15 @@
 
 
 #_(comment
-    (def test-handler (time (watcher-handler
-                              {:ns-tracker-dirs ["src" "dev"]
-                               :app-start (fn [] (println "SYSTEM START"))
-                               :app-stop (fn [] (println "SYSTEM STOP"))
-                               :always-reload-ns []})))
+    (def test-handler (time (watcher-handler {:ns-tracker-dirs ["src" "dev"]
+                                              :app-start (fn [] (println "SYSTEM START"))
+                                              :app-stop (fn [] (println "SYSTEM STOP"))
+                                              :always-reload-ns []})))
 
-    (def test-handler (time (watcher-handler
-                              {:ns-tracker-dirs ["src" "dev"]
-                               :app-start (fn [] (exec/throw-ex-info "SYSTEM START FAILURE"))
-                               :app-stop (fn [] (println "SYSTEM STOP"))
-                               :always-reload-ns []})))
+    (def test-handler (time (watcher-handler {:ns-tracker-dirs ["src" "dev"]
+                                              :app-start (fn [] (exec/throw-ex-info "SYSTEM START FAILURE"))
+                                              :app-stop (fn [] (println "SYSTEM STOP"))
+                                              :always-reload-ns []})))
 
     (time (test-handler "Testing")))
 

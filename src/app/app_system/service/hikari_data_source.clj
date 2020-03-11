@@ -34,21 +34,19 @@
 (defmethod ig/init-key :app-system.service/ref'hikari-data-source
   [k {:keys [dev-mode?] :as options}]
   (exec/future
-    (init-data-source
-      (-> {:minimum-idle 1
-           :maximum-pool-size 10
-           :connection-timeout 5000
-           :leak-detection-threshold 30000}
-          (cond->
-            dev-mode? (assoc :max-lifetime 300000 :idle-timeout 60000))
-          (merge options)
-          (assoc :read-only? (= k :app-system.service/ref'hikari-data-source-read-only))))))
+    (init-data-source (-> {:minimum-idle 1
+                           :maximum-pool-size 10
+                           :connection-timeout 5000
+                           :leak-detection-threshold 30000}
+                          (cond->
+                            dev-mode? (assoc :max-lifetime 300000 :idle-timeout 60000))
+                          (merge options)
+                          (assoc :read-only? (= k :app-system.service/ref'hikari-data-source-read-only))))))
 
 
 (defmethod ig/halt-key! :app-system.service/ref'hikari-data-source
   [_ ref'ds]
-  (exec/future
-    (close-data-source! @ref'ds)))
+  (exec/future (close-data-source! @ref'ds)))
 
 
 (derive :app-system.service/ref'hikari-data-source

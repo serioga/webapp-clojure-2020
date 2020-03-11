@@ -34,11 +34,10 @@
                     (string? filenames) string->filenames)]
     (truss/have! sequential? filenames)
     (log/debug "Load properties from" (pr-str filenames))
-    (with-meta
-      (->> filenames
-           (map load-map-from-props-file)
-           (reduce merge {}))
-      {:prop-files filenames})))
+    (with-meta (->> filenames
+                    (map load-map-from-props-file)
+                    (reduce merge {}))
+               {:prop-files filenames})))
 
 #_(comment
     (meta (load-prop-files "dev-resources/dev/config/default.props"))
@@ -47,9 +46,8 @@
     (meta (load-prop-files ["dev-resources/dev/config/default.props"
                             "dev-resources/dev/config/default.props"]))
     (meta (load-prop-files nil))
-    (meta (merge
-            (load-prop-files (list "dev-resources/dev/config/default.props"))
-            (System/getProperties)))
+    (meta (merge (load-prop-files (list "dev-resources/dev/config/default.props"))
+                 (System/getProperties)))
     (re-matches #"Webapp\.Hosts\(.+\)" "Webapp.Hosts(ok)")
     (re-matches #"System\.Switch\..+" "System.Switch.BackendService")
     (keyword "Webapp.Hosts(ok)")
@@ -76,14 +74,12 @@
                           (assoc! cm mk (conform-prop-val rule v))
                           cm)))
         conformed (persistent!
-                    (reduce-kv
-                      (fn [cm k rule]
-                        (cond
-                          (instance? Pattern k), (reduce-kv
-                                                   (apply-regex k rule), cm, m)
-                          :else (if-some [v (m k)]
-                                  (assoc! cm k (conform-prop-val rule v))
-                                  cm)))
-                      (transient {})
-                      rules))]
+                    (reduce-kv (fn [cm k rule]
+                                 (cond
+                                   (instance? Pattern k), (reduce-kv (apply-regex k rule) cm, m)
+                                   :else (if-some [v (m k)]
+                                           (assoc! cm k (conform-prop-val rule v))
+                                           cm)))
+                               (transient {})
+                               rules))]
     (merge m, conformed)))

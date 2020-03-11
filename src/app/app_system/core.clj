@@ -1,12 +1,12 @@
 (ns app.app-system.core
-  (:require ; systems
+  (:require                                                 ; systems
     [app.app-system.service.app-config]
     [app.app-system.service.hikari-data-source]
     [app.app-system.service.immutant-web]
     [app.app-system.service.mount]
     [app.app-system.service.webapp-http-handler]
     [app.app-system.task.database-migration])
-  (:require ; imports
+  (:require
     [app.app-system.impl :as impl]
     [app.lib.util.integrant :as ig-util]
     [integrant.core :as ig]))
@@ -145,19 +145,20 @@
   ([{:keys [system-keys, prepare-config]
      :or {prepare-config identity} :as options}]
    (if-some [system @var'app-system]
-     (do (reset! var'app-system nil)
-         (let [config (prepare-config (system-config))]
-           (reset! var'app-system (ig-util/resume config, system, (or system-keys (keys system))))))
+     (do
+       (reset! var'app-system nil)
+       (let [config (prepare-config (system-config))]
+         (reset! var'app-system (ig-util/resume config, system, (or system-keys (keys system))))))
      (start! options))))
 
 #_(comment
     (time (keys (start!)))
     (time (suspend!))
     (time (keys (resume!)))
-    (time (do (suspend!)
-              (keys (resume!))))
+    (time (do
+            (suspend!)
+            (keys (resume!))))
     (time (stop!))
 
-    (time (:app-system.service/ref'immutant-web
-            (start! {:system-keys [:app-system.service/ref'immutant-web]}))))
+    (time (:app-system.service/ref'immutant-web (start! {:system-keys [:app-system.service/ref'immutant-web]}))))
 
