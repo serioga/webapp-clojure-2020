@@ -82,8 +82,8 @@
                     (log/info "[FAIL]" "Application reload"))))
               (reset! var'reloading? false)
               (reload-on-enter app-reload))))]
-    (with-meta app-reload
-               {:reload-on-enter (fn [] (reload-on-enter app-reload))})))
+    (-> app-reload
+        (with-meta {:reload-on-enter (fn [] (reload-on-enter app-reload))}))))
 
 
 #_(comment
