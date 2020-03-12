@@ -12,7 +12,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn prepare-prop-files
+(defn- prepare-prop-files
   [prop-files]
   (let [user (System/getProperty "user.name")
         user-file (str "dev-resources/dev/config/user." user ".props")
@@ -31,7 +31,7 @@
     (prepare-prop-files '("dev-resources/dev/config/default.props")))
 
 
-(defn wrap-webapp-handler
+(defn- wrap-webapp-handler
   [_webapp]
   (fn [handler]
     (-> handler
@@ -39,13 +39,13 @@
         ring-refresh/wrap-refresh)))
 
 
-(defn prepare-webapp
+(defn- prepare-webapp
   [webapp]
   (-> webapp
       (update :handler (wrap-webapp-handler webapp))))
 
 
-(defn prepare-system-config
+(defn- prepare-system-config
   [config]
   (assoc config :app-system/dev-mode? true
                 :app-system.dev/prepare-prop-files prepare-prop-files
@@ -53,6 +53,7 @@
 
 
 (defn start!
+  "Start `app-system`."
   ([]
    (start! {}))
   ([{:keys [system-keys]}]
@@ -62,18 +63,21 @@
 
 
 (defn stop!
+  "Stop `app-system`."
   []
   (ring-refresh/send-refresh! false)
   (app-system/stop!))
 
 
 (defn suspend!
+  "Suspend `app-system`."
   []
   (ring-refresh/send-refresh! false)
   (app-system/suspend!))
 
 
 (defn resume!
+  "Resume `app-system`."
   []
   (app-system/resume! {:prepare-config prepare-system-config})
   (ring-refresh/send-refresh! true))

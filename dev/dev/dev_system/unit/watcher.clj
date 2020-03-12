@@ -8,7 +8,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn start-watcher
+(defn- start-watcher
   [handler, {:keys [dirs files exclude] :as options}]
   (log/info "Start watcher" options)
   (watch/start-watcher (watch/watcher dirs
@@ -19,7 +19,7 @@
                                        :mode :async})))
 
 
-(defn stop-watcher
+(defn- stop-watcher
   [watcher]
   (log/info "Stop watcher" watcher)
   (watch/stop-watcher watcher))
@@ -42,7 +42,7 @@
             (time (stop-watcher w)))))
 
 
-(defn wrap-handler-with-delay
+(defn- wrap-handler-with-delay
   [handler]
   (let [var'waiting? (atom false)]
     (fn [& reason]

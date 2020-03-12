@@ -11,7 +11,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn ^:private init-data-source
+(defn- init-data-source
   [options]
   (log/info "Init Hikari data source" options)
   (let [ds (data-source/create-data-source options)
@@ -19,7 +19,7 @@
     spy-wrapped-ds))
 
 
-(defn ^:private close-data-source!
+(defn- close-data-source!
   [^P6DataSource spy-wrapped-ds]
   (log/info "Close Hikari data source")
   (.close ^Closeable (.unwrap spy-wrapped-ds Closeable)))

@@ -7,7 +7,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn default-not-found-response
+(defn- default-not-found-response
   "Default handler for resources with empty route-tag or empty response."
   [request, dev-mode?]
   (-> (str "[HTTP 404] Resource not found.\n\n"
@@ -23,6 +23,7 @@
 
 
 (defn wrap-default-not-found
+  "Wrap handler with middleware replacing `nil` response with default."
   [handler, dev-mode?]
   (fn [request] (or (handler request)
                     ; response not-found if webapp response is empty

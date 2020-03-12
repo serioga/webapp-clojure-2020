@@ -13,7 +13,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn example-routes
+(defn- example-routes
   []
   [["/" :route/index]
    ["/example-database" :route/example-database]
@@ -22,5 +22,6 @@
 
 
 (defn example-http-handler
+  "HTTP server handler for `example` webapp."
   [config]
   (http-handler/webapp-http-handler handler/example-handler, (example-routes), config))

@@ -8,7 +8,9 @@
 #?(:clj (set! *warn-on-reflection* true) :cljs (set! *warn-on-infer* true))
 
 
-(rum/defcs hello-world < (rum/local 0)
+(rum/defcs hello-world
+  "Example react component."
+  < (rum/local 0)
   [state name]
   (let [*count (:rum/local state)]
     [:div

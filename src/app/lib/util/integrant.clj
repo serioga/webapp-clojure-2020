@@ -12,7 +12,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn ^:private init-key
+(defn- init-key
   "Wrapped version of integrant's `init-key` with logging."
   [key value]
   (logging-context/with-logging-context {:init key}
@@ -20,7 +20,7 @@
     (ig/init-key key value)))
 
 
-(defn ^:private resume-key
+(defn- resume-key
   "Wrapped version of integrant's `resume-key` with logging."
   [key value old-value old-impl]
   (logging-context/with-logging-context {:resume key}
@@ -28,17 +28,17 @@
     (ig/resume-key key value old-value old-impl)))
 
 
-(defn ^:private not-default-halt-key?
+(defn- not-default-halt-key?
   [f]
   (not= f (get-method ig/halt-key! :default)))
 
 
-(defn ^:private not-default-suspend-key?
+(defn- not-default-suspend-key?
   [f]
   (not= f (get-method ig/suspend-key! :default)))
 
 
-(defn ^:private fn'halt-key!
+(defn- fn'halt-key!
   "Produce wrapped version of integrant's halt-key!
    with logging and handling of returned futures."
   [var'futures]
@@ -60,7 +60,7 @@
             ret))))))
 
 
-(defn ^:private fn'suspend-key!
+(defn- fn'suspend-key!
   "Produce wrapped version of integrant's suspend-key!
    with logging and handling of returned futures."
   [var'futures]
@@ -84,13 +84,13 @@
             ret))))))
 
 
-(defn ^:private ex-in-future
+(defn- ex-in-future
   "Unwrap exception from deref'ed future."
   [ex]
   (or (ex-cause ex) ex))
 
 
-(defn ^:private collect-failed-futures
+(defn- collect-failed-futures
   "Scan `system` for futures and collect keys with exceptions."
   [system]
   (reduce (fn [failed [key state]] (if (future? state)
@@ -103,7 +103,7 @@
           (list) system))
 
 
-(defn ^:private await-build-futures
+(defn- await-build-futures
   "Deref all future key values.
    If there are failed futures then log errors and throw exception to halt system back."
   [system, log-key-error]
@@ -117,7 +117,7 @@
                            :failed-keys failed-keys}))))
 
 
-(defn ^:private await-futures
+(defn- await-futures
   "Deref all future suspend results.
    Log errors for failed exceptions."
   [futures, log-key-error]

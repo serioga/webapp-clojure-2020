@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn start-shadow!
+(defn- start-shadow!
   [{:keys [builds-to-start] :as options}]
   (log/info "Start Shadow CLJS" options)
   (server/start!)
@@ -17,7 +17,7 @@
     (shadow/watch build)))
 
 
-(defn stop-shadow!
+(defn- stop-shadow!
   [system]
   (log/info "Stop Shadow CLJS" system)
   (server/stop!))

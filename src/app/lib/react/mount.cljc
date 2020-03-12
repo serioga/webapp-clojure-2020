@@ -10,11 +10,12 @@
 #?(:clj (set! *warn-on-reflection* true) :cljs (set! *warn-on-infer* true))
 
 
-(def data-js-var "appReactMountData")
+(def ^:private data-js-var "appReactMountData")
 
 
 #?(:cljs
    (defn mount-all
+     "Mount all components with data from server."
      []
      (let [components (some-> (aget js/window data-js-var)
                               (transit/read-transit-string))]
@@ -30,7 +31,8 @@
 #?(:clj
    (defn mount-component
      "Hiccup-style element with pre-rendered react component.
-      All react components are registered in registry to add as data attribute in page body later."
+      All react components are registered in registry to be added
+      in page HTML later."
      ([var'registry, comp-id]
       (mount-component var'registry :div comp-id nil))
 
@@ -48,6 +50,7 @@
 
 #?(:clj
    (defn new-registry-mounter
+     "Provide mounting function registry."
      [_]
      (let [var'registry (atom [])]
        [var'registry (partial mount-component var'registry)])))
@@ -55,6 +58,7 @@
 
 #?(:clj
    (defn react-mount-data-js
+     "Hiccup for JS with data for mounting react components."
      [react-data]
      [:script
       {:dangerouslySetInnerHTML

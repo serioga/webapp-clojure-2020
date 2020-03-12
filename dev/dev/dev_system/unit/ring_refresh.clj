@@ -15,7 +15,7 @@
          :reload? false}))
 
 
-(defn ^:private watch-until
+(defn- watch-until
   [ref'state, pred, timeout-ms]
   (let [ref'result (promise)
         watch-key (str (UUID/randomUUID))]

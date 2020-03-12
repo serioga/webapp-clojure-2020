@@ -1,4 +1,4 @@
-{:linters {#_#_:missing-docstring {:level :warning}
+{:linters {:missing-docstring {:level :warning}
            :unsorted-required-namespaces {:level :warning}}
  :lint-as {app.database.hugsql/declare-fn clojure.core/declare
            mount.core/defstate clojure.core/def

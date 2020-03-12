@@ -21,12 +21,11 @@
 (add-watch var'app-system :log-system-status
            (fn [_ _ _ system]
              (some-> system impl/log-prop-files)
-             (some-> system
-                     (impl/log-running-rpc-service :app-system.service/ref'rpc-server))
              (some-> system impl/log-running-webapps)))
 
 
-(defn system-config
+(defn- system-config
+  "App-system configuration."
   []
   {:app-system/dev-mode? false
 

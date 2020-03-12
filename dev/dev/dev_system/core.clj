@@ -16,10 +16,10 @@
 (set! *warn-on-reflection* true)
 
 
-(defonce var'dev-system (atom nil))
+(defonce ^:private var'dev-system (atom nil))
 
 
-(defn config []
+(defn- config []
   {:dev-system/ref'nrepl {:write-port-file ".nrepl-port"}
 
    :dev-system/app-reload {:ns-tracker-dirs ["src" "dev"]
@@ -72,6 +72,7 @@
 
 
 (defn reload-on-enter
+  "Reload actions on ENTER keypress."
   []
   (when-some [reload (some-> @var'dev-system
                              :dev-system/app-reload
@@ -80,6 +81,7 @@
 
 
 (defn nrepl-server
+  "Get reference to global nREPL server instance."
   []
   (some-> @var'dev-system
           :dev-system/ref'nrepl

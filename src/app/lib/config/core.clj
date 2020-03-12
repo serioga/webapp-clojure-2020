@@ -6,6 +6,8 @@
 
 
 (defn get-required
+  "Get required value from `config` map.
+   Raise exception for missing keys."
   [config key]
   (if (contains? config key)
     (config key)
@@ -13,6 +15,8 @@
 
 
 (defn get-optional
+  "Get optional value from `config` map.
+   Return `nil` or `default` for missing keys."
   ([config key]
    (get-optional config key nil))
   ([config key default]

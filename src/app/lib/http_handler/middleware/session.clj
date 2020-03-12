@@ -7,6 +7,7 @@
 
 
 (defn wrap-session
+  "Wrap handler with immutant-web session middleware."
   [handler]
   (-> handler
       ring-flash/wrap-flash

@@ -9,6 +9,7 @@
 
 
 (defn when-pred
+  "Return `x` if `(pred x)` is truthy."
   [pred x]
   (when (pred x) x))
 
@@ -73,6 +74,7 @@
 
 
 (defn ex-root-cause
+  "Find root cause of exception."
   [^Throwable ex]
   (if-let [cause (ex-cause ex)]
     (recur cause)
@@ -84,6 +86,7 @@
 
 
 (defn throwable?
+  "Test if `x` is throwable."
   [x]
   (instance? Throwable x))
 
@@ -114,6 +117,7 @@
 
 
 (defn ex-data->log-str
+  "Format ex-data as string for logging."
   [ex-data]
   (when (and (map? ex-data), (pos? (count ex-data)))
     (print-str* "~//~" (pr-str ex-data))))
@@ -263,6 +267,7 @@
 
 
 (defmacro future
+  "Same as `clojure.core/future` but preserving MDC logging context."
   [& body]
   `(let [ctx# (logging-context/get-logging-context)]
      (clojure.core/future

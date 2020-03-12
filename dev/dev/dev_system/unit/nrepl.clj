@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn start-server
+(defn- start-server
   [{:keys [port, write-port-file]}]
   (let [server (nrepl/start-server :port port)]
     (log/info "[DONE] Start nREPL server" server)
@@ -22,7 +22,7 @@
     server))
 
 
-(defn stop-server
+(defn- stop-server
   [server]
   (log/info "Stop nREPL server" server)
   (nrepl/stop-server server))

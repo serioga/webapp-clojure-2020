@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn start-webapp
+(defn- start-webapp
   [server, {:keys [name handler options]}, server-options]
   (let [options (merge server-options options)]
     (log/debug "Start webapp" (pr-str name) (pr-str options))
@@ -18,13 +18,13 @@
                            conj [name options])))))
 
 
-(defn skip-webapp
+(defn- skip-webapp
   [server, webapp]
   (log/debug "Skip webapp" (pr-str webapp))
   server)
 
 
-(defn start-server
+(defn- start-server
   [{:keys [options
            webapps
            dev/prepare-webapp
@@ -42,7 +42,7 @@
             webapps)))
 
 
-(defn stop-server
+(defn- stop-server
   [server]
   (web/stop server))
 

@@ -11,7 +11,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn reload-on-enter
+(defn- reload-on-enter
   [handler]
   (print "\n\n***** Press ENTER to reload application *****\n\n\n")
   (flush)
@@ -19,7 +19,7 @@
     (handler :force-reload "ENTER key pressed...")))
 
 
-(defn exception-log-msg
+(defn- exception-log-msg
   [ex]
   (-> ex
       (Throwable->map)
@@ -27,7 +27,7 @@
       (main/ex-str)))
 
 
-(defn reload-modified-namespaces
+(defn- reload-modified-namespaces
   "Return vector of reload errors."
   [ns-tracker always-reload-ns]
   (let [modified (ns-tracker)
@@ -48,7 +48,7 @@
     @var'reload-errors))
 
 
-(defn watcher-handler
+(defn- watcher-handler
   [{:keys [ns-tracker-dirs, always-reload-ns,
            app-start, app-suspend, app-resume, app-stop]
     :or {app-stop (constantly nil)

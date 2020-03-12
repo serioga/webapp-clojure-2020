@@ -7,14 +7,14 @@
 (set! *warn-on-reflection* true)
 
 
-(def postcss-cmd
+(def ^:private postcss-cmd
   (let [os-name (System/getProperty "os.name")]
     (if (string/includes? os-name "Windows")
       "node_modules/.bin/postcss.cmd"
       "node_modules/.bin/postcss")))
 
 
-(defn tailwind-shell-cmd
+(defn- tailwind-shell-cmd
   [webapp]
   [postcss-cmd
    (str "tailwind/app/web_" webapp "/main.css")
@@ -22,7 +22,7 @@
    "--config" "dev/"])
 
 
-(defn build-webapp-css
+(defn- build-webapp-css
   [{:keys [webapp on-rebuild]}]
   (let [cmd (tailwind-shell-cmd webapp)
         _ (log/info "Building webapp CSS..." webapp cmd)
@@ -36,6 +36,7 @@
 
 
 (defn watcher-handler
+  "Watch handler for Tailwind CSS sources."
   [options]
   (fn [& _]
     (build-webapp-css options)))

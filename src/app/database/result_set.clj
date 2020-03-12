@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn ^:private get-simple-column-names
+(defn- get-simple-column-names
   "Given `ResultSetMetaData`, return a vector of modified column names, each
   qualified by the `column-ns`."
   [^ResultSetMetaData rsmeta]
@@ -26,7 +26,7 @@
     (jdbc.rs/->MapResultSetOptionalBuilder rs rsmeta cols)))
 
 
-(defn ^:private get-namespaced-column-names
+(defn- get-namespaced-column-names
   "Given `ResultSetMetaData`, return a vector of modified column names, each
   qualified by the `column-ns`."
   [^ResultSetMetaData rsmeta, column-ns]

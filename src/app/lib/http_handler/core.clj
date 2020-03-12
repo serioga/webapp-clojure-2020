@@ -13,6 +13,7 @@
 
 
 (defn webapp-http-handler
+  "Build HTTP server handler for webapp with common middleware."
   [http-handler, routes, {:keys [dev-mode?]}]
   (-> http-handler
       (default-not-found/wrap-default-not-found dev-mode?)

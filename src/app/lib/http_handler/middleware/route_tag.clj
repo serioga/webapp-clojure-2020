@@ -6,7 +6,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn ^:private fn'route->path
+(defn- fn'route->path
   [reitit-router, route-tag]
   (let [match (reitit/match-by-name reitit-router, route-tag)]
     (if (reitit/partial-match? match)
@@ -28,7 +28,7 @@
          (reitit/match->path match params))))))
 
 
-(defn ^:private fn'path-for-route
+(defn- fn'path-for-route
   [reitit-router]
   (let [compiled (reduce (fn [m tag] (assoc m tag (fn'route->path reitit-router, tag)))
                          {} (reitit/route-names reitit-router))]
@@ -42,6 +42,7 @@
 
 
 (defn wrap-route-tag
+  "Wrap handler with route-tag functionality."
   [handler, reitit-router]
 
   {:pre [(reitit/router? reitit-router)]}

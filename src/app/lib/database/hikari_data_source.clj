@@ -37,7 +37,7 @@
                                   ::leak-detection-threshold]))
 
 
-(defn ^:private init-hikari-data-source
+(defn- init-hikari-data-source
   "Force data source to connect after creation.
   Otherwise it's connected only during getting first connection."
   [^HikariDataSource ds]
@@ -46,6 +46,7 @@
 
 
 (defn create-data-source
+  "Create HikariCP data source instance."
   [{:keys [data-source-class, database-url, database-user, database-password
            minimum-idle, maximum-pool-size, connection-timeout, idle-timeout, max-lifetime
            pool-name, read-only?, leak-detection-threshold]

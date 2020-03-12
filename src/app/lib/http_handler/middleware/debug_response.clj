@@ -7,7 +7,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn response-description
+(defn- response-description
   [request response time-millis]
   (let [{:keys [route-tag
                 params
@@ -20,24 +20,26 @@
                      " (" time-millis " ms)")))
 
 
-(defn session-update-description [response]
+(defn- session-update-description [response]
   (when-let [session (:session response)]
     (if (:recreate (meta session))
       (perf/inline-str "Recreate :session " session)
       (perf/inline-str "Update :session " session))))
 
 
-(defn flash-update-description [response]
+(defn- flash-update-description [response]
   (when-let [flash (:flash response)]
     (perf/inline-str "Set :flash " flash)))
 
 
-(defn cookies-update-description [response]
+(defn- cookies-update-description [response]
   (when-let [cookies (:cookies response)]
     (perf/inline-str "Set :cookies " cookies)))
 
 
-(defn wrap-debug-response [handler]
+(defn wrap-debug-response
+  "Wrap handler with debug logging."
+  [handler]
   (fn [request]
     (let [start-millis (System/currentTimeMillis)
           response (handler request)

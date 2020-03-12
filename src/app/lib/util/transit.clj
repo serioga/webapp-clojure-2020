@@ -13,15 +13,18 @@
   (transit/read (transit/reader stream :json)))
 
 
-(defn read-transit-string [^String s]
+(defn read-transit-string
+  "Read data from string with transit bytes."
+  [^String s]
   (read-transit-stream (ByteArrayInputStream. (.getBytes s "UTF-8"))))
 
 
-(defn ^:private write-transit [o out]
+(defn- write-transit
+  [o out]
   (transit/write (transit/writer out :json) o))
 
 
-(defn ^:private write-bytes ^bytes [o]
+(defn- write-bytes ^bytes [o]
   (let [os (ByteArrayOutputStream.)]
     (write-transit o os)
     (.toByteArray os)))

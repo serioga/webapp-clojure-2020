@@ -23,16 +23,17 @@
 (SLF4JBridgeHandler/install)
 
 
-(defn init
+(defn- init
   []
   (app-system/start!)
   (log/info "[DONE] Application init"))
 
-(defn shutdown
+(defn- shutdown
   []
   (app-system/stop!))
 
 (defn -main
+  "Application entry point."
   []
   (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable shutdown))
   (init))
@@ -41,7 +42,20 @@
 ;------------------------------------------------------------------------------
 ; Daemon implementation
 
-(defn -init, [_ _])
-(defn -start,, [_] (init))
-(defn -stop,,, [_] (shutdown))
-(defn -destroy [_])
+(defn -init
+  "Initializes this `Daemon` instance."
+  [_ _])
+
+(defn -start
+  "Starts the operation of this `Daemon` instance."
+  [_]
+  (init))
+
+(defn -stop
+  "Stops the operation of this `Daemon` instance."
+  [_]
+  (shutdown))
+
+(defn -destroy
+  "Frees any resources allocated by this daemon."
+  [_])

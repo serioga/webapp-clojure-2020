@@ -12,7 +12,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn ^:private load-map-from-props-file
+(defn- load-map-from-props-file
   "Load props from single file as map."
   [file]
   (some-> file
@@ -21,7 +21,7 @@
           (p/properties->map)))
 
 
-(defn ^:private string->filenames
+(defn- string->filenames
   "Split comma separated file names to list."
   [s]
   (str/split s #","))

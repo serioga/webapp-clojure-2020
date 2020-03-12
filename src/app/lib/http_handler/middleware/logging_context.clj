@@ -8,7 +8,9 @@
 (set! *warn-on-reflection* true)
 
 
-(defn wrap-logging-context [handler]
+(defn wrap-logging-context
+  "Wrap handler with MDC logging context."
+  [handler]
   (fn [request]
     (logging-context/with-logging-context (-> request
                                               (perf/fast-select-keys [:server-name :route-tag :session])

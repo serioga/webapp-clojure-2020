@@ -19,6 +19,7 @@
 
 
 (defn secret?
+  "Test if `x` is a secret."
   [x]
   (instance? Secret x))
 
@@ -28,6 +29,7 @@
 
 
 (defn read-secret
+  "Read value from secret."
   {:test (fn []
            (t/is (= (read-secret (->Secret "xxx")), "xxx"))
            (t/is (= (read-secret "xxx"), "xxx")))}
@@ -42,7 +44,7 @@
     (t/test-var #'read-secret))
 
 
-(t/deftest test'secret
+(t/deftest secret-test
   (let [v "secret value"
         test (->Secret v)]
     (t/is (= "******"

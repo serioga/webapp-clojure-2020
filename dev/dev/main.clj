@@ -11,7 +11,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn init
+(defn- init
   []
   (try
     (exec/try-wrap-ex ["Start development system" {:reason ::dev-system}]
@@ -34,18 +34,21 @@
 
 
 (defn shutdown
+  "Shutdown `dev-system`."
   []
   (app-system/stop!)
   (dev-system/stop!))
 
 
 (defn reload
+  "Reload `dev-system`."
   []
   (app-system/stop!)
   (app-system/start!))
 
 
 (defn -main
+  "Entry point for development run."
   []
   (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable shutdown))
   (init))

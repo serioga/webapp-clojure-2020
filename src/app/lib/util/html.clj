@@ -8,11 +8,13 @@
 
 
 (defn include-css
+  "Hiccup for CSS include tag."
   [href]
   [:link {:type "text/css", :href href, :rel "stylesheet"}])
 
 
 (defn include-js
+  "Hiccup for JavaScript include tag."
   ([src]
    (include-js src nil))
   ([src, defer-or-async]
@@ -23,6 +25,7 @@
 
 
 (defn static-uri-with-hash
+  "Attach hash parameter to URI of static resource."
   [uri]
   (let [path (str "public" uri)
         content (slurp (or (io/resource path)

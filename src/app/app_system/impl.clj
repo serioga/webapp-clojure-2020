@@ -9,6 +9,7 @@
 
 
 (defn log-running-webapps
+  "Log info about running webapps (URLs with host/port)."
   [system]
   (let [webapps (some-> system
                         :app-system.service/ref'immutant-web
@@ -26,22 +27,13 @@
 
 
 (defn log-prop-files
+  "Log info about loaded configuration files."
   [system]
   (let [prop-files (some-> system
                            :app-system.service/app-config
                            (meta)
                            :prop-files)]
     (log/info "Running config from" (pr-str prop-files))))
-
-
-(defn log-running-rpc-service
-  [system key]
-  (let [{:keys [enabled? service rpc]} (some-> system
-                                               (get key)
-                                               (meta))]
-    (when enabled?
-      (log/info "Running server" (pr-str service)
-                "-" "rpc-server" (pr-str (select-keys rpc [:host :product :instance]))))))
 
 
 (defn deep-merge
@@ -52,7 +44,8 @@
     b))
 
 
-(defn import-map [m from]
+(defn- import-map
+  [m from]
   (into {}
         (keep (fn [[k v]] (cond
                             (map? v) [k (import-map v from)]
@@ -90,7 +83,7 @@
   [_ _])
 
 
-(defn ^:private restart-on-resume
+(defn- restart-on-resume
   [old-impl k value]
   (ig/halt-key! k old-impl)
   (ig/init-key k value))
@@ -103,6 +96,7 @@
 
 
 (defn await-before-start
+  "Wait for start of all deferred components listed in `await-for`."
   [await-for]
   (when (seq await-for)
     (log/debug "Await before start" (keys await-for))

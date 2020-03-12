@@ -6,7 +6,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn response
+(defn- response
   [^Throwable ex, dev-mode?]
   (let [status 500
         message (str "[HTTP " status "] "
@@ -20,6 +20,7 @@
 
 
 (defn wrap-exceptions
+  "Wrap handler with exception handler."
   [handler, dev-mode?]
   (fn [request]
     (try

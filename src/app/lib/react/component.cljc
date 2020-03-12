@@ -3,7 +3,9 @@
 #?(:clj (set! *warn-on-reflection* true) :cljs (set! *warn-on-infer* true))
 
 
-(defmulti create-component ::component-id)
+(defmulti create-component
+  "Component constructor by ID keyword."
+  ::component-id)
 
 
 (defmethod create-component :default
@@ -12,6 +14,7 @@
 
 
 (defn component-id
+  "Get component ID."
   [data]
   (::component-id data))
 
@@ -25,10 +28,12 @@
 
 
 (defn set-component-id
+  "Set component ID."
   [data comp-id]
   (assoc data ::component-id comp-id))
 
 
 (defn set-instance-id
+  "Set component instance ID."
   [data instance-id]
   (assoc data ::instance-id instance-id))
