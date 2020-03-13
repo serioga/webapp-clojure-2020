@@ -8,9 +8,9 @@
 (set! *warn-on-reflection* true)
 
 
-(mount/defstate ^{:on-reload :noop
-                  :doc "Path to CSS with hash parameter"}
-  styles-css-uri
+(mount/defstate styles-css-uri
+  "Path to CSS with hash parameter"
+  {:on-reload :noop}
   :start (html/static-uri-with-hash "/app/example/main.css"))
 
 

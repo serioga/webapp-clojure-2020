@@ -7,20 +7,18 @@
 (set! *warn-on-reflection* true)
 
 
-(mount/defstate ^{:on-reload :noop
-                  :doc "Get optional value from global app-config.
-                        Return `nil` or `default` for missing keys."
-                  :arglists '([key] [key default])}
-  optional
+(mount/defstate optional
+  "Get optional value from global app-config.
+   Return `nil` or `default` for missing keys."
+  {:arglists '([key] [key default]) :on-reload :noop}
   :start (let [app-config (truss/have! map? (::app-config (mount/args)))]
            (partial config/get-optional app-config)))
 
 
-(mount/defstate ^{:on-reload :noop
-                  :doc "Get required value from global app-config.
-                        Raise exception for missing keys."
-                  :arglists '([key])}
-  required
+(mount/defstate required
+  "Get required value from global app-config.
+   Raise exception for missing keys."
+  {:arglists '([key]) :on-reload :noop}
   :start (let [app-config (truss/have! map? (::app-config (mount/args)))]
            (partial config/get-required app-config)))
 

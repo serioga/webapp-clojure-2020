@@ -12,34 +12,28 @@
 
 ; Database connection
 
-(mount/defstate
-  ^{:on-reload :noop
-    :tag Connection
-    :doc "Creates a connection to a database using read-write `data-source`."
-    :arglists '([] [options])}
-  get-read-write-connection
-  :start
-  (let [ref'data-source (truss/have! future? (::ref'data-source-read-write (mount/args)))]
-    (fn get-read-write-connection
-      ([]
-       (get-read-write-connection {}))
-      ([options]
-       (jdbc/get-connection @ref'data-source options)))))
+(mount/defstate ^Connection get-read-write-connection
+  "Creates a connection to a database using read-write `data-source`."
+  {:arglists '([] [options]) :on-reload :noop}
+
+  :start (let [ref'data-source (truss/have! future? (::ref'data-source-read-write (mount/args)))]
+           (fn get-read-write-connection
+             ([]
+              (get-read-write-connection {}))
+             ([options]
+              (jdbc/get-connection @ref'data-source options)))))
 
 
-(mount/defstate
-  ^{:on-reload :noop
-    :tag Connection
-    :doc "Creates a connection to a database using read-only `data-source`."
-    :arglists '([] [options])}
-  get-read-only-connection
-  :start
-  (let [ref'data-source (truss/have! future? (::ref'data-source-read-only (mount/args)))]
-    (fn get-read-only-connection
-      ([]
-       (get-read-only-connection {}))
-      ([options]
-       (jdbc/get-connection @ref'data-source options)))))
+(mount/defstate ^Connection get-read-only-connection
+  "Creates a connection to a database using read-only `data-source`."
+  {:arglists '([] [options]) :on-reload :noop}
+
+  :start (let [ref'data-source (truss/have! future? (::ref'data-source-read-only (mount/args)))]
+           (fn get-read-only-connection
+             ([]
+              (get-read-only-connection {}))
+             ([options]
+              (jdbc/get-connection @ref'data-source options)))))
 
 
 ; Helper aliases for `with-open` with database connection
