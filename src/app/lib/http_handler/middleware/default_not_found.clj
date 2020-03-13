@@ -26,5 +26,4 @@
   "Wrap handler with middleware replacing `nil` response with default."
   [handler, dev-mode?]
   (fn [request] (or (handler request)
-                    ; response not-found if webapp response is empty
                     (default-not-found-response request, dev-mode?))))

@@ -47,7 +47,7 @@
   (let [var'waiting? (atom false)]
     (fn [& reason]
       (when (compare-and-set! var'waiting? false true)
-        ; pause just in case if several events occurs simultaneously
+        ; Pause just in case if several events occurs simultaneously.
         (Thread/sleep 200)
         (reset! var'waiting? false)
         (handler reason)))))

@@ -49,8 +49,8 @@
       (logging-context/with-logging-context {:halt key}
         (log/info ">> stopping.." key)
         (exec/try-ignore
-          ; wait for future values to complete
-          ; ignore errors, they are reported on init
+          ; Wait for future values to complete.
+          ; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
           (let [ret (exec/try-log-error ["Stopping" key]
@@ -73,8 +73,8 @@
       (logging-context/with-logging-context {:suspend key}
         (log/info ">> suspending.." key)
         (exec/try-ignore
-          ; wait for future values to complete
-          ; ignore errors, they are reported on init
+          ; Wait for future values to complete.
+          ; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
           (let [ret (exec/try-log-error ["Suspending" key]
@@ -169,16 +169,16 @@
        (let [{:keys [reason, system, key, failed-keys]} (ex-data ex)
              cause (ex-cause ex)]
          (cond
-           ; integrant's exception on non-future key
+           ; Integrant's exception on non-future key
            (= reason ::ig/build-threw-exception)
            (do
              (log-key-error cause key)
              (some-> system halt!))
-           ; exception after failed future keys
+           ; Exception after failed future keys
            (= reason ::failed-futures)
            (some-> system
                    (halt! (remove (set failed-keys) (keys system))))
-           ; something unexpected, log error for investigation
+           ; Unexpected exception
            :else
            (log/error "Unexpected error when building system:" (exec/ex-message-all ex)))
          (throw ex))))))

@@ -11,15 +11,15 @@
   "Add keys/values from Clojure/Java map to logging context (as side-effect)."
   [m]
   (cond
-    ; process clojure map with conversion of keys/values to strings
+    ; Process clojure map with conversion of keys/values to strings.
     (map? m)
     (reduce-kv (fn [_ k v] (MDC/put (name k) (str v))), nil, m)
 
-    ; otherwise process java map without conversion of keys/values
+    ; Process java map without conversion of keys/values.
     (instance? Map m)
     (reduce (fn [_ k] (MDC/put k (.get ^Map m k))), nil, (.keySet ^Map m))
 
-    ; do nothing if not map
+    ; Ignore non-maps.
     :else nil))
 
 

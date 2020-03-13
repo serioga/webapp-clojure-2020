@@ -26,7 +26,7 @@
                         (js/document.getElementById (name instance-id))))))))
 
 
-; TODO Push state
+; TODO: Push state.
 
 #?(:clj
    (defn mount-component

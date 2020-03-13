@@ -42,7 +42,7 @@
        (jdbc/get-connection @ref'data-source options)))))
 
 
-; with-open connection helpers
+; Helper aliases for `with-open` with database connection
 
 (defn with-read-write
   "Execute single HugSQL query with auto opened read-write connection."
