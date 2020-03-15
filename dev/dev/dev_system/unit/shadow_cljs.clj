@@ -36,7 +36,6 @@
 (comment
   (server/start!)
   (server/stop!)
-  (foo :example)
   (shadow/compile :example)
   (shadow/repl :example)
   (shadow/watch :example)
