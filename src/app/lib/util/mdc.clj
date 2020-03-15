@@ -48,7 +48,7 @@
   (MDC/getCopyOfContextMap))
 
 
-(defmacro wrap-with-map
+(defmacro with-map
   "Execute `body` wrapped with added context from map.
    Restore context map at the end."
   [m & body]
@@ -62,7 +62,7 @@
                           (MDC/clear))))))
 
 
-(defmacro wrap-with-keys
+(defmacro with-keys
   "Execute `body` wrapped with added context for keys from map.
    Restore context map at the end."
   [m ks & body]

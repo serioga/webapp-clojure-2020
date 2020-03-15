@@ -11,6 +11,6 @@
   "Wrap handler with MDC logging context."
   [handler]
   (fn [request]
-    (mdc/wrap-with-keys request [:server-name :route-tag :session]
-      (mdc/wrap-with-map {:request-id (UUID/randomUUID)}
+    (mdc/with-keys request [:server-name :route-tag :session]
+      (mdc/with-map {:request-id (UUID/randomUUID)}
         (handler request)))))

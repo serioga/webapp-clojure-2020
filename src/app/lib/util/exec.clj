@@ -278,7 +278,7 @@
   [& body]
   `(let [ctx# (mdc/get-context-map)]
      (clojure.core/future
-       (mdc/wrap-with-map ctx#
+       (mdc/with-map ctx#
          ~@body))))
 
 
@@ -302,7 +302,7 @@
      nil))
 
 (comment
-  (mdc/wrap-with-map {:outside 1}
+  (mdc/with-map {:outside 1}
     (future (log/error "inside")))
 
   (macroexpand '(thread-off :msg :body-a :body-b :body-c))
