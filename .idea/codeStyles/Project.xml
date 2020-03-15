@@ -6,7 +6,7 @@
   :app.lib.util.exec/thread-off 1
   :app.lib.util.exec/try-log-error 1
   :app.lib.util.exec/try-wrap-ex 1
-  :app.lib.util.logging-context/with-logging-context 1
+  :app.lib.util.mdc/wrap-with-map 1
   :app.lib.util.perf/fast-assoc 1
   :clojure.core/cond-&gt; 1
   :clojure.core/defmulti 1

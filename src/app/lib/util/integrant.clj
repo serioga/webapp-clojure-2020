@@ -5,7 +5,7 @@
    - futures in `init-key` and `halt-key!` for parallel initialization."
   (:require
     [app.lib.util.exec :as e]
-    [app.lib.util.logging-context :as logging-context]
+    [app.lib.util.mdc :as mdc]
     [clojure.tools.logging :as log]
     [integrant.core :as ig]))
 
@@ -15,7 +15,7 @@
 (defn- init-key
   "Wrapped version of integrant's `init-key` with logging."
   [key value]
-  (logging-context/with-logging-context {:init key}
+  (mdc/wrap-with-map {:init key}
     (log/info ">> starting.." key)
     (ig/init-key key value)))
 
@@ -23,7 +23,7 @@
 (defn- resume-key
   "Wrapped version of integrant's `resume-key` with logging."
   [key value old-value old-impl]
-  (logging-context/with-logging-context {:resume key}
+  (mdc/wrap-with-map {:resume key}
     (log/info ">> resuming.." key)
     (ig/resume-key key value old-value old-impl)))
 
@@ -46,7 +46,7 @@
     [key value]
     (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key key))
                            (e/test-pred not-default-halt-key?))]
-      (logging-context/with-logging-context {:halt key}
+      (mdc/wrap-with-map {:halt key}
         (log/info ">> stopping.." key)
         (e/try-ignore
           ; Wait for future values to complete.
@@ -70,18 +70,18 @@
                                (e/test-pred not-default-suspend-key?))
                            (-> (get-method ig/halt-key! (#'ig/normalize-key key))
                                (e/test-pred not-default-halt-key?)))]
-      (logging-context/with-logging-context {:suspend key}
-       (log/info ">> suspending.." key)
-       (e/try-ignore
-         ; Wait for future values to complete.
-         ; Ignore errors, they are reported by `init`.
-         (when (future? value)
-           (deref value))
-         (let [ret (e/try-log-error ["Suspending" key]
-                     (method key value))]
-           (when (future? ret)
-             (swap! var'futures conj [key ret]))
-           ret))))))
+      (mdc/wrap-with-map {:suspend key}
+        (log/info ">> suspending.." key)
+        (e/try-ignore
+          ; Wait for future values to complete.
+          ; Ignore errors, they are reported by `init`.
+          (when (future? value)
+            (deref value))
+          (let [ret (e/try-log-error ["Suspending" key]
+                      (method key value))]
+            (when (future? ret)
+              (swap! var'futures conj [key ret]))
+            ret))))))
 
 
 (defn- ex-in-future
@@ -137,7 +137,7 @@
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [var'futures (atom [])]
      (ig/reverse-run! system keys (fn'halt-key! var'futures))
-     (await-futures @var'futures (fn [ex key] (logging-context/with-logging-context {:halt key}
+     (await-futures @var'futures (fn [ex key] (mdc/wrap-with-map {:halt key}
                                                 (e/log-error ex "Stopping" key)))))))
 
 
@@ -150,7 +150,7 @@
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [var'futures (atom [])]
      (ig/reverse-run! system keys (fn'suspend-key! var'futures))
-     (await-futures @var'futures (fn [ex key] (logging-context/with-logging-context {:suspend key}
+     (await-futures @var'futures (fn [ex key] (mdc/wrap-with-map {:suspend key}
                                                 (e/log-error ex "Suspending" key)))))))
 
 
@@ -197,7 +197,7 @@
   ([config system-keys]
    {:pre [(map? config)]}
    (build config system-keys init-key
-          (fn [ex key] (logging-context/with-logging-context {:init key}
+          (fn [ex key] (mdc/wrap-with-map {:init key}
                          (e/log-error ex "Starting" key)))
           #'ig/assert-pre-init-spec)))
 
@@ -222,5 +222,5 @@
                       (resume-key k v (-> system meta ::ig/build (get k)) (system k))
                       (init-key k v)))
           (fn [ex key]
-            (logging-context/with-logging-context {:resume key}
+            (mdc/wrap-with-map {:resume key}
               (e/log-error ex "Resuming" key))))))

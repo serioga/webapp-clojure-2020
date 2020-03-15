@@ -1,4 +1,4 @@
-(ns app.lib.util.logging-context
+(ns app.lib.util.mdc
   "MDC logging context."
   (:import
     (java.util Map)
@@ -7,7 +7,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn add-logging-context
+(defn add-context-map
   "Add keys/values from Clojure/Java map to logging context (as side-effect)."
   [m]
   (cond
@@ -23,22 +23,23 @@
     :else nil))
 
 
-(defn get-logging-context
-  "Get logging contexts as Java (not Clojure!) map."
+(defn get-context-map
+  "Return a copy of the current thread's context map,
+   with keys and values of type String.
+   Returned value may be null."
   ^Map []
   (MDC/getCopyOfContextMap))
 
 
-(defmacro with-logging-context
-  "Execute `body` wrapped with added logging context map.
-   Restore logging context at the end."
+(defmacro wrap-with-map
+  "Execute `body` wrapped with added context map.
+   Restore context map at the end."
   [context-map & body]
   `(let [context-map# ~context-map
          old-context# (MDC/getCopyOfContextMap)]
      (try
-       (add-logging-context context-map#)
+       (add-context-map context-map#)
        ~@body
        (finally
-         (if old-context#
-           (MDC/setContextMap old-context#)
-           (MDC/clear))))))
+         (if old-context# (MDC/setContextMap old-context#)
+                          (MDC/clear))))))

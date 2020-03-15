@@ -2,7 +2,7 @@
   "Execution control utility."
   (:refer-clojure :exclude [future, ex-info])
   (:require
-    [app.lib.util.logging-context :as mdc]
+    [app.lib.util.mdc :as mdc]
     [clojure.tools.logging :as log]))
 
 (set! *warn-on-reflection* true)
@@ -276,10 +276,10 @@
 (defmacro future
   "Same as `clojure.core/future` but preserving MDC context."
   [& body]
-  `(let [ctx# (mdc/get-logging-context)]
+  `(let [ctx# (mdc/get-context-map)]
      (clojure.core/future
-       (mdc/with-logging-context ctx#
-                                 ~@body))))
+       (mdc/wrap-with-map ctx#
+         ~@body))))
 
 
 (defmacro thread-off
@@ -302,8 +302,8 @@
      nil))
 
 (comment
-  (mdc/with-logging-context {:outside 1}
-                            (future (log/error "inside")))
+  (mdc/wrap-with-map {:outside 1}
+    (future (log/error "inside")))
 
   (macroexpand '(thread-off :msg :body-a :body-b :body-c))
 
