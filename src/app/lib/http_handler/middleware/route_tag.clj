@@ -1,6 +1,6 @@
 (ns app.lib.http-handler.middleware.route-tag
   (:require
-    [app.lib.util.perf :as perf]
+    [app.lib.util.perf :as p]
     [reitit.core :as reitit]))
 
 (set! *warn-on-reflection* true)
@@ -53,13 +53,13 @@
     (let [{:keys [path-params], {:keys [name]} :data}
           (reitit/match-by-path reitit-router, uri)]
 
-      (handler (cond-> (perf/fast-assoc request
+      (handler (cond-> (p/fast-assoc request
                          :route-tag/path-for-route (fn'path-for-route reitit-router))
 
                  (some? name)
-                 (perf/fast-assoc :route-tag name)
+                 (p/fast-assoc :route-tag name)
 
-                 (perf/not-empty-coll? path-params)
+                 (p/not-empty-coll? path-params)
                  (update :params (fn merge-route-params [params]
-                                   (perf/fast-merge params path-params))))))))
+                                   (p/fast-merge params path-params))))))))
 

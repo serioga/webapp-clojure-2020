@@ -4,7 +4,7 @@
    See `dev` namespace as initial for development."
   (:require
     [app.app-system.core :as app-system]
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.tools.logging :as log])
   (:import
     (org.slf4j.bridge SLF4JBridgeHandler))
@@ -17,7 +17,7 @@
 (Thread/setDefaultUncaughtExceptionHandler
   (reify Thread$UncaughtExceptionHandler
     (uncaughtException [_ _ ex]
-      (exec/log-error ex))))
+      (e/log-error ex))))
 
 (SLF4JBridgeHandler/removeHandlersForRootLogger)
 (SLF4JBridgeHandler/install)

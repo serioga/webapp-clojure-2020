@@ -1,6 +1,6 @@
 (ns app.lib.http-handler.middleware.debug-response
   (:require
-    [app.lib.util.perf :as perf]
+    [app.lib.util.perf :as p]
     [app.lib.util.ring :as ring-util]
     [clojure.tools.logging :as log]))
 
@@ -15,26 +15,26 @@
                 server-name]} request
         {:keys [status]} response
         uri (ring-util/request-uri request)]
-    (perf/inline-str "HTTP " status " < "
-                     server-name " " route-tag " " request-method " " uri " " params
-                     " (" time-millis " ms)")))
+    (p/inline-str "HTTP " status " < "
+                  server-name " " route-tag " " request-method " " uri " " params
+                  " (" time-millis " ms)")))
 
 
 (defn- session-update-description [response]
   (when-let [session (:session response)]
     (if (:recreate (meta session))
-      (perf/inline-str "Recreate :session " session)
-      (perf/inline-str "Update :session " session))))
+      (p/inline-str "Recreate :session " session)
+      (p/inline-str "Update :session " session))))
 
 
 (defn- flash-update-description [response]
   (when-let [flash (:flash response)]
-    (perf/inline-str "Set :flash " flash)))
+    (p/inline-str "Set :flash " flash)))
 
 
 (defn- cookies-update-description [response]
   (when-let [cookies (:cookies response)]
-    (perf/inline-str "Set :cookies " cookies)))
+    (p/inline-str "Set :cookies " cookies)))
 
 
 (defn wrap-debug-response

@@ -1,7 +1,7 @@
 (ns app.lib.http-handler.middleware.logging-context
   (:require
     [app.lib.util.logging-context :as logging-context]
-    [app.lib.util.perf :as perf])
+    [app.lib.util.perf :as p])
   (:import
     (java.util UUID)))
 
@@ -13,6 +13,6 @@
   [handler]
   (fn [request]
     (logging-context/with-logging-context (-> request
-                                              (perf/fast-select-keys [:server-name :route-tag :session])
-                                              (perf/fast-assoc :request-id (UUID/randomUUID)))
+                                              (p/fast-select-keys [:server-name :route-tag :session])
+                                              (p/fast-assoc :request-id (UUID/randomUUID)))
       (handler request))))
