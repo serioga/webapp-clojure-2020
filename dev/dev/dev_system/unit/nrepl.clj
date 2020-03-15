@@ -28,9 +28,9 @@
   (nrepl/stop-server server))
 
 
-#_(comment
-    (time (let [server (time (start-server {}))]
-            (time (stop-server server)))))
+(comment
+  (time (let [server (time (start-server {}))]
+          (time (stop-server server)))))
 
 
 (defmethod ig/init-key :dev-system/ref'nrepl

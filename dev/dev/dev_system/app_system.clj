@@ -24,11 +24,11 @@
                                     (conj user-file))
       :else user-file)))
 
-#_(comment
-    (prepare-prop-files nil)
-    (prepare-prop-files "dev-resources/dev/config/default.props")
-    (prepare-prop-files ["dev-resources/dev/config/default.props"])
-    (prepare-prop-files '("dev-resources/dev/config/default.props")))
+(comment
+  (prepare-prop-files nil)
+  (prepare-prop-files "dev-resources/dev/config/default.props")
+  (prepare-prop-files ["dev-resources/dev/config/default.props"])
+  (prepare-prop-files '("dev-resources/dev/config/default.props")))
 
 
 (defn- wrap-webapp-handler
@@ -83,14 +83,14 @@
   (ring-refresh/send-refresh! true))
 
 
-#_(comment
-    (time (keys (start!)))
-    (time (suspend!))
-    (time (keys (resume!)))
-    (time (do
-            (suspend!)
-            (keys (resume!))))
-    (time (stop!))
+(comment
+  (time (keys (start!)))
+  (time (suspend!))
+  (time (keys (resume!)))
+  (time (do
+          (suspend!)
+          (keys (resume!))))
+  (time (stop!))
 
-    (time (meta @(:app-system.service/ref'immutant-web
-                   (start! {:system-keys [:app-system.service/ref'immutant-web]})))))
+  (time (meta @(:app-system.service/ref'immutant-web
+                 (start! {:system-keys [:app-system.service/ref'immutant-web]})))))

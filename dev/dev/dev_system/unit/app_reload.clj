@@ -86,18 +86,18 @@
         (with-meta {:reload-on-enter (fn [] (reload-on-enter app-reload))}))))
 
 
-#_(comment
-    (def test-handler (time (watcher-handler {:ns-tracker-dirs ["src" "dev"]
-                                              :app-start (fn [] (println "SYSTEM START"))
-                                              :app-stop (fn [] (println "SYSTEM STOP"))
-                                              :always-reload-ns []})))
+(comment
+  (def test-handler (time (watcher-handler {:ns-tracker-dirs ["src" "dev"]
+                                            :app-start (fn [] (println "SYSTEM START"))
+                                            :app-stop (fn [] (println "SYSTEM STOP"))
+                                            :always-reload-ns []})))
 
-    (def test-handler (time (watcher-handler {:ns-tracker-dirs ["src" "dev"]
-                                              :app-start (fn [] (e/throw-ex-info "SYSTEM START FAILURE"))
-                                              :app-stop (fn [] (println "SYSTEM STOP"))
-                                              :always-reload-ns []})))
+  (def test-handler (time (watcher-handler {:ns-tracker-dirs ["src" "dev"]
+                                            :app-start (fn [] (e/throw-ex-info "SYSTEM START FAILURE"))
+                                            :app-stop (fn [] (println "SYSTEM STOP"))
+                                            :always-reload-ns []})))
 
-    (time (test-handler "Testing")))
+  (time (test-handler "Testing")))
 
 
 (defmethod ig/init-key :dev-system/app-reload

@@ -28,17 +28,17 @@
     (with-meta merged (meta loaded))))
 
 
-#_(comment
-    (into (sorted-map)
-          (ig/init-key :app-system.service/app-config
-                       {:prop-files "dev-resources/dev/config/default.props"
-                        :prop-defaults {"xxx" :xxx
-                                        "Vk.App.Id" nil}
-                        :conform-rules {"Mailer.Smtp.Port" :edn
-                                        "Mailer.Smtp.Options" :edn
-                                        #"System\.Switch\..+" :edn
-                                        #"Webapp\.Hosts\(.+\)" :set}})))
+(comment
+  (into (sorted-map)
+        (ig/init-key :app-system.service/app-config
+                     {:prop-files "dev-resources/dev/config/default.props"
+                      :prop-defaults {"xxx" :xxx
+                                      "Vk.App.Id" nil}
+                      :conform-rules {"Mailer.Smtp.Port" :edn
+                                      "Mailer.Smtp.Options" :edn
+                                      #"System\.Switch\..+" :edn
+                                      #"Webapp\.Hosts\(.+\)" :set}})))
 
-#_(comment
-    (System/getProperties)
-    (System/getenv))
+(comment
+  (System/getProperties)
+  (System/getenv))

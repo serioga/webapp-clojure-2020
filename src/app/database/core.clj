@@ -61,5 +61,5 @@
 (hugsql/declare-fn example-user--select :example-user/_)
 
 
-#_(comment
-    (with-read-only example-user--select))
+(comment
+  (with-read-only example-user--select))

@@ -74,5 +74,5 @@
         formatter DateTimeFormatter/RFC_1123_DATE_TIME]
     (.format formatter d)))
 
-#_(comment
-    (instant->http-date (Instant/now)))
+(comment
+  (instant->http-date (Instant/now)))

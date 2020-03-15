@@ -150,14 +150,14 @@
          (reset! var'app-system (ig-util/resume config, system, (or system-keys (keys system))))))
      (start! options))))
 
-#_(comment
-    (time (keys (start!)))
-    (time (suspend!))
-    (time (keys (resume!)))
-    (time (do
-            (suspend!)
-            (keys (resume!))))
-    (time (stop!))
+(comment
+  (time (keys (start!)))
+  (time (suspend!))
+  (time (keys (resume!)))
+  (time (do
+          (suspend!)
+          (keys (resume!))))
+  (time (stop!))
 
-    (time (:app-system.service/ref'immutant-web (start! {:system-keys [:app-system.service/ref'immutant-web]}))))
+  (time (:app-system.service/ref'immutant-web (start! {:system-keys [:app-system.service/ref'immutant-web]}))))
 

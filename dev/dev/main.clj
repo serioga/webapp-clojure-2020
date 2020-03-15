@@ -54,6 +54,6 @@
   (init))
 
 
-#_(comment
-    (time (init))
-    (time (shutdown)))
+(comment
+  (time (init))
+  (time (shutdown)))

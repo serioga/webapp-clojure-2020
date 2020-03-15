@@ -66,12 +66,12 @@
   (deep-merge (or init-map {})
               (import-map import-keys import-from)))
 
-#_(comment
-    (deep-merge {:a true} {:a false})
-    (ig/init-key :app-system.core/init-map
-                 {:init-map {:x 0 :c {:x 1 :d true}}
-                  :import-from {"a" 1 "b" 2 "c.d" false}
-                  :import-keys {:a "a" :b "b" :c {:d "c.d"} :e "missing" :f (constantly :f)}}))
+(comment
+  (deep-merge {:a true} {:a false})
+  (ig/init-key :app-system.core/init-map
+               {:init-map {:x 0 :c {:x 1 :d true}}
+                :import-from {"a" 1 "b" 2 "c.d" false}
+                :import-keys {:a "a" :b "b" :c {:d "c.d"} :e "missing" :f (constantly :f)}}))
 
 
 (defmethod ig/init-key :app-system.core/system-property

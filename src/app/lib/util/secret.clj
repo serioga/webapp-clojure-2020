@@ -10,12 +10,12 @@
   Object
   (toString [_] "******"))
 
-#_(comment
-    (str (->Secret "xxx"))
-    (str "My secret: " (->Secret "xxx"))
-    (pr-str (->Secret "xxx"))
-    (.value (->Secret "xxx"))
-    (= (->Secret "xxx") (->Secret "xxx")))
+(comment
+  (str (->Secret "xxx"))
+  (str "My secret: " (->Secret "xxx"))
+  (pr-str (->Secret "xxx"))
+  (.value (->Secret "xxx"))
+  (= (->Secret "xxx") (->Secret "xxx")))
 
 
 (defn secret?
@@ -38,10 +38,10 @@
     (.value ^Secret value)
     value))
 
-#_(comment
-    (read-secret "xxx")
-    (read-secret (->Secret "xxx"))
-    (t/test-var #'read-secret))
+(comment
+  (read-secret "xxx")
+  (read-secret (->Secret "xxx"))
+  (t/test-var #'read-secret))
 
 
 (t/deftest secret-test
@@ -52,5 +52,5 @@
     (t/is (= v
              (read-secret test)))))
 
-#_(comment
-    (test'secret))
+(comment
+  (secret-test))

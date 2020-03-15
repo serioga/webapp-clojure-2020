@@ -88,12 +88,12 @@
           deref))
 
 
-#_(comment
-    (time (let [system (start!)]
-            (keys system)))
+(comment
+  (time (let [system (start!)]
+          (keys system)))
 
-    (time (stop!))
+  (time (stop!))
 
-    (time (do
-            (start!)
-            (stop!))))
+  (time (do
+          (start!)
+          (stop!))))

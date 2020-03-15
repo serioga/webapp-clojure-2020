@@ -25,21 +25,21 @@
   (watch/stop-watcher watcher))
 
 
-#_(comment
-    (time (let [w (time (start-watcher (fn [& reason] (println reason))
+(comment
+  (time (let [w (time (start-watcher (fn [& reason] (println reason))
 
-                                       {:dirs ["src" "resources/app" "dev" "dev-resources/dev"]
+                                     {:dirs ["src" "resources/app" "dev" "dev-resources/dev"]
 
-                                        ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
-                                        ; :filter will pick out only files that match this pattern.
-                                        :files [".props$" ".clj$" ".cljc$" ".js$" ".xml$"
-                                                ".sql$" ".properties$" ".mustache$" ".yaml"]
+                                      ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
+                                      ; :filter will pick out only files that match this pattern.
+                                      :files [".props$" ".clj$" ".cljc$" ".js$" ".xml$"
+                                              ".sql$" ".properties$" ".mustache$" ".yaml"]
 
-                                        ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
-                                        ; :exclude will leave out files that match this pattern.
-                                        :exclude []}))]
+                                      ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
+                                      ; :exclude will leave out files that match this pattern.
+                                      :exclude []}))]
 
-            (time (stop-watcher w)))))
+          (time (stop-watcher w)))))
 
 
 (defn- wrap-handler-with-delay

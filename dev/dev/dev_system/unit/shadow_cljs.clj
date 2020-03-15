@@ -33,12 +33,12 @@
   (e/future (stop-shadow! @ref'system)))
 
 
-#_(comment
-    (server/start!)
-    (server/stop!)
-    (foo :example)
-    (shadow/compile :example)
-    (shadow/repl :example)
-    (shadow/watch :example)
-    (shadow/watch-compile-all!))
+(comment
+  (server/start!)
+  (server/stop!)
+  (foo :example)
+  (shadow/compile :example)
+  (shadow/repl :example)
+  (shadow/watch :example)
+  (shadow/watch-compile-all!))
 
