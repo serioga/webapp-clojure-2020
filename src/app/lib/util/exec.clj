@@ -1,16 +1,16 @@
 (ns app.lib.util.exec
   "Execution control utility."
+  (:refer-clojure :exclude [future, ex-info])
   (:require
-    [app.lib.util.logging-context :as logging-context]
-    [clojure.tools.logging :as log])
-  (:refer-clojure :exclude [future]))
+    [app.lib.util.logging-context :as mdc]
+    [clojure.tools.logging :as log]))
 
 (set! *warn-on-reflection* true)
 
 
-(defn when-pred
-  "Return `x` if `(pred x)` is truthy."
-  [pred x]
+(defn test-pred
+  "Return `x` when `(pred x)` is truthy."
+  [x pred]
   (when (pred x) x))
 
 
@@ -48,6 +48,7 @@
     ""))
 
 (comment
+  (require '[criterium.core])
   (criterium.core/quick-bench
     (print-str "a" nil "b" "" "c")
     #_"a nil b  c")
@@ -68,25 +69,27 @@
       msg)))
 
 (comment
-  (ex-message-all
-    (ex-info "One" {:x :one} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three}))))
+  (ex-message-all (clojure.core/ex-info "One" {:x :one}
+                                        (clojure.core/ex-info "Two" {:x :two}
+                                                              (clojure.core/ex-info "Three" {:x :three}))))
   #_"One -> Two -> Three")
 
 
 (defn ex-root-cause
-  "Find root cause of exception."
+  "Find root cause for exception."
   [^Throwable ex]
   (if-let [cause (ex-cause ex)]
     (recur cause)
     ex))
 
 (comment
-  (ex-root-cause
-    (ex-info "One" {:x :one} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three})))))
+  (ex-root-cause (clojure.core/ex-info "One" {:x :one}
+                                       (clojure.core/ex-info "Two" {:x :two}
+                                                             (clojure.core/ex-info "Three" {:x :three})))))
 
 
 (defn throwable?
-  "Test if `x` is throwable."
+  "Test if `x` is `Throwable`."
   [x]
   (instance? Throwable x))
 
@@ -96,13 +99,15 @@
    All symbolic tokens are wrapped with `pr-str`."
   [tokens]
   (cond
-    (vector? tokens) `(print-str* ~@(let [wrap? (complement string?)
-                                          wrap-pr (fn [v] (if (wrap? v) (list pr-str v), v))]
-                                      (map wrap-pr tokens)))
-    :else `(str ~tokens)))
+    (vector? tokens)
+    `(print-str* ~@(let [wrap? (complement string?)
+                         wrap-pr (fn [v] (if (wrap? v) (list pr-str v), v))]
+                     (map wrap-pr tokens)))
+    :else
+    `(str ~tokens)))
 
 (comment
-  (expand-msg* ["a" "b" "c" 'd (do "e") {:f "f"}])
+  (expand-msg* ["a" "b" "c" 'd (str "e") {:f "f"}])
   #_"a b c d \"e\" {:f \"f\"}"
   (expand-msg* (str 1 2 3))
   #_"123"
@@ -113,13 +118,14 @@
         z :z]
     (expand-msg* [1 2 3 x y z {:a "1"}]))
   #_"1 2 3 {:a \"1\"} \"y\" :z {:a \"1\"}"
-  (ex-info (expand-msg* [1 2 3 4 5 {1 2}]) {}))
+  (clojure.core/ex-info (expand-msg* [1 2 3 4 5 {1 2}]) {}))
 
 
 (defn ex-data->log-str
-  "Format ex-data as string for logging."
+  "Convert ex-data to string for logging."
   [ex-data]
-  (when (and (map? ex-data), (pos? (count ex-data)))
+  (when (and (map? ex-data)
+             (pos? (count ex-data)))
     (print-str* "~//~" (pr-str ex-data))))
 
 
@@ -139,71 +145,73 @@
        (log/error ex# msg#))))
 
 (comment
-  (log-error (ex-info "One" {:x :one :y "y"} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three})))
+  (log-error (clojure.core/ex-info "One" {:x :one :y "y"}
+                                   (clojure.core/ex-info "Two" {:x :two}
+                                                         (clojure.core/ex-info "Three" {:x :three})))
              "A" "B" "C" (str "D" "E" "F"))
-  #_"A B C \"DEF\" -> One -> Two -> Three ~//~ {:x :one}"
-  (log-error (ex-info "One" {:x :one} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three})))
+  #_"A B C \"DEF\" -> One -> Two -> Three ~//~ {:x :one, :y \"y\"}"
+  (log-error (clojure.core/ex-info "One" {:x :one}
+                                   (clojure.core/ex-info "Two" {:x :two}
+                                                         (clojure.core/ex-info "Three" {:x :three})))
              ["A" "B" "C" (str "D" "E" "F")])
   #_"[\"A\" \"B\" \"C\" \"DEF\"] -> One -> Two -> Three ~//~ {:x :one}"
-  (log-error (ex-info "One" {:x :one} (ex-info "Two" {:x :two} (ex-info "Three" {:x :three}))))
+  (log-error (clojure.core/ex-info "One" {:x :one}
+                                   (clojure.core/ex-info "Two" {:x :two}
+                                                         (clojure.core/ex-info "Three" {:x :three}))))
   #_"One -> Two -> Three ~//~ {:x :one}")
 
 
-(defmacro throw-ex-info
-  "Throw ex-info.
-   Create message from separate tokens similar to `print`.
-   Attach last item of `msg+data` as ex-data if it is inline map.
-   Accept optional exception to rethrow as first argument.
-   Merge ex-data of the optional exception."
-  {:arglists '([msg*, ex-data-map?]
-               [exception, msg*, ex-data-map?])}
-  [ex & msg+data]
-  (let [msg (vec msg+data)
-        data (peek msg)
-        data (when (map? data) data)
-        msg (cond-> msg data (pop))
-        data (or data {})]
-    `(let [ex# ~ex
-           msg# (expand-msg* ~msg)]
-       (if (throwable? ex#)
-         (throw (ex-info msg# (merge (ex-data ex#) ~data) ex#))
-         (throw (ex-info (print-str* ex# msg#) ~data))))))
+(defmacro ex-info
+  "Same as `ex-info`, plus:
+   - expands vector in `msg` to message string;
+   - merges ex-data of `cause` to `map`."
+  ([msg] `(ex-info ~msg {}))
+  ([msg map]
+   `(clojure.core/ex-info (expand-msg* ~msg) ~map))
+  ([msg map cause]
+   `(let [cause# ~cause]
+      (clojure.core/ex-info (expand-msg* ~msg)
+                            (merge (ex-data cause#) ~map)
+                            cause#))))
 
 (comment
-  (throw-ex-info "a" "b" "c" (inc 1))
-  (throw-ex-info "a" "b" "c" (inc 1) {:test (inc 2)})
-  (throw-ex-info (ex-info "Cause" {}) "a" "b" "c" (inc 1) {:test (inc 2)})
-  (try
-    (throw-ex-info "a" "b" "c" (inc 1) {:test (inc 2)})
-    (catch Throwable ex
-      (ex-message-all ex)))
-  #_"a b c 2"
-  (try
-    (throw-ex-info (ex-info "Cause" {}) "a" "b" "c" (inc 1) {:test (inc 2)})
-    (catch Throwable ex
-      (ex-message-all ex)))
-  #_"a b c 2 -> Cause"
-  (macroexpand '(throw-ex-info "a" "b" "c" (inc 1) {:test (inc 2)})))
+  (ex-info (vec ["a" "b" "c" 'd (str "e") {:f "f"}]))
+  #_"[\"a\" \"b\" \"c\" d \"e\" {:f \"f\"}]"
+  (ex-info ["a" "b" "c" 'd (str "e") {:f "f"}])
+  #_"a b c d \"e\" {:f \"f\"}"
+  (ex-info (str 1 2 3))
+  #_"123"
+  (ex-info :a)
+  #_":a"
+  (let [x {:a "1"}
+        y "y"
+        z :z]
+    (ex-info [1 2 3 x y z {:a "1"}]))
+  #_"1 2 3 {:a \"1\"} \"y\" :z {:a \"1\"}"
+  (ex-info (expand-msg* [1 2 3 4 5 {1 2}]) {}))
 
 
 (defmacro try-wrap-ex
   "Execute throwable block of code.
-   Catch exception and throw a new one with original as a cause."
-  {:arglists '([[msg* ex-data-map?] body*]
-               [msg body*])}
-  [msg+data & body]
-  (let [msg+data (cond-> msg+data
-                   (not (vector? msg+data)) (vector))]
+   Catch exception and throw a new one with original as a cause.
+   `ex-args` is a string or vector of args to `ex-info`."
+  [ex-args & body]
+  (let [ex-args (cond-> ex-args
+                  (not (vector? ex-args)), (vector))
+        ex-args (cond-> ex-args
+                  (not (second ex-args)), (conj {}))]
+    (assert (>= 2 (count ex-args))
+            (str "Too many ex-info args in " ex-args))
     `(try
        ~@body
        (catch Throwable ex#
-         (throw-ex-info ex# ~@msg+data)
+         (throw (ex-info ~@ex-args ex#))
          nil))))
 
 (comment
   (try
-    (try-wrap-ex ["Wrap context" (str 1 2 3) {:test true}]
-      (throw-ex-info "Inner exception"))
+    (try-wrap-ex [["Wrap context" (str 1 2 3)] {:test true}]
+      (throw (ex-info "Inner exception" {:inner true})))
     (catch Throwable ex
       (log-error ex)
       [(ex-message-all ex) (ex-data ex)]))
@@ -211,7 +219,7 @@
 
   (try
     (try-wrap-ex "Wrap context"
-      (throw-ex-info "Inner exception"))
+      (throw (ex-info "Inner exception")))
     (catch Throwable ex
       (log-error ex)
       [(ex-message-all ex) (ex-data ex)]))
@@ -237,42 +245,41 @@
 (defmacro try-log-error
   "Execute throwable block of code.
    Catch any exceptions.
-   Log error and return `nil` on exception."
-  {:arglists '([[msg* _], body*]
-               [msg body*])}
-  [msg+data & body]
-  (let [msg+data (cond-> msg+data
-                   (not (vector? msg+data)) (vector))]
+   Log error and return `nil` on exception.
+   `error-log-args` is a string or vector of args to `log-error`."
+  [error-log-args & body]
+  (let [error-log-args (cond-> error-log-args
+                         (not (vector? error-log-args)) (vector))]
     `(try
        ~@body
        (catch Throwable ex#
-         (log-error ex# ~@msg+data)
+         (log-error ex# ~@error-log-args)
          nil))))
 
 (comment
   (macroexpand '(try-log-error ["A" "B"] :body))
   (try-log-error ["Context message" 'log/error [1 "2" 3] {}]
-    (throw-ex-info "Test" "throw-ex-info" {:test-data "123"})
-    (throw-ex-info "Test" "throw-ex-info")
+    (throw (ex-info ["Test" "throw ex-info"] {:test-data "123"}))
+    (throw (ex-info ["Test" "throw ex-info"]))
     (throw (ex-info "Test ex-info" {}))
     (throw (Exception. "Test exception")))
-  #_"Context message log/error [1 \"2\" 3] {} -> Test throw-ex-info ~//~ {:test-data \"123\"}"
+  #_"Context message log/error [1 \"2\" 3] {} -> Test throw ex-info ~//~ {:test-data \"123\"}"
 
   (try-log-error "Context message"
-    (throw-ex-info "Test" "throw-ex-info" {:test-data "123"})
-    (throw-ex-info "Test" "throw-ex-info")
+    (throw (ex-info ["Test" "throw ex-info"] {:test-data "123"}))
+    (throw (ex-info ["Test" "throw ex-info"]))
     (throw (ex-info "Test ex-info" {}))
     (throw (Exception. "Test exception")))
-  #_"Context message -> Test throw-ex-info ~//~ {:test-data \"123\"}")
+  #_"Context message -> Test throw ex-info ~//~ {:test-data \"123\"}")
 
 
 (defmacro future
-  "Same as `clojure.core/future` but preserving MDC logging context."
+  "Same as `clojure.core/future` but preserving MDC context."
   [& body]
-  `(let [ctx# (logging-context/get-logging-context)]
+  `(let [ctx# (mdc/get-logging-context)]
      (clojure.core/future
-       (logging-context/with-logging-context ctx#
-         ~@body))))
+       (mdc/with-logging-context ctx#
+                                 ~@body))))
 
 
 (defmacro thread-off
@@ -295,19 +302,19 @@
      nil))
 
 (comment
-  (logging-context/with-logging-context {:outside 1}
-    (future (log/error "inside")))
+  (mdc/with-logging-context {:outside 1}
+                            (future (log/error "inside")))
 
   (macroexpand '(thread-off :msg :body-a :body-b :body-c))
 
   (thread-off ["Test message"]
     (println "xxx")
-    (throw-ex-info "Test" "exception"))
+    (throw (ex-info ["Test" "exception"])))
 
   (thread-off 'thread-off
     (println "xxx")
-    (throw-ex-info "Test" "exception"))
+    (throw (ex-info ["Test" "exception"])))
 
   (thread-off!
-    (throw-ex-info "Test" "exception")
+    (throw (ex-info ["Test" "exception"]))
     (println "xxx")))

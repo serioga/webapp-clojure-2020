@@ -44,8 +44,8 @@
   [var'futures]
   (fn halt-key!
     [key value]
-    (when-some [method (e/when-pred not-default-halt-key?
-                                    (get-method ig/halt-key! (#'ig/normalize-key key)))]
+    (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key key))
+                           (e/test-pred not-default-halt-key?))]
       (logging-context/with-logging-context {:halt key}
         (log/info ">> stopping.." key)
         (e/try-ignore
@@ -66,22 +66,22 @@
   [var'futures]
   (fn suspend-key!
     [key value]
-    (when-some [method (or (e/when-pred not-default-suspend-key?
-                                        (get-method ig/suspend-key! (#'ig/normalize-key key)))
-                           (e/when-pred not-default-halt-key?
-                                        (get-method ig/halt-key! (#'ig/normalize-key key))))]
+    (when-some [method (or (-> (get-method ig/suspend-key! (#'ig/normalize-key key))
+                               (e/test-pred not-default-suspend-key?))
+                           (-> (get-method ig/halt-key! (#'ig/normalize-key key))
+                               (e/test-pred not-default-halt-key?)))]
       (logging-context/with-logging-context {:suspend key}
-        (log/info ">> suspending.." key)
-        (e/try-ignore
-          ; Wait for future values to complete.
-          ; Ignore errors, they are reported by `init`.
-          (when (future? value)
-            (deref value))
-          (let [ret (e/try-log-error ["Suspending" key]
-                      (method key value))]
-            (when (future? ret)
-              (swap! var'futures conj [key ret]))
-            ret))))))
+       (log/info ">> suspending.." key)
+       (e/try-ignore
+         ; Wait for future values to complete.
+         ; Ignore errors, they are reported by `init`.
+         (when (future? value)
+           (deref value))
+         (let [ret (e/try-log-error ["Suspending" key]
+                     (method key value))]
+           (when (future? ret)
+             (swap! var'futures conj [key ret]))
+           ret))))))
 
 
 (defn- ex-in-future
@@ -111,10 +111,10 @@
     (doseq [[key ex] failed]
       (log-key-error ex key))
     (let [failed-keys (map first failed)]
-      (e/throw-ex-info "Errors on keys" failed-keys "when building system"
-                       {:reason ::failed-futures
-                        :system system
-                        :failed-keys failed-keys}))))
+      (throw (e/ex-info ["Errors on keys" failed-keys "when building system"]
+                        {:reason ::failed-futures
+                         :system system
+                         :failed-keys failed-keys})))))
 
 
 (defn- await-futures

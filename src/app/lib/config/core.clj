@@ -11,7 +11,7 @@
   [config key]
   (if (contains? config key)
     (config key)
-    (e/throw-ex-info "Missing configuration property" (pr-str key))))
+    (throw (e/ex-info ["Missing configuration property" key]))))
 
 
 (defn get-optional

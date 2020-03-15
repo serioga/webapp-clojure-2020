@@ -57,7 +57,7 @@
   [_ {:keys [handler, options, run-handler-on-init?]}]
   (e/future (let [watcher (start-watcher (wrap-handler-with-delay handler) options)]
               (when run-handler-on-init?
-                (e/try-wrap-ex ["Run handler on init" handler (pr-str options)]
+                (e/try-wrap-ex "Run handler on init"
                   (handler :init-watcher)))
               watcher)))
 

@@ -28,8 +28,8 @@
   [name]
   (let [path (str sql-rc-path name ".sql")
         body (slurp (or (io/resource path)
-                        (e/throw-ex-info "Missing SQL query file" path
-                                         {:name name :resource-path path})))]
+                        (throw (e/ex-info ["Missing SQL query file" path]
+                                          {:name name :resource-path path}))))]
     (str "-- :name " name "\r\n" body)))
 
 

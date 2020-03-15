@@ -67,7 +67,7 @@
               (Thread/sleep 200)                            ; pause just in case if several files were updated
               (log/info reason)
               (log/info "[START]" "Application reload")
-              (e/try-log-error ["Stop application before namespace reloading"]
+              (e/try-log-error "Stop application before namespace reloading"
                 (stop))
               (if-some [reload-errors (seq (reload-modified-namespaces ns-tracker always-reload-ns))]
                 (do
@@ -93,7 +93,7 @@
                                             :always-reload-ns []})))
 
   (def test-handler (time (watcher-handler {:ns-tracker-dirs ["src" "dev"]
-                                            :app-start (fn [] (e/throw-ex-info "SYSTEM START FAILURE"))
+                                            :app-start (fn [] (throw (e/ex-info "SYSTEM START FAILURE")))
                                             :app-stop (fn [] (println "SYSTEM STOP"))
                                             :always-reload-ns []})))
 
