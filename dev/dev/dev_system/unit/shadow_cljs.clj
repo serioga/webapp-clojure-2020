@@ -1,6 +1,6 @@
 (ns dev.dev-system.unit.shadow-cljs
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
     [integrant.core :as ig]
     [shadow.cljs.devtools.api :as shadow]
@@ -25,12 +25,12 @@
 
 (defmethod ig/init-key :dev-system/ref'shadow-cljs
   [_ options]
-  (exec/future (start-shadow! options)))
+  (e/future (start-shadow! options)))
 
 
 (defmethod ig/halt-key! :dev-system/ref'shadow-cljs
   [_ ref'system]
-  (exec/future (stop-shadow! @ref'system)))
+  (e/future (stop-shadow! @ref'system)))
 
 
 #_(comment

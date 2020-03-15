@@ -1,7 +1,7 @@
 (ns app.app-system.impl
   "Service functions to implement app-system."
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
     [integrant.core :as ig]))
 
@@ -101,6 +101,6 @@
   (when (seq await-for)
     (log/debug "Await before start" (keys await-for))
     (doseq [[k v] await-for]
-      (exec/try-log-error ["Await for" k]
+      (e/try-log-error ["Await for" k]
         (when (future? v)
           (deref v))))))

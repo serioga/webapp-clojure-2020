@@ -1,6 +1,6 @@
 (ns dev.dev-system.unit.watcher
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
     [hara.io.watch :as watch]
     [integrant.core :as ig]))
@@ -55,13 +55,13 @@
 
 (defmethod ig/init-key :dev-system/ref'watcher
   [_ {:keys [handler, options, run-handler-on-init?]}]
-  (exec/future (let [watcher (start-watcher (wrap-handler-with-delay handler) options)]
-                 (when run-handler-on-init?
-                   (exec/try-wrap-ex ["Run handler on init" handler (pr-str options)]
-                     (handler :init-watcher)))
-                 watcher)))
+  (e/future (let [watcher (start-watcher (wrap-handler-with-delay handler) options)]
+              (when run-handler-on-init?
+                (e/try-wrap-ex ["Run handler on init" handler (pr-str options)]
+                  (handler :init-watcher)))
+              watcher)))
 
 
 (defmethod ig/halt-key! :dev-system/ref'watcher
   [_ ref'watcher]
-  (exec/future (stop-watcher @ref'watcher)))
+  (e/future (stop-watcher @ref'watcher)))

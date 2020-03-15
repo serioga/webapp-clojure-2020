@@ -1,6 +1,6 @@
 (ns app.lib.http-handler.middleware.exceptions
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [app.lib.util.ring :as ring-util]))
 
 (set! *warn-on-reflection* true)
@@ -10,7 +10,7 @@
   [^Throwable ex, dev-mode?]
   (let [status 500
         message (str "[HTTP " status "] "
-                     (exec/ex-message-all ex)
+                     (e/ex-message-all ex)
                      (when dev-mode?
                        (str "\n\n" "---" "\n"
                             "Default exception handler, dev mode."
@@ -26,5 +26,5 @@
     (try
       (handler request)
       (catch Throwable ex
-        (exec/log-error ex)
+        (e/log-error ex)
         (response ex, dev-mode?)))))

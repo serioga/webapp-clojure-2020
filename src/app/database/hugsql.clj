@@ -1,7 +1,7 @@
 (ns app.database.hugsql
   (:require
     [app.database.result-set :as rs]
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.java.io :as io]
     [hugsql.adapter.next-jdbc :as hugsql-adapter]
     [hugsql.core :as hugsql]))
@@ -28,8 +28,8 @@
   [name]
   (let [path (str sql-rc-path name ".sql")
         body (slurp (or (io/resource path)
-                        (exec/throw-ex-info "Missing SQL query file" path
-                                            {:name name :resource-path path})))]
+                        (e/throw-ex-info "Missing SQL query file" path
+                                         {:name name :resource-path path})))]
     (str "-- :name " name "\r\n" body)))
 
 

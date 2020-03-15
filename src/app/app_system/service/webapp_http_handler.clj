@@ -1,6 +1,6 @@
 (ns app.app-system.service.webapp-http-handler
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [app.web-example.core :as example]
     [integrant.core :as ig]))
 
@@ -14,7 +14,7 @@
 
 (defmethod webapp-http-handler :default
   [{:keys [name]}]
-  (exec/throw-ex-info "Webapp handler is not found for name" name))
+  (e/throw-ex-info "Webapp handler is not found for name" name))
 
 
 (defmethod webapp-http-handler "example"

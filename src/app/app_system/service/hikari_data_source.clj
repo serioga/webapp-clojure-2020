@@ -1,7 +1,7 @@
 (ns app.app-system.service.hikari-data-source
   (:require
     [app.lib.database.hikari-data-source :as data-source]
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
     [integrant.core :as ig])
   (:import
@@ -33,7 +33,7 @@
 
 (defmethod ig/init-key :app-system.service/ref'hikari-data-source
   [k {:keys [dev-mode?] :as options}]
-  (exec/future
+  (e/future
     (init-data-source (-> {:minimum-idle 1
                            :maximum-pool-size 10
                            :connection-timeout 5000
@@ -46,7 +46,7 @@
 
 (defmethod ig/halt-key! :app-system.service/ref'hikari-data-source
   [_ ref'ds]
-  (exec/future (close-data-source! @ref'ds)))
+  (e/future (close-data-source! @ref'ds)))
 
 
 (derive :app-system.service/ref'hikari-data-source

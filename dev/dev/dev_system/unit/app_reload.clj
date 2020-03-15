@@ -1,6 +1,6 @@
 (ns dev.dev-system.unit.app-reload
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.main :as main]
     [clojure.set :as set]
     [clojure.string :as string]
@@ -67,7 +67,7 @@
               (Thread/sleep 200)                            ; pause just in case if several files were updated
               (log/info reason)
               (log/info "[START]" "Application reload")
-              (exec/try-log-error ["Stop application before namespace reloading"]
+              (e/try-log-error ["Stop application before namespace reloading"]
                 (stop))
               (if-some [reload-errors (seq (reload-modified-namespaces ns-tracker always-reload-ns))]
                 (do
@@ -78,7 +78,7 @@
                   (start)
                   (log/info "[DONE]" "Application reload")
                   (catch Throwable ex
-                    (log/error (exec/ex-message-all ex))
+                    (log/error (e/ex-message-all ex))
                     (log/info "[FAIL]" "Application reload"))))
               (reset! var'reloading? false)
               (reload-on-enter app-reload))))]
@@ -93,7 +93,7 @@
                                               :always-reload-ns []})))
 
     (def test-handler (time (watcher-handler {:ns-tracker-dirs ["src" "dev"]
-                                              :app-start (fn [] (exec/throw-ex-info "SYSTEM START FAILURE"))
+                                              :app-start (fn [] (e/throw-ex-info "SYSTEM START FAILURE"))
                                               :app-stop (fn [] (println "SYSTEM STOP"))
                                               :always-reload-ns []})))
 

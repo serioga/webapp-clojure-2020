@@ -1,7 +1,7 @@
 (ns app.app-system.service.immutant-web
   (:require
     [app.app-system.impl :as impl]
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
     [immutant.web :as web]
     [integrant.core :as ig]))
@@ -49,9 +49,9 @@
 
 (defmethod ig/init-key :app-system.service/ref'immutant-web
   [_ options]
-  (exec/future (start-server options)))
+  (e/future (start-server options)))
 
 
 (defmethod ig/halt-key! :app-system.service/ref'immutant-web
   [_ ref'server]
-  (exec/future (stop-server @ref'server)))
+  (e/future (stop-server @ref'server)))

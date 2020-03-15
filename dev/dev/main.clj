@@ -3,7 +3,7 @@
    Not included to release application!
    See `core` namespace as initial release application."
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
     [dev.dev-system.app-system :as app-system]
     [dev.dev-system.core :as dev-system]))
@@ -14,10 +14,10 @@
 (defn- init
   []
   (try
-    (exec/try-wrap-ex ["Start development system" {:reason ::dev-system}]
+    (e/try-wrap-ex ["Start development system" {:reason ::dev-system}]
       (dev-system/start!))
 
-    (exec/try-wrap-ex ["Start application" {:reason ::app-system}]
+    (e/try-wrap-ex ["Start application" {:reason ::app-system}]
       (app-system/start!))
 
     (when-some [server (dev-system/nrepl-server)]
@@ -28,7 +28,7 @@
     (dev-system/reload-on-enter)
 
     (catch Throwable ex
-      (log/error (exec/ex-message-all ex))
+      (log/error (e/ex-message-all ex))
       (when (= ::app-system (:reason (ex-data ex)))
         (dev-system/reload-on-enter)))))
 

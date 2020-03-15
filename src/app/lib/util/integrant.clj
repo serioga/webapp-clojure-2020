@@ -4,7 +4,7 @@
    - system rollback on failures;
    - futures in `init-key` and `halt-key!` for parallel initialization."
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [app.lib.util.logging-context :as logging-context]
     [clojure.tools.logging :as log]
     [integrant.core :as ig]))
@@ -44,16 +44,16 @@
   [var'futures]
   (fn halt-key!
     [key value]
-    (when-some [method (exec/when-pred not-default-halt-key?
-                                       (get-method ig/halt-key! (#'ig/normalize-key key)))]
+    (when-some [method (e/when-pred not-default-halt-key?
+                                    (get-method ig/halt-key! (#'ig/normalize-key key)))]
       (logging-context/with-logging-context {:halt key}
         (log/info ">> stopping.." key)
-        (exec/try-ignore
+        (e/try-ignore
           ; Wait for future values to complete.
           ; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
-          (let [ret (exec/try-log-error ["Stopping" key]
+          (let [ret (e/try-log-error ["Stopping" key]
                       (method key value))]
             (when (future? ret)
               (swap! var'futures conj [key ret]))
@@ -66,18 +66,18 @@
   [var'futures]
   (fn suspend-key!
     [key value]
-    (when-some [method (or (exec/when-pred not-default-suspend-key?
-                                           (get-method ig/suspend-key! (#'ig/normalize-key key)))
-                           (exec/when-pred not-default-halt-key?
-                                           (get-method ig/halt-key! (#'ig/normalize-key key))))]
+    (when-some [method (or (e/when-pred not-default-suspend-key?
+                                        (get-method ig/suspend-key! (#'ig/normalize-key key)))
+                           (e/when-pred not-default-halt-key?
+                                        (get-method ig/halt-key! (#'ig/normalize-key key))))]
       (logging-context/with-logging-context {:suspend key}
         (log/info ">> suspending.." key)
-        (exec/try-ignore
+        (e/try-ignore
           ; Wait for future values to complete.
           ; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
-          (let [ret (exec/try-log-error ["Suspending" key]
+          (let [ret (e/try-log-error ["Suspending" key]
                       (method key value))]
             (when (future? ret)
               (swap! var'futures conj [key ret]))
@@ -111,10 +111,10 @@
     (doseq [[key ex] failed]
       (log-key-error ex key))
     (let [failed-keys (map first failed)]
-      (exec/throw-ex-info "Errors on keys" failed-keys "when building system"
-                          {:reason ::failed-futures
-                           :system system
-                           :failed-keys failed-keys}))))
+      (e/throw-ex-info "Errors on keys" failed-keys "when building system"
+                       {:reason ::failed-futures
+                        :system system
+                        :failed-keys failed-keys}))))
 
 
 (defn- await-futures
@@ -138,7 +138,7 @@
    (let [var'futures (atom [])]
      (ig/reverse-run! system keys (fn'halt-key! var'futures))
      (await-futures @var'futures (fn [ex key] (logging-context/with-logging-context {:halt key}
-                                                (exec/log-error ex "Stopping" key)))))))
+                                                (e/log-error ex "Stopping" key)))))))
 
 
 (defn suspend!
@@ -151,7 +151,7 @@
    (let [var'futures (atom [])]
      (ig/reverse-run! system keys (fn'suspend-key! var'futures))
      (await-futures @var'futures (fn [ex key] (logging-context/with-logging-context {:suspend key}
-                                                (exec/log-error ex "Suspending" key)))))))
+                                                (e/log-error ex "Suspending" key)))))))
 
 
 (defn build
@@ -180,7 +180,7 @@
                    (halt! (remove (set failed-keys) (keys system))))
            ; Unexpected exception
            :else
-           (log/error "Unexpected error when building system:" (exec/ex-message-all ex)))
+           (log/error "Unexpected error when building system:" (e/ex-message-all ex)))
          (throw ex))))))
 
 
@@ -198,7 +198,7 @@
    {:pre [(map? config)]}
    (build config system-keys init-key
           (fn [ex key] (logging-context/with-logging-context {:init key}
-                         (exec/log-error ex "Starting" key)))
+                         (e/log-error ex "Starting" key)))
           #'ig/assert-pre-init-spec)))
 
 
@@ -215,7 +215,7 @@
    (resume config system (keys config)))
   ([config system system-keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
-   (exec/try-log-error "Halt missing keys on resume"
+   (e/try-log-error "Halt missing keys on resume"
      (#'ig/halt-missing-keys! config system system-keys))
    (build config system-keys
           (fn [k v] (if (contains? system k)
@@ -223,4 +223,4 @@
                       (init-key k v)))
           (fn [ex key]
             (logging-context/with-logging-context {:resume key}
-              (exec/log-error ex "Resuming" key))))))
+              (e/log-error ex "Resuming" key))))))

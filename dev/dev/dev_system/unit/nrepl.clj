@@ -1,6 +1,6 @@
 (ns dev.dev-system.unit.nrepl
   (:require
-    [app.lib.util.exec :as exec]
+    [app.lib.util.exec :as e]
     [clojure.java.io :as io]
     [clojure.tools.logging :as log]
     [integrant.core :as ig]
@@ -35,7 +35,7 @@
 
 (defmethod ig/init-key :dev-system/ref'nrepl
   [_ options]
-  (exec/future (start-server options)))
+  (e/future (start-server options)))
 
 
 (defmethod ig/halt-key! :dev-system/ref'nrepl

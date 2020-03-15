@@ -1,6 +1,6 @@
 (ns app.lib.config.core
   (:require
-    [app.lib.util.exec :as exec]))
+    [app.lib.util.exec :as e]))
 
 (set! *warn-on-reflection* true)
 
@@ -11,7 +11,7 @@
   [config key]
   (if (contains? config key)
     (config key)
-    (exec/throw-ex-info "Missing configuration property" (pr-str key))))
+    (e/throw-ex-info "Missing configuration property" (pr-str key))))
 
 
 (defn get-optional
