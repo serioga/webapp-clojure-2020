@@ -1,4 +1,4 @@
-(ns app.lib.http-handler.middleware.default-not-found
+(ns app.lib.http-handler.middleware.error-not-found
   (:require
     [app.lib.util.ring :as ring-util]
     [clojure.pprint :as pprint]
@@ -7,8 +7,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn- default-not-found-response
-  "Default handler for resources with empty route-tag or empty response."
+(defn- response-error-not-found
   [request, dev-mode?]
   (-> (str "[HTTP 404] Resource not found.\n\n"
            "URL: "
@@ -22,8 +21,8 @@
       (ring-util/plain-text-response 404)))
 
 
-(defn wrap-default-not-found
+(defn wrap-error-not-found
   "Wrap handler with middleware replacing `nil` response with default."
   [handler, dev-mode?]
   (fn [request] (or (handler request)
-                    (default-not-found-response request, dev-mode?))))
+                    (response-error-not-found request, dev-mode?))))

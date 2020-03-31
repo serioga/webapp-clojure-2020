@@ -1,4 +1,4 @@
-(ns app.lib.http-handler.middleware.exceptions
+(ns app.lib.http-handler.middleware.error-exception
   (:require
     [app.lib.util.exec :as e]
     [app.lib.util.ring :as ring-util]))
@@ -6,7 +6,7 @@
 (set! *warn-on-reflection* true)
 
 
-(defn- response
+(defn- response-error-exception
   [^Throwable ex, dev-mode?]
   (let [status 500
         message (str "[HTTP " status "] "
@@ -19,7 +19,7 @@
     (ring-util/plain-text-response message status)))
 
 
-(defn wrap-exceptions
+(defn wrap-error-exception
   "Wrap handler with exception handler."
   [handler, dev-mode?]
   (fn [request]
@@ -27,4 +27,4 @@
       (handler request)
       (catch Throwable ex
         (e/log-error ex)
-        (response ex, dev-mode?)))))
+        (response-error-exception ex, dev-mode?)))))
