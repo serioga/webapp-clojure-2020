@@ -3,15 +3,15 @@
   :dependencies [; clojure
                  [org.clojure/clojure "1.10.1"]
                  ; clojure script
-                 [cljsjs/react "16.13.0-0"]
-                 [cljsjs/react-dom "16.13.0-0"]
-                 [org.clojure/clojurescript "1.10.597" :scope "provided"]
-                 [rum "0.11.4"]
+                 [cljsjs/react "16.13.1-0"]
+                 [cljsjs/react-dom "16.13.1-0"]
+                 [org.clojure/clojurescript "1.10.753" :scope "provided"]
+                 [rum "0.11.5"]
                  ; shadow cljs
-                 [com.google.javascript/closure-compiler-externs "v20191027" :scope "provided" :upgrade false]
-                 [com.google.javascript/closure-compiler-unshaded "v20191027" :scope "provided" :upgrade false]
+                 [com.google.javascript/closure-compiler-externs "v20200406" :scope "provided" :upgrade false]
+                 [com.google.javascript/closure-compiler-unshaded "v20200406" :scope "provided" :upgrade false]
                  [org.clojure/google-closure-library "0.0-20191016-6ae1f72f" :scope "provided"]
-                 [thheller/shadow-cljs "2.8.91" :scope "provided"]
+                 [thheller/shadow-cljs "2.8.109" :scope "provided"]
                  ; system
                  [integrant "0.8.0"]
                  [mount "0.1.16"]
@@ -42,7 +42,6 @@
                  [com.taoensso/truss "1.5.0"]
                  [commons-codec/commons-codec "1.14"]
                  [org.apache.commons/commons-lang3 "3.9"]
-                 [sablono "0.8.6"]
                  ; daemon
                  [commons-daemon/commons-daemon "1.2.2"]]
 
