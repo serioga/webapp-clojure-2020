@@ -3,7 +3,6 @@
     [next.jdbc.optional :as jdbc.rs]
     [taoensso.truss :as truss])
   (:import
-    (clojure.lang Named)
     (java.sql ResultSet ResultSetMetaData)))
 
 (set! *warn-on-reflection* true)
@@ -38,9 +37,8 @@
   that produces bare vectors of hash map rows, with namespaced keys and nil
   columns omitted."
   [ns-tag]
-  (let [column-ns (cond
-                    (instance? Named ns-tag) (namespace ns-tag)
-                    :else ns-tag)]
+  (let [column-ns (cond-> ns-tag
+                    (ident? ns-tag) (namespace))]
     (truss/have [:and string? seq] column-ns)
     (fn as-maps
       [^ResultSet rs _]
