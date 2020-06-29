@@ -16,14 +16,13 @@
                         (deref)
                         (meta)
                         :running-webapps)]
-    (doseq [[name {:keys [port ssl-port virtual-host]}] webapps
-            host (cond
-                   (sequential? virtual-host) virtual-host
-                   (string? virtual-host) [virtual-host]
-                   :else ["localhost"])]
+    (doseq [[name {:keys [host port ssl-port virtual-host]}] webapps
+            webapp-host (cond (sequential? virtual-host) virtual-host
+                              (string? virtual-host) [virtual-host]
+                              :else [(or host "localhost")])]
       (log/info "Running" "webapp" (pr-str name)
-                (str (when port (str "- http://" host ":" port "/")))
-                (str (when ssl-port (str "- https://" host ":" ssl-port "/")))))))
+                (str (when port (str "- http://" webapp-host ":" port "/")))
+                (str (when ssl-port (str "- https://" webapp-host ":" ssl-port "/")))))))
 
 
 (defn log-prop-files

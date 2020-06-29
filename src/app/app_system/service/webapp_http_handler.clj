@@ -23,10 +23,8 @@
 
 
 (defmethod ig/init-key :app-system.service/webapp-http-handler
-  [_ {:keys [name, hosts] :as config}]
-  (if (seq hosts)
-    {:name name
-     :handler (webapp-http-handler config)
-     :options {:virtual-host (vec hosts)}}
-    {:name name
-     :enabled? false}))
+  [_ {:keys [hosts, enabled?] :or {enabled? true} :as config}]
+  (cond-> config
+    enabled? (-> (assoc :handler (webapp-http-handler config)
+                        :options (cond-> {}
+                                   (seq hosts) (assoc :virtual-host (vec hosts)))))))
