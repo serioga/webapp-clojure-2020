@@ -94,12 +94,13 @@
    :app-system.dev/prepare-webapp nil
 
    [:app-system.core/init-map :app-system.config/http-server]
-   {:init-map {:options {}
+   {:init-map {:options {:host "0.0.0.0"}
                :webapps [(ig/ref :app-system.service/example-http-handler)]
                :dev/prepare-webapp (ig/ref :app-system.dev/prepare-webapp)
                :await-before-start (ig/ref :app-system.config/await-before-start)}
     :import-from (ig/ref :app-system.service/app-config)
-    :import-keys {:options {:port "HttpServer.Port"}}}
+    :import-keys {:options {:host "HttpServer.Host"
+                            :port "HttpServer.Port"}}}
 
    :app-system.service/ref'immutant-web
    (ig/ref :app-system.config/http-server)
