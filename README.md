@@ -68,9 +68,10 @@ So I decided to take best from both worlds and use mount and integrant simultane
 
 ## Installation
 
-1. Leiningen https://leiningen.org/
-2. Node.js https://nodejs.org/
-3. npm modules: `npm install --no-package-lock`
+1. OpenJDK 11 https://adoptopenjdk.net/
+2. Leiningen https://leiningen.org/
+3. Node.js https://nodejs.org/
+4. npm modules: `npm install --no-package-lock`
 
 ## Usage
 
