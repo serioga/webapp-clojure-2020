@@ -66,7 +66,7 @@
                            "tailwind/app/web_example/main.css"
                            "-o" "resources/public/app/example/main.css"]}
 
-  :profiles {:dev {:jvm-opts ["-Dconfig.file=dev-resources/dev/config/default.props"]
+  :profiles {:dev {:jvm-opts ["-Dconfig.file=dev-resources/dev/app/config/default.props"]
                    :main ^:skip-aot dev.main
                    :dependencies [[compojure "1.6.2" #_"For ring-refresh"]
                                   [nrepl "0.8.0"]
@@ -77,7 +77,7 @@
                    :source-paths ["dev" "tailwind"]}
 
              :test-release [:uberjar
-                            {:jvm-opts ["-Dconfig.file=dev-resources/dev/config/default.props"]}]
+                            {:jvm-opts ["-Dconfig.file=dev-resources/dev/app/config/default.props"]}]
 
              :uberjar {:aot :all
                        :prep-tasks ["compile"

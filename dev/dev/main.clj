@@ -5,8 +5,8 @@
   (:require
     [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
-    [dev.dev-system.app-system :as app-system]
-    [dev.dev-system.core :as dev-system]))
+    [dev.app.system.core :as dev]
+    [dev.app.system.wrap :as app]))
 
 (set! *warn-on-reflection* true)
 
@@ -14,37 +14,37 @@
 (defn- init
   []
   (try
-    (e/try-wrap-ex ["Start development system" {:reason ::dev-system}]
-      (dev-system/start!))
+    (e/try-wrap-ex ["Start development system" {:reason ::dev}]
+      (dev/start!))
 
-    (e/try-wrap-ex ["Start application" {:reason ::app-system}]
-      (app-system/start!))
+    (e/try-wrap-ex ["Start application" {:reason ::app}]
+      (app/start!))
 
-    (when-some [server (dev-system/nrepl-server)]
+    (when-some [server (dev/nrepl-server)]
       (log/info "Running nREPL server on port" (:port server)))
 
     (log/info "[DONE] Application has been started for development. Happy coding!")
 
-    (dev-system/reload-on-enter)
+    (dev/reload-on-enter)
 
     (catch Throwable ex
       (log/error (e/ex-message-all ex))
-      (when (= ::app-system (:reason (ex-data ex)))
-        (dev-system/reload-on-enter)))))
+      (when (= ::app (:reason (ex-data ex)))
+        (dev/reload-on-enter)))))
 
 
 (defn shutdown
   "Shutdown `dev-system`."
   []
-  (app-system/stop!)
-  (dev-system/stop!))
+  (app/stop!)
+  (dev/stop!))
 
 
 (defn reload
   "Reload `dev-system`."
   []
-  (app-system/stop!)
-  (app-system/start!))
+  (app/stop!)
+  (app/start!))
 
 
 (defn -main

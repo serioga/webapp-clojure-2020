@@ -1,4 +1,4 @@
-(ns dev.dev-system.unit.watcher
+(ns dev.app.system.unit.watcher
   (:require
     [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]

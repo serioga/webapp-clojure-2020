@@ -90,10 +90,10 @@ Build release:
     
 Run built release:
 
-    java -Dconfig.file=dev-resources/dev/config/default.props -jar ./target/uberjar/website.jar
+    java -Dconfig.file=dev-resources/dev/app/config/default.props -jar ./target/uberjar/website.jar
 
 ## Configuration
 
 Custom configuration properties can be placed in optional file (excluded from version control):
 
-    dev-resources/dev/config/user.USERNAME.props
+    dev-resources/dev/app/config/user.USERNAME.props

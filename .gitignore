@@ -14,7 +14,7 @@
 /classes/
 /lib/
 /target/
-dev-resources/dev/config/user.*.props
+dev-resources/dev/app/config/user.*.props
 node_modules/
 pom.xml
 pom.xml.asc

@@ -1,4 +1,4 @@
-(ns dev.dev-system.unit.ring-refresh
+(ns dev.app.system.unit.ring-refresh
   (:require
     [clojure.tools.logging :as log]
     [compojure.core :as compojure]

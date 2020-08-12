@@ -31,7 +31,7 @@
 (comment
   (into (sorted-map)
         (ig/init-key :app-system.service/app-config
-                     {:prop-files "dev-resources/dev/config/default.props"
+                     {:prop-files "dev-resources/dev/app/config/default.props"
                       :prop-defaults {"xxx" :xxx
                                       "Vk.App.Id" nil}
                       :conform-rules {"Mailer.Smtp.Port" :edn

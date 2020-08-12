@@ -1,15 +1,15 @@
-(ns dev.dev-system.core
+(ns dev.app.system.core
   (:require                                                 ; systems
-    [dev.dev-system.unit.app-reload]
-    [dev.dev-system.unit.nrepl]
-    [dev.dev-system.unit.ring-refresh :as ring-refresh]
-    [dev.dev-system.unit.shadow-cljs]
-    [dev.dev-system.unit.tailwind :as tailwind]
-    [dev.dev-system.unit.watcher])
+    [dev.app.system.unit.app-reload]
+    [dev.app.system.unit.nrepl]
+    [dev.app.system.unit.ring-refresh :as ring-refresh]
+    [dev.app.system.unit.shadow-cljs]
+    [dev.app.system.unit.tailwind :as tailwind]
+    [dev.app.system.unit.watcher])
   (:require
     [app.lib.util.integrant :as ig-util]
     [app.web-example.impl.html-page :as html-page]
-    [dev.dev-system.app-system :as app-system]
+    [dev.app.system.wrap :as app]
     [integrant.core :as ig]
     [mount.core :as mount]))
 
@@ -23,10 +23,10 @@
   {:dev-system/ref'nrepl {:write-port-file ".nrepl-port"}
 
    :dev-system/app-reload {:ns-tracker-dirs ["src" "dev"]
-                           :app-start #'app-system/start!
-                           :app-suspend #'app-system/suspend!
-                           :app-resume #'app-system/resume!
-                           :app-stop #'app-system/stop!
+                           :app-start #'app/start!
+                           :app-suspend #'app/suspend!
+                           :app-resume #'app/resume!
+                           :app-stop #'app/stop!
                            :always-reload-ns ['app.database.core]}
 
    [:dev-system/ref'watcher :dev-system/ref'app-reload-watcher]

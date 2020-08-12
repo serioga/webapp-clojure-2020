@@ -1,4 +1,4 @@
-(ns dev.dev-system.unit.shadow-cljs
+(ns dev.app.system.unit.shadow-cljs
   (:require
     [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
