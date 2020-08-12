@@ -12,7 +12,7 @@
   "Read path with query string from ring request."
   [request]
   (str (:uri request)
-       (if-let [query (:query-string request)]
+       (when-let [query (:query-string request)]
          (str "?" query))))
 
 
