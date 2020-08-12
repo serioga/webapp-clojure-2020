@@ -1,0 +1,1 @@
+clj-kondo --lint src;dev
