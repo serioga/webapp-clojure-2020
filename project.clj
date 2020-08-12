@@ -8,10 +8,10 @@
                  [org.clojure/clojurescript "1.10.773" :scope "provided"]
                  [rum "0.12.3"]
                  ; shadow cljs
-                 [com.google.javascript/closure-compiler-externs "v20200504" :scope "provided" :upgrade false]
-                 [com.google.javascript/closure-compiler-unshaded "v20200504" :scope "provided" :upgrade false]
+                 [com.google.javascript/closure-compiler-externs "v20200628" :scope "provided" :upgrade false]
+                 [com.google.javascript/closure-compiler-unshaded "v20200628" :scope "provided" :upgrade false]
                  [org.clojure/google-closure-library "0.0-20191016-6ae1f72f" :scope "provided"]
-                 [thheller/shadow-cljs "2.10.13" :scope "provided"]
+                 [thheller/shadow-cljs "2.10.21" :scope "provided"]
                  ; system
                  [integrant "0.8.0"]
                  [mount "0.1.16"]
