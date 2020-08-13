@@ -1,10 +1,10 @@
-(ns dev.app.system.wrap
+(ns dev.env.system.app
   "Wrap app-system with development related adjustments."
   (:require
     [app.app-system.core :as app-system]
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [dev.app.system.unit.ring-refresh :as ring-refresh]
+    [dev.env.system.unit.ring-refresh :as ring-refresh]
     [ring.middleware.lint :as lint])
   (:import
     (java.io File)))
@@ -15,7 +15,7 @@
 (defn- prepare-prop-files
   [prop-files]
   (let [user (System/getProperty "user.name")
-        user-file (str "dev-resources/dev/app/config/user." user ".props")
+        user-file (str "dev-resources/app/config/user." user ".props")
         user-file-exists? (.exists ^File (io/as-file user-file))]
     (cond
       (not user-file-exists?), prop-files
@@ -26,9 +26,9 @@
 
 (comment
   (prepare-prop-files nil)
-  (prepare-prop-files "dev-resources/dev/app/config/default.props")
-  (prepare-prop-files ["dev-resources/dev/app/config/default.props"])
-  (prepare-prop-files '("dev-resources/dev/app/config/default.props")))
+  (prepare-prop-files "dev-resources/app/config/default.props")
+  (prepare-prop-files ["dev-resources/app/config/default.props"])
+  (prepare-prop-files '("dev-resources/app/config/default.props")))
 
 
 (defn- wrap-webapp-handler

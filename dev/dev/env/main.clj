@@ -1,12 +1,12 @@
-(ns dev.main
+(ns dev.env.main
   "Initial namespace for development.
    Not included to release application!
    See `core` namespace as initial release application."
   (:require
     [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
-    [dev.app.system.core :as dev]
-    [dev.app.system.wrap :as app]))
+    [dev.env.system.app :as app]
+    [dev.env.system.core :as env]))
 
 (set! *warn-on-reflection* true)
 
@@ -14,34 +14,34 @@
 (defn- init
   []
   (try
-    (e/try-wrap-ex ["Start development system" {:reason ::dev}]
-      (dev/start!))
+    (e/try-wrap-ex ["Start environment" {:reason ::env}]
+      (env/start!))
 
     (e/try-wrap-ex ["Start application" {:reason ::app}]
       (app/start!))
 
-    (when-some [server (dev/nrepl-server)]
+    (when-some [server (env/nrepl-server)]
       (log/info "Running nREPL server on port" (:port server)))
 
     (log/info "[DONE] Application has been started for development. Happy coding!")
 
-    (dev/reload-on-enter)
+    (env/reload-on-enter)
 
     (catch Throwable ex
       (log/error (e/ex-message-all ex))
       (when (= ::app (:reason (ex-data ex)))
-        (dev/reload-on-enter)))))
+        (env/reload-on-enter)))))
 
 
 (defn shutdown
-  "Shutdown `dev-system`."
+  "Shutdown `env` system."
   []
   (app/stop!)
-  (dev/stop!))
+  (env/stop!))
 
 
 (defn reload
-  "Reload `dev-system`."
+  "Reload `env` system."
   []
   (app/stop!)
   (app/start!))

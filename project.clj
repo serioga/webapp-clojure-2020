@@ -53,7 +53,7 @@
   :clean-targets ^{:protect false} ["target"
                                     "resources/public/app"]
 
-  :repl-options {:init-ns dev.main}
+  :repl-options {:init-ns dev.env.main}
 
   :shell {:commands
           {"node_modules/.bin/postcss"
@@ -66,8 +66,8 @@
                            "tailwind/app/web_example/main.css"
                            "-o" "resources/public/app/example/main.css"]}
 
-  :profiles {:dev {:jvm-opts ["-Dconfig.file=dev-resources/dev/app/config/default.props"]
-                   :main ^:skip-aot dev.main
+  :profiles {:dev {:jvm-opts ["-Dconfig.file=dev-resources/app/config/default.props"]
+                   :main ^:skip-aot dev.env.main
                    :dependencies [[compojure "1.6.2" #_"For ring-refresh"]
                                   [nrepl "0.8.0"]
                                   [ns-tracker "0.4.0"]
@@ -77,7 +77,7 @@
                    :source-paths ["dev" "tailwind"]}
 
              :test-release [:uberjar
-                            {:jvm-opts ["-Dconfig.file=dev-resources/dev/app/config/default.props"]}]
+                            {:jvm-opts ["-Dconfig.file=dev-resources/app/config/default.props"]}]
 
              :uberjar {:aot :all
                        :prep-tasks ["compile"

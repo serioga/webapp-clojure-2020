@@ -1,4 +1,4 @@
-(ns dev.app.system.unit.tailwind
+(ns dev.env.system.unit.tailwind
   (:require
     [clojure.java.shell :as shell]
     [clojure.string :as string]

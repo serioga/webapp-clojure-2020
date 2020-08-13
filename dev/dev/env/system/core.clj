@@ -1,22 +1,22 @@
-(ns dev.app.system.core
+(ns dev.env.system.core
   (:require                                                 ; systems
-    [dev.app.system.unit.app-reload]
-    [dev.app.system.unit.nrepl]
-    [dev.app.system.unit.ring-refresh :as ring-refresh]
-    [dev.app.system.unit.shadow-cljs]
-    [dev.app.system.unit.tailwind :as tailwind]
-    [dev.app.system.unit.watcher])
+    [dev.env.system.unit.app-reload]
+    [dev.env.system.unit.nrepl]
+    [dev.env.system.unit.ring-refresh :as ring-refresh]
+    [dev.env.system.unit.shadow-cljs]
+    [dev.env.system.unit.tailwind :as tailwind]
+    [dev.env.system.unit.watcher])
   (:require
     [app.lib.util.integrant :as ig-util]
     [app.web-example.impl.html-page :as html-page]
-    [dev.app.system.wrap :as app]
+    [dev.env.system.app :as app]
     [integrant.core :as ig]
     [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
 
 
-(defonce ^:private var'dev-system (atom nil))
+(defonce ^:private var'system (atom nil))
 
 
 (defn- config []
@@ -31,7 +31,7 @@
 
    [:dev-system/ref'watcher :dev-system/ref'app-reload-watcher]
    {:handler (ig/ref :dev-system/app-reload)
-    :options {:dirs ["src" "dev" "dev-resources/dev" "resources/app"]
+    :options {:dirs ["src" "dev" "dev-resources" "resources/app"]
 
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :filter will pick out only files that match this pattern.
@@ -57,7 +57,7 @@
 (defn stop!
   "Stop global system."
   []
-  (swap! var'dev-system #(some-> % ig-util/halt!)))
+  (swap! var'system #(some-> % ig-util/halt!)))
 
 
 (defn start!
@@ -68,13 +68,13 @@
    (start! config nil))
   ([config, init-keys]
    (stop!)
-   (reset! var'dev-system (ig-util/init config, (or init-keys (keys config))))))
+   (reset! var'system (ig-util/init config, (or init-keys (keys config))))))
 
 
 (defn reload-on-enter
   "Reload actions on ENTER keypress."
   []
-  (when-some [reload (some-> @var'dev-system
+  (when-some [reload (some-> @var'system
                              :dev-system/app-reload
                              meta :reload-on-enter)]
     (reload)))
@@ -83,7 +83,7 @@
 (defn nrepl-server
   "Get reference to global nREPL server instance."
   []
-  (some-> @var'dev-system
+  (some-> @var'system
           :dev-system/ref'nrepl
           deref))
 

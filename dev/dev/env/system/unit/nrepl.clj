@@ -1,4 +1,4 @@
-(ns dev.app.system.unit.nrepl
+(ns dev.env.system.unit.nrepl
   (:require
     [app.lib.util.exec :as e]
     [clojure.java.io :as io]
