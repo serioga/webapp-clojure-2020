@@ -53,7 +53,7 @@
         (handler reason)))))
 
 
-(defmethod ig/init-key :dev-system/ref'watcher
+(defmethod ig/init-key :dev.env.system/ref'watcher
   [_ {:keys [handler, options, run-handler-on-init?]}]
   (e/future (let [watcher (start-watcher (wrap-handler-with-delay handler) options)]
               (when run-handler-on-init?
@@ -62,6 +62,6 @@
               watcher)))
 
 
-(defmethod ig/halt-key! :dev-system/ref'watcher
+(defmethod ig/halt-key! :dev.env.system/ref'watcher
   [_ ref'watcher]
   (e/future (stop-watcher @ref'watcher)))

@@ -1,5 +1,5 @@
 (ns dev.env.system.app
-  "Wrap app-system with development related adjustments."
+  "Wrap app system with development related adjustments."
   (:require
     [app.app-system.core :as app-system]
     [clojure.java.io :as io]
@@ -53,7 +53,7 @@
 
 
 (defn start!
-  "Start `app-system`."
+  "Start `app` system."
   ([]
    (start! {}))
   ([{:keys [system-keys]}]
@@ -63,21 +63,21 @@
 
 
 (defn stop!
-  "Stop `app-system`."
+  "Stop `app` system."
   []
   (ring-refresh/send-refresh! false)
   (app-system/stop!))
 
 
 (defn suspend!
-  "Suspend `app-system`."
+  "Suspend `app` system."
   []
   (ring-refresh/send-refresh! false)
   (app-system/suspend!))
 
 
 (defn resume!
-  "Resume `app-system`."
+  "Resume `app` system."
   []
   (app-system/resume! {:prepare-config prepare-system-config})
   (ring-refresh/send-refresh! true))

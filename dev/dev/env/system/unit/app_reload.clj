@@ -86,6 +86,6 @@
         (with-meta {:reload-on-enter (fn [] (reload-on-enter app-reload))}))))
 
 
-(defmethod ig/init-key :dev-system/app-reload
+(defmethod ig/init-key :dev.env.system/app-reload
   [_ options]
   (watcher-handler options))

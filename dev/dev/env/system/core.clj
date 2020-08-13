@@ -20,18 +20,18 @@
 
 
 (defn- config []
-  {:dev-system/ref'nrepl {:write-port-file ".nrepl-port"}
+  {:dev.env.system/ref'nrepl {:write-port-file ".nrepl-port"}
 
-   :dev-system/app-reload {:ns-tracker-dirs ["src" "dev"]
-                           :app-start #'app/start!
-                           :app-suspend #'app/suspend!
-                           :app-resume #'app/resume!
-                           :app-stop #'app/stop!
-                           :always-reload-ns ['app.database.core]}
+   :dev.env.system/app-reload {:ns-tracker-dirs ["src" "dev"]
+                               :app-start #'app/start!
+                               :app-suspend #'app/suspend!
+                               :app-resume #'app/resume!
+                               :app-stop #'app/stop!
+                               :always-reload-ns ['app.database.core]}
 
-   [:dev-system/ref'watcher :dev-system/ref'app-reload-watcher]
-   {:handler (ig/ref :dev-system/app-reload)
-    :options {:dirs ["src" "dev" "dev-resources" "resources/app"]
+   [:dev.env.system/ref'watcher :dev.env.system/ref'app-reload-watcher]
+   {:handler (ig/ref :dev.env.system/app-reload)
+    :options {:dirs ["src" "dev" "dev-resources/app" "resources/app"]
 
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :filter will pick out only files that match this pattern.
@@ -41,9 +41,9 @@
               ; :exclude will leave out files that match this pattern.
               :exclude []}}
 
-   :dev-system/ref'shadow-cljs {:builds-to-start [:example]}
+   :dev.env.system/ref'shadow-cljs {:builds-to-start [:example]}
 
-   [:dev-system/ref'watcher :dev-system/ref'tailwind]
+   [:dev.env.system/ref'watcher :dev.env.system/ref'tailwind]
    {:handler (tailwind/watcher-handler {:webapp "example"
                                         :on-rebuild (fn []
                                                       (mount/stop #'html-page/styles-css-uri)
@@ -55,13 +55,13 @@
 
 
 (defn stop!
-  "Stop global system."
+  "Stop `env` system."
   []
   (swap! var'system #(some-> % ig-util/halt!)))
 
 
 (defn start!
-  "Start global system."
+  "Start `env` system."
   ([]
    (start! (config) nil))
   ([config]
@@ -75,7 +75,7 @@
   "Reload actions on ENTER keypress."
   []
   (when-some [reload (some-> @var'system
-                             :dev-system/app-reload
+                             :dev.env.system/app-reload
                              meta :reload-on-enter)]
     (reload)))
 
@@ -84,7 +84,7 @@
   "Get reference to global nREPL server instance."
   []
   (some-> @var'system
-          :dev-system/ref'nrepl
+          :dev.env.system/ref'nrepl
           deref))
 
 
