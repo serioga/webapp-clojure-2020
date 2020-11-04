@@ -17,6 +17,9 @@
                  [mount "0.1.16"]
                  [tolitius/mount-up "0.1.3"]
                  ; web server
+                 [io.undertow/undertow-core,,,,,,,,,, "2.2.2.Final"]
+                 [io.undertow/undertow-servlet,,,,,,, "2.2.2.Final"]
+                 [io.undertow/undertow-websockets-jsr "2.2.2.Final"]
                  [metosin/reitit-core "0.5.10"]
                  [org.immutant/web "2.1.10"]
                  [ring/ring-core "1.8.2"]
