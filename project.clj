@@ -42,7 +42,6 @@
                  ; libs
                  [clojurewerkz/propertied "1.3.0"]
                  [com.cognitect/transit-clj "1.0.324"]
-                 [com.taoensso/truss "1.6.0"]
                  [commons-codec/commons-codec "1.15"]
                  [medley "1.3.0"]
                  [org.apache.commons/commons-lang3 "3.11"]
