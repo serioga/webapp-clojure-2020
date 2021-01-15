@@ -18,7 +18,7 @@
   (-> http-handler
       (error-not-found/wrap-error-not-found dev-mode?)
       (debug-response/wrap-debug-response)
-      (logging-context/wrap-logging-context)
+      (logging-context/wrap-logging-context [:server-name :route-tag :session])
       (route-tag/wrap-route-tag (reitit/router routes))
       (ring-defaults/wrap-defaults (-> ring-defaults/site-defaults
                                        (assoc-in [:security :anti-forgery] false)
