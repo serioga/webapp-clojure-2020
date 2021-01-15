@@ -1,7 +1,7 @@
 (ns app.lib.http-handler.middleware.debug-response
   (:require
-    [lib.clojure.perf :as p]
     [clojure.tools.logging :as log]
+    [lib.clojure.perf :as p]
     [lib.ring-util.request :as ring-request]))
 
 (set! *warn-on-reflection* true)

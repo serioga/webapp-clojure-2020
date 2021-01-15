@@ -5,7 +5,7 @@
              [rum.core :as rum]))
   (:require
     [app.lib.react.component :as react-component]
-    [app.lib.util.transit :as transit]))
+    [lib.cognitect-transit.core :as transit]))
 
 #?(:clj (set! *warn-on-reflection* true) :cljs (set! *warn-on-infer* true))
 
