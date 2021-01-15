@@ -8,8 +8,7 @@
     [app.app-system.task.database-migration])
   (:require
     [app.app-system.impl :as impl]
-    [app.lib.util.integrant :as ig-util]
-    [integrant.core :as ig]))
+    [lib.integrant.core :as ig]))
 
 (set! *warn-on-reflection* true)
 
@@ -118,13 +117,13 @@
   []
   (when-some [system @var'app-system]
     (reset! var'app-system nil)
-    (ig-util/halt! system)))
+    (ig/halt! system)))
 
 
 (defn suspend!
   "Suspend global system."
   []
-  (some-> @var'app-system (ig-util/suspend!)))
+  (some-> @var'app-system (ig/suspend!)))
 
 
 (defn start!
@@ -135,7 +134,7 @@
      :or {prepare-config identity}}]
    (stop!)
    (let [config (prepare-config (system-config))]
-     (reset! var'app-system (ig-util/init config, (or system-keys (keys config)))))))
+     (reset! var'app-system (ig/init config, (or system-keys (keys config)))))))
 
 
 (defn resume!
@@ -148,7 +147,7 @@
      (do
        (reset! var'app-system nil)
        (let [config (prepare-config (system-config))]
-         (reset! var'app-system (ig-util/resume config, system, (or system-keys (keys system))))))
+         (reset! var'app-system (ig/resume config, system, (or system-keys (keys system))))))
      (start! options))))
 
 (comment

@@ -1,23 +1,24 @@
 (ns dev.env.system.core
-  (:require                                                 ; systems
-    [dev.env.system.unit.app-reload]
-    [dev.env.system.unit.nrepl]
-    [dev.env.system.unit.ring-refresh :as ring-refresh]
-    [dev.env.system.unit.shadow-cljs]
-    [dev.env.system.unit.tailwind :as tailwind]
-    [dev.env.system.unit.watcher])
   (:require
-    [app.lib.util.integrant :as ig-util]
     [app.web-example.impl.html-page :as html-page]
+    [dev.env.reload.ring-refresh :as ring-refresh]
     [dev.env.system.app :as app]
-    [integrant.core :as ig]
+    [dev.env.tailwind.watcher :as tailwind]
+    [lib.clojure.ns :as ns]
+    [lib.integrant.core :as ig]
     [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(ns/require-dir 'dev.env.system.integrant._)
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defonce ^:private var'system (atom nil))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- config []
   {:dev.env.system/ref'nrepl {:write-port-file ".nrepl-port"}
@@ -29,7 +30,7 @@
                                :app-stop #'app/stop!
                                :always-reload-ns ['app.database.core]}
 
-   [:dev.env.system/ref'watcher :dev.env.system/ref'app-reload-watcher]
+   [:dev.env.system/watcher :dev.env.system/app-reload-watcher]
    {:handler (ig/ref :dev.env.system/app-reload)
     :options {:dirs ["src" "dev" "dev-resources/app" "resources/app"]
 
@@ -43,33 +44,35 @@
 
    :dev.env.system/ref'shadow-cljs {:builds-to-start [:example]}
 
-   [:dev.env.system/ref'watcher :dev.env.system/ref'tailwind]
+   [:dev.env.system/watcher :dev.env.system/tailwind-watcher]
    {:handler (tailwind/watcher-handler {:webapp "example"
                                         :on-rebuild (fn []
-                                                      (mount/stop #'html-page/styles-css-uri)
-                                                      (mount/start #'html-page/styles-css-uri)
-                                                      (ring-refresh/send-refresh!))})
+                                                      (when ((mount/running-states) (str #'html-page/styles-css-uri))
+                                                        (mount/stop #'html-page/styles-css-uri)
+                                                        (mount/start #'html-page/styles-css-uri)
+                                                        (ring-refresh/send-refresh!)))})
     :options {:dirs ["tailwind/app/config" "tailwind/app/web_example"]
               :files [".css" ".js$"]}
     :run-handler-on-init? true}})
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn stop!
   "Stop `env` system."
   []
-  (swap! var'system #(some-> % ig-util/halt!)))
+  (swap! var'system #(some-> % ig/halt!)))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn start!
   "Start `env` system."
-  ([]
-   (start! (config) nil))
-  ([config]
-   (start! config nil))
+  ([] (start! (config) nil))
+  ([config] (start! config nil))
   ([config, init-keys]
    (stop!)
-   (reset! var'system (ig-util/init config, (or init-keys (keys config))))))
+   (reset! var'system (ig/init config, (or init-keys (keys config))))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn reload-on-enter
   "Reload actions on ENTER keypress."
@@ -79,6 +82,7 @@
                              meta :reload-on-enter)]
     (reload)))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn nrepl-server
   "Get reference to global nREPL server instance."
@@ -87,13 +91,4 @@
           :dev.env.system/ref'nrepl
           deref))
 
-
-(comment
-  (time (let [system (start!)]
-          (keys system)))
-
-  (time (stop!))
-
-  (time (do
-          (start!)
-          (stop!))))
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

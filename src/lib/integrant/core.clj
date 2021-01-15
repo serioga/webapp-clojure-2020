@@ -1,16 +1,27 @@
-(ns app.lib.util.integrant
+(ns lib.integrant.core
   "Adapted integrant functionality.
    Features:
    - system rollback on failures;
    - futures in `init-key` and `halt-key!` for parallel initialization."
+  (:refer-clojure :exclude [ref])
   (:require
-    [app.lib.util.exec :as e]
-    [app.lib.util.mdc :as mdc]
     [clojure.tools.logging :as log]
-    [integrant.core :as ig]))
+    [integrant.core :as ig]
+    [lib.clojure.core :as e]
+    [lib.slf4j.mdc :as mdc]
+    [potemkin :refer [import-vars]]))
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+;; Workaround for name resolution in Cursive
+;; https://github.com/cursive-ide/cursive/issues/2411
+(declare ref)
+
+(import-vars [integrant.core ref])
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- init-key
   "Wrapped version of integrant's `init-key` with logging."
@@ -19,7 +30,6 @@
     (log/info ">> starting.." key)
     (ig/init-key key value)))
 
-
 (defn- resume-key
   "Wrapped version of integrant's `resume-key` with logging."
   [key value old-value old-impl]
@@ -27,16 +37,13 @@
     (log/info ">> resuming.." key)
     (ig/resume-key key value old-value old-impl)))
 
-
 (defn- not-default-halt-key?
   [f]
   (not= f (get-method ig/halt-key! :default)))
 
-
 (defn- not-default-suspend-key?
   [f]
   (not= f (get-method ig/suspend-key! :default)))
-
 
 (defn- fn'halt-key!
   "Produce wrapped version of integrant's halt-key!
@@ -58,7 +65,6 @@
             (when (future? ret)
               (swap! var'futures conj [key ret]))
             ret))))))
-
 
 (defn- fn'suspend-key!
   "Produce wrapped version of integrant's suspend-key!
@@ -83,25 +89,23 @@
               (swap! var'futures conj [key ret]))
             ret))))))
 
-
 (defn- ex-in-future
   "Unwrap exception from deref'ed future."
   [ex]
   (or (ex-cause ex) ex))
 
-
 (defn- collect-failed-futures
   "Scan `system` for futures and collect keys with exceptions."
   [system]
-  (reduce (fn [failed [key state]] (if (future? state)
-                                     (try
-                                       (deref state)
-                                       failed
-                                       (catch Throwable ex
-                                         (conj failed [key (ex-in-future ex)])))
-                                     failed))
+  (reduce (fn [failed [key state]]
+            (if (future? state)
+              (try
+                (deref state)
+                failed
+                (catch Throwable ex
+                  (conj failed [key (ex-in-future ex)])))
+              failed))
           (list) system))
-
 
 (defn- await-build-futures
   "Deref all future key values.
@@ -116,7 +120,6 @@
                          :system system
                          :failed-keys failed-keys})))))
 
-
 (defn- await-futures
   "Deref all future suspend results.
    Log errors for failed exceptions."
@@ -127,35 +130,40 @@
       (catch Throwable ex
         (log-key-error (ex-in-future ex) key)))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn halt!
   "Halt a system map by applying halt-key! in reverse dependency order.
-   Copy of integrant's `halt!` with customized `halt-key!` function and handling of futures."
+   Replacement of integrant's `halt!` with customized `halt-key!` function and handling of futures."
   ([system]
    (halt! system (keys system)))
   ([system keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [var'futures (atom [])]
      (ig/reverse-run! system keys (fn'halt-key! var'futures))
-     (await-futures @var'futures (fn [ex key] (mdc/with-map {:halt key}
-                                                (e/log-error ex "Stopping" key)))))))
+     (await-futures @var'futures (fn [ex key]
+                                   (mdc/with-map {:halt key}
+                                     (e/log-error ex "Stopping" key)))))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn suspend!
   "Suspend a system map by applying suspend-key! in reverse dependency order.
-   Copy of integrant's `suspend!` with customized `suspend-key!` function and handling of futures."
+   Replacement of integrant's `suspend!` with customized `suspend-key!` function and handling of futures."
   ([system]
    (suspend! system (keys system)))
   ([system keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [var'futures (atom [])]
      (ig/reverse-run! system keys (fn'suspend-key! var'futures))
-     (await-futures @var'futures (fn [ex key] (mdc/with-map {:suspend key}
-                                                (e/log-error ex "Suspending" key)))))))
+     (await-futures @var'futures (fn [ex key]
+                                   (mdc/with-map {:suspend key}
+                                     (e/log-error ex "Suspending" key)))))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn build
-  "Copy of integrant's `build` with
+  "Replacement of integrant's `build` with
    - handling of futures;
    - rollback on exceptions."
   ([config, system-keys, f, log-key-error]
@@ -183,12 +191,13 @@
            (log/error "Unexpected error when building system:" (e/ex-message-all ex)))
          (throw ex))))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn init
   "Turn a config map into an system map. Keys are traversed in dependency
    order, initiated via the init-key multimethod, then the refs associated with
    the key are expanded.
-   Copy of integrant's `init` with
+   Replacement of integrant's `init` with
    - customized `init-key` function;
    - handling of futures;
    - rollback on exceptions."
@@ -197,17 +206,19 @@
   ([config system-keys]
    {:pre [(map? config)]}
    (build config system-keys init-key
-          (fn [ex key] (mdc/with-map {:init key}
-                         (e/log-error ex "Starting" key)))
+          (fn [ex key]
+            (mdc/with-map {:init key}
+              (e/log-error ex "Starting" key)))
           #'ig/assert-pre-init-spec)))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn resume
   "Turn a config map into a system map, reusing resources from an existing
    system when it's possible to do so. Keys are traversed in dependency order,
    resumed with the resume-key multimethod, then the refs associated with the
    key are expanded.
-   Copy of integrant's `resume` with
+   Replacement of integrant's `resume` with
    - customized `resume-key` function;
    - handling of futures;
    - rollback on exceptions."
@@ -224,3 +235,5 @@
           (fn [ex key]
             (mdc/with-map {:resume key}
               (e/log-error ex "Resuming" key))))))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

@@ -1,4 +1,4 @@
-(ns dev.env.system.unit.ring-refresh
+(ns dev.env.reload.ring-refresh
   (:require
     [clojure.tools.logging :as log]
     [compojure.core :as compojure]
@@ -9,11 +9,13 @@
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (def ^:private var'refresh-state
   (atom {:last-modified (Date.)
          :reload? false}))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- watch-until
   [ref'state, pred, timeout-ms]
@@ -27,7 +29,6 @@
       (finally
         (remove-watch ref'state watch-key)))))
 
-
 (def ^:private source-changed-route
   (compojure/GET "/__source_changed" [since]
     (let [timestamp (Long/parseLong since)]
@@ -36,6 +37,7 @@
                                               reload?))
                         60000)))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn wrap-refresh
   "Modified `ring.middleware.refresh/wrap-refresh`."
@@ -43,6 +45,7 @@
   (params/wrap-params (compojure/routes source-changed-route
                                         (@#'refresh/wrap-with-script handler @#'refresh/refresh-script))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn send-refresh!
   "Send response to pages with flag if they should
@@ -54,3 +57,4 @@
    (reset! var'refresh-state {:last-modified (Date.)
                               :reload? reload?})))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

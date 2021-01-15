@@ -12,6 +12,15 @@
   :clojure.core/cond-&gt; 1
   :clojure.core/defmulti 1
   :cursive.formatting/align-maps false
+  :lib.clojure.core/thread-off 1
+  :lib.clojure.core/try-log-error 1
+  :lib.clojure.core/try-wrap-ex 1
+  :lib.clojure.exception/thread-off 1
+  :lib.clojure.exception/try-log-error 1
+  :lib.clojure.exception/try-wrap-ex 1
+  :lib.clojure.perf/fast-assoc 1
+  :lib.slf4j.mdc/with-keys 2
+  :lib.slf4j.mdc/with-map 1
 }</ClojureCodeStyleSettings>
   </code_scheme>
 </component>
