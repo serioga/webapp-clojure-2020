@@ -1,7 +1,8 @@
-(ns app.lib.util.perf
+(ns lib.clojure.perf
   "Replacement of core functions for better performance."
-  #?(:clj (:import
-            (clojure.lang Associative))))
+  #?(:clj
+     (:import
+       (clojure.lang Associative))))
 
 #?(:clj (set! *warn-on-reflection* true) :cljs (set! *warn-on-infer* true))
 #?(:clj (set! *unchecked-math* :warn-on-boxed))
@@ -31,7 +32,7 @@
   "Assoc using direct call to `Associative.assoc`."
   [m k v]
   (let [m (or m {})]
-    #?(:clj (.assoc ^Associative m k v)
+    #?(:clj  (.assoc ^Associative m k v)
        :cljs (-assoc ^IAssociative m k v))))
 
 
@@ -41,7 +42,7 @@
   [m & kvs]
   (assert (even? (count kvs)))
   `(-> ~m
-       ~@(map (fn [[k v]] (list 'app.lib.util.perf/fast-assoc* k v))
+       ~@(map (fn [[k v]] (list 'lib.clojure.perf/fast-assoc* k v))
               (partition 2 kvs))))
 
 
@@ -60,7 +61,7 @@
    Multiple maps are merged with multiple calls to `fast-merge*`."
   [m & maps]
   `(-> ~m
-       ~@(map #(list 'app.lib.util.perf/fast-merge* %) maps)))
+       ~@(map #(list 'lib.clojure.perf/fast-merge* %) maps)))
 
 
 (defmacro inline-dissoc
@@ -123,11 +124,11 @@
 
   (macroexpand-1 '(fast-merge {:a 1} {:b 2} {:c 3}))
   #_(clojure.core/-> {:a 1}
-                     (app.lib.util.perf/fast-merge* {:b 2})
-                     (app.lib.util.perf/fast-merge* {:c 3}))
+                     (lib.clojure.perf/fast-merge* {:b 2})
+                     (lib.clojure.perf/fast-merge* {:c 3}))
 
   (macroexpand '(fast-merge {:a 1} {:b 2} {:c 3}))
-  #_(app.lib.util.perf/fast-merge* (app.lib.util.perf/fast-merge* {:a 1} {:b 2}) {:c 3})
+  #_(lib.clojure.perf/fast-merge* (lib.clojure.perf/fast-merge* {:a 1} {:b 2}) {:c 3})
 
   (macroexpand '(fast-merge {:a 1}))
   #_{:a 1}

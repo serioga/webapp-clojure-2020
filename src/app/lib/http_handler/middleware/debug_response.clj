@@ -1,6 +1,6 @@
 (ns app.lib.http-handler.middleware.debug-response
   (:require
-    [app.lib.util.perf :as p]
+    [lib.clojure.perf :as p]
     [clojure.tools.logging :as log]
     [lib.ring-util.request :as ring-request]))
 

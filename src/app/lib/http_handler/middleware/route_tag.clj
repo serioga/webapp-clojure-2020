@@ -1,6 +1,6 @@
 (ns app.lib.http-handler.middleware.route-tag
   (:require
-    [app.lib.util.perf :as p]
+    [lib.clojure.perf :as p]
     [reitit.core :as reitit]))
 
 (set! *warn-on-reflection* true)
