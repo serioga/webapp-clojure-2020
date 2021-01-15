@@ -38,4 +38,7 @@
 (declare remove-kv remove-keys remove-vals)
 (import-vars [medley.core remove-kv remove-keys remove-vals])
 
+(declare deep-merge)
+(import-vars [medley.core deep-merge])
+
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

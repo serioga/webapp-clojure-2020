@@ -3,7 +3,7 @@
    Affected in development mode!
    See `dev` namespace as initial for development."
   (:require
-    [app.app-system.core :as app-system]
+    [app.system.core :as app]
     [app.lib.util.exec :as e]
     [clojure.tools.logging :as log])
   (:import
@@ -25,12 +25,12 @@
 
 (defn- init
   []
-  (app-system/start!)
+  (app/start!)
   (log/info "[DONE] Application init"))
 
 (defn- shutdown
   []
-  (app-system/stop!))
+  (app/stop!))
 
 (defn -main
   "Application entry point."

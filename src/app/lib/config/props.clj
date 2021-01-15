@@ -53,7 +53,7 @@
   (keyword "Webapp.Hosts(ok)")
   (require '[integrant.core :as ig])
   (into (sorted-map)
-        (ig/init-key :app-system.service/app-config
+        (ig/init-key :app.system.service/app-config
                      {:prop-files "dev-resources/app/config/default.props"
                       :conform-rules {"Mailer.Smtp.Port" :edn
                                       "Mailer.Smtp.Options" :edn

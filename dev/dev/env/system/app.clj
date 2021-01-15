@@ -1,7 +1,7 @@
 (ns dev.env.system.app
   "Wrap app system with development related adjustments."
   (:require
-    [app.app-system.core :as app-system]
+    [app.system.core :as app]
     [clojure.java.io :as io]
     [clojure.string :as str]
     [dev.env.reload.ring-refresh :as ring-refresh]
@@ -45,9 +45,9 @@
 
 (defn- prepare-system-config
   [config]
-  (assoc config :app-system/dev-mode? true
-                :app-system.dev/prepare-prop-files prepare-prop-files
-                :app-system.dev/prepare-webapp prepare-webapp))
+  (assoc config :app.system/dev-mode? true
+                :dev.env.system/prepare-prop-files prepare-prop-files
+                :dev.env.system/prepare-webapp prepare-webapp))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -56,7 +56,7 @@
   ([]
    (start! {}))
   ([{:keys [system-keys]}]
-   (app-system/start! (cond-> {:prepare-config prepare-system-config}
+   (app/start! (cond-> {:prepare-config prepare-system-config}
                         system-keys (assoc :system-keys system-keys)))
    (ring-refresh/send-refresh! true)))
 
@@ -66,7 +66,7 @@
   "Stop `app` system."
   []
   (ring-refresh/send-refresh! false)
-  (app-system/stop!))
+  (app/stop!))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -74,14 +74,14 @@
   "Suspend `app` system."
   []
   (ring-refresh/send-refresh! false)
-  (app-system/suspend!))
+  (app/suspend!))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn resume!
   "Resume `app` system."
   []
-  (app-system/resume! {:prepare-config prepare-system-config})
+  (app/resume! {:prepare-config prepare-system-config})
   (ring-refresh/send-refresh! true))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
