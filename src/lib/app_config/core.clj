@@ -1,27 +1,28 @@
-(ns app.config.core
+(ns lib.app-config.core
   (:require
-    [lib.app-config.core :as config]
-    [lib.clojure.core :as e]
-    [mount.core :as mount]))
+    [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(mount/defstate optional
-  "Get optional value from global app-config.
-   Return `nil` or `default` for missing keys."
-  {:arglists '([key] [key default]) :on-reload :noop}
-  :start (let [app-config (-> (::app-config (mount/args)) (e/assert map?))]
-           (partial config/get-optional app-config)))
+(defn get-required
+  "Get required value from config.
+   Raise exception for missing keys."
+  [config key]
+  (let [nan (Object.), val (config key nan)]
+    (when (identical? val nan)
+      (throw (e/ex-info ["Missing configuration property" key])))
+    val))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(mount/defstate required
-  "Get required value from global app-config.
-   Raise exception for missing keys."
-  {:arglists '([key]) :on-reload :noop}
-  :start (let [app-config (-> (::app-config (mount/args)) (e/assert map?))]
-           (partial config/get-required app-config)))
+(defn get-optional
+  "Get optional value from config.
+   Return `nil` or `default` for missing keys."
+  ([config key]
+   (get-optional config key nil))
+  ([config key default]
+   (get config key default)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
