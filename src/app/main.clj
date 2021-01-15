@@ -3,9 +3,9 @@
    Affected in development mode!
    See `dev` namespace as initial for development."
   (:require
-    [app.lib.util.exec :as e]
     [app.system.core :as app]
-    [clojure.tools.logging :as log])
+    [clojure.tools.logging :as log]
+    [lib.clojure.core :as e])
   (:import
     (org.slf4j.bridge SLF4JBridgeHandler))
   (:gen-class

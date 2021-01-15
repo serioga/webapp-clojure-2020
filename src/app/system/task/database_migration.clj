@@ -1,9 +1,9 @@
 (ns app.system.task.database-migration
   (:require
     [app.lib.database.liquibase :as liquibase]
-    [app.lib.util.exec :as e]
     [clojure.tools.logging :as log]
-    [integrant.core :as ig]))
+    [integrant.core :as ig]
+    [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 

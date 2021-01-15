@@ -1,8 +1,8 @@
 (ns app.system.service.webapp-http-handler
   (:require
-    [app.lib.util.exec :as e]
     [app.web-example.core :as example]
-    [integrant.core :as ig]))
+    [integrant.core :as ig]
+    [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 

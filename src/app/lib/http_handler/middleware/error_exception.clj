@@ -1,7 +1,7 @@
 (ns app.lib.http-handler.middleware.error-exception
   (:require
-    [app.lib.util.exec :as e]
-    [app.lib.util.ring :as ring-util]))
+    [app.lib.util.ring :as ring-util]
+    [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 
