@@ -1,9 +1,9 @@
 (ns app.system.service.mount
   (:require
     [integrant.core :as ig]
+    [lib.clojure.core :as e]
     [mount-up.core :as mu]
-    [mount.core :as mount]
-    [lib.clojure.core :as e]))
+    [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
 
