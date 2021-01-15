@@ -1,15 +1,17 @@
-(ns app.lib.database.hikari-data-source
+(ns lib.hikari-cp.data-source
   (:require
-    [app.lib.util.secret :as secret]
-    [clojure.spec.alpha :as s])
+    [clojure.spec.alpha :as s]
+    [lib.util.secret :as secret])
   (:import
     (com.zaxxer.hikari HikariDataSource)))
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (s/check-asserts true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (s/def ::data-source-class string?)
 (s/def ::database-url string?)
@@ -23,7 +25,6 @@
 (s/def ::read-only? boolean?)
 (s/def ::leak-detection-threshold int?)
 
-
 (s/def ::options (s/keys :req-un [::data-source-class
                                   ::database-url
                                   ::database-user
@@ -36,6 +37,7 @@
                                   ::read-only?
                                   ::leak-detection-threshold]))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- init-hikari-data-source
   "Force data source to connect after creation.
@@ -44,9 +46,10 @@
   (.close (.getConnection ds))
   ds)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn create-data-source
-  "Create HikariCP data source instance."
+  "Create HikariCP data source."
   [{:keys [data-source-class, database-url, database-user, database-password
            minimum-idle, maximum-pool-size, connection-timeout, idle-timeout, max-lifetime
            pool-name, read-only?, leak-detection-threshold]
@@ -70,3 +73,5 @@
     (.setPoolName (str (when pool-name (str pool-name " "))
                        (if read-only? "RO" "RW")))
     (init-hikari-data-source)))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

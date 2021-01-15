@@ -1,4 +1,4 @@
-(ns app.lib.database.liquibase
+(ns lib.liquibase.core
   (:import
     (javax.sql DataSource)
     (liquibase Liquibase Contexts)

@@ -1,9 +1,9 @@
 (ns app.system.service.hikari-data-source
   (:require
-    [app.lib.database.hikari-data-source :as data-source]
     [clojure.tools.logging :as log]
     [integrant.core :as ig]
-    [lib.clojure.core :as e])
+    [lib.clojure.core :as e]
+    [lib.hikari-cp.data-source :as data-source])
   (:import
     (com.p6spy.engine.spy P6DataSource)
     (java.io Closeable)))
