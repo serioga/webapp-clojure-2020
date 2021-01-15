@@ -1,7 +1,7 @@
 (ns app.lib.http-handler.middleware.error-not-found
   (:require
-    [app.lib.util.ring :as ring-util]
     [clojure.pprint :as pprint]
+    [lib.ring-util.response :as ring-response]
     [ring.util.request :as ring-request]))
 
 (set! *warn-on-reflection* true)
@@ -18,7 +18,7 @@
                "Default not-found handler, dev mode."
                "\n\n"
                (with-out-str (pprint/pprint request)))))
-      (ring-util/plain-text-response 404)))
+      (ring-response/plain-text 404)))
 
 
 (defn wrap-error-not-found

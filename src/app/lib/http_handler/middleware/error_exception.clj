@@ -1,7 +1,7 @@
 (ns app.lib.http-handler.middleware.error-exception
   (:require
-    [app.lib.util.ring :as ring-util]
-    [lib.clojure.core :as e]))
+    [lib.clojure.core :as e]
+    [lib.ring-util.response :as ring-response]))
 
 (set! *warn-on-reflection* true)
 
@@ -16,7 +16,7 @@
                             "Default exception handler, dev mode."
                             "\n\n"
                             (prn-str ex))))]
-    (ring-util/plain-text-response message status)))
+    (ring-response/plain-text message status)))
 
 
 (defn wrap-error-exception

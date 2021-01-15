@@ -1,7 +1,7 @@
 (ns app.web-example.impl.html-page
   (:require
     [app.lib.util.html :as html]
-    [app.lib.util.ring :as ring-util]
+    [lib.ring-util.response :as ring-response]
     [mount.core :as mount]
     [rum.core :as rum]))
 
@@ -25,7 +25,7 @@
   [hiccup]
   (-> hiccup
       (render-html)
-      (ring-util/html-response)))
+      (ring-response/html)))
 
 
 (defn link-to-index

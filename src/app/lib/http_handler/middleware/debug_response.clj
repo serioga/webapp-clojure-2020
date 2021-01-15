@@ -1,8 +1,8 @@
 (ns app.lib.http-handler.middleware.debug-response
   (:require
     [app.lib.util.perf :as p]
-    [app.lib.util.ring :as ring-util]
-    [clojure.tools.logging :as log]))
+    [clojure.tools.logging :as log]
+    [lib.ring-util.request :as ring-request]))
 
 (set! *warn-on-reflection* true)
 
@@ -14,7 +14,7 @@
                 request-method
                 server-name]} request
         {:keys [status]} response
-        uri (ring-util/request-uri request)]
+        uri (ring-request/request-uri request)]
     (p/inline-str "HTTP " status " < "
                   server-name " " route-tag " " request-method " " uri " " params
                   " (" time-millis " ms)")))
