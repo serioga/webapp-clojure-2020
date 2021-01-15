@@ -1,15 +1,15 @@
 (ns app.web-example.main
   (:require ; react components
-    [app.web-example.config.react-components])
+    [app.rum.core])
   (:require
-    [app.lib.react.mount :as react-mount]))
+    [app.rum.mount :as rum-mount]))
 
 (set! *warn-on-infer* true)
 
 (enable-console-print!)
 
 
-(react-mount/mount-all)
+(rum-mount/mount-all)
 
 
 #_(defn ^:dev/after-load ^:private teardown

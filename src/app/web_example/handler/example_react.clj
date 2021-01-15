@@ -1,7 +1,7 @@
 (ns app.web-example.handler.example-react
   (:require
-    [app.lib.react.mount :as react-mount]
     [app.lib.util.html :as html]
+    [app.rum.mount :as rum-mount]
     [app.web-example.impl.handler :as impl]
     [app.web-example.impl.html-page :as html-page]))
 
@@ -12,7 +12,7 @@
 
 (defmethod impl/example-handler :route/example-react
   [request]
-  (let [[ref'registry, mount-component] (react-mount/new-registry-mounter request)
+  (let [[var'components, mount-component] (rum-mount/init-mounter request)
         title "React Component example"]
     (-> [:html [:head
                 [:title title]
@@ -21,7 +21,7 @@
           [:h1 title]
           (mount-component :react-component/hello-world {:name "World"})
           (html-page/link-to-index)
-          (react-mount/react-mount-data-js @ref'registry)
+          (rum-mount/react-mount-data-js @var'components)
           (html/include-js "/app/example/main.js")]]
         (html-page/response))))
 

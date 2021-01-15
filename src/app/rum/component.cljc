@@ -1,31 +1,40 @@
-(ns app.web-example.core
-  (:require ; react components
-    [app.rum.core])
-  (:require
-    [app.lib.http-handler.core :as http-handler]
-    [app.web-example.impl.handler :as handler]
-    [lib.clojure.ns :as ns]))
+(ns app.rum.component
+  (:require [app.rum.impl.component :as impl]))
 
-(set! *warn-on-reflection* true)
+#?(:clj  (set! *warn-on-reflection* true)
+   :cljs (set! *warn-on-infer* true))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(ns/require-dir 'app.web-example.handler._)
+(defn create-component
+  "Component constructor by ID keyword in `data`."
+  [data]
+  (impl/create-component data))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn- example-routes
-  []
-  [["/" :route/index]
-   ["/example-database" :route/example-database]
-   ["/example-react" :route/example-react]
-   ["/example-path-param/:name" :route/example-path-param]])
+(defn component-id
+  "Get component ID."
+  [data]
+  (:app.rum/component-id data))
+
+(defn set-component-id
+  "Set component ID."
+  [data comp-id]
+  (assoc data :app.rum/component-id comp-id))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn example-http-handler
-  "HTTP server handler for `example` webapp."
-  [config]
-  (http-handler/webapp-http-handler handler/example-handler, (example-routes), config))
+(defn instance-id
+  "Instance ID to differentiate several components with same component.
+  Optional, defaults to `component-id`."
+  [data]
+  (or (::instance-id data)
+      (component-id data)))
+
+(defn set-instance-id
+  "Set component instance ID."
+  [data instance-id]
+  (assoc data ::instance-id instance-id))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
