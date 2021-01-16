@@ -1,6 +1,6 @@
 (ns dev.env.system.core
   (:require
-    [app.web-example.impl.html-page :as html-page]
+    [app.web-example.impl.html :as example-html]
     [dev.env.reload.ring-refresh :as ring-refresh]
     [dev.env.system.app :as app]
     [dev.env.tailwind.watcher :as tailwind]
@@ -47,9 +47,9 @@
    [:dev.env.system/watcher :dev.env.system/tailwind-watcher]
    {:handler (tailwind/watcher-handler {:webapp "example"
                                         :on-rebuild (fn []
-                                                      (when ((mount/running-states) (str #'html-page/styles-css-uri))
-                                                        (mount/stop #'html-page/styles-css-uri)
-                                                        (mount/start #'html-page/styles-css-uri)
+                                                      (when ((mount/running-states) (str #'example-html/styles-css-uri))
+                                                        (mount/stop #'example-html/styles-css-uri)
+                                                        (mount/start #'example-html/styles-css-uri)
                                                         (ring-refresh/send-refresh!)))})
     :options {:dirs ["tailwind/app/config" "tailwind/app/web_example"]
               :files [".css" ".js$"]}

@@ -1,12 +1,12 @@
 (ns app.web-example.handler.example-path-param
   (:require
-    [app.lib.util.html :as html]
     [app.web-example.impl.handler :as impl]
-    [app.web-example.impl.html-page :as html-page]
+    [app.web-example.impl.html :as html]
     [clojure.walk :as walk]))
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod impl/example-handler :route/example-path-param
   [request]
@@ -14,7 +14,7 @@
         {:keys [name, value]} (:params request)]
     (-> [:html [:head
                 [:title title]
-                (html/include-css html-page/styles-css-uri)]
+                (html/include-app-css)]
          [:body
           [:h1 title]
           [:div
@@ -25,6 +25,7 @@
            [:ul
             [:li "Name: " [:tt.bg-gray-200 name]]
             [:li "Value: " [:tt.bg-gray-200 value]]]
-           (html-page/link-to-index)]]]
-        (html-page/response))))
+           (html/link-to-index)]]]
+        (html/response))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
