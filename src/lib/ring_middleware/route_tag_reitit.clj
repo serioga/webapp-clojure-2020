@@ -1,10 +1,10 @@
-(ns app.lib.http-handler.middleware.route-tag
-  (:require
-    [lib.clojure.perf :as p]
-    [reitit.core :as reitit]))
+(ns lib.ring-middleware.route-tag-reitit
+  (:require [lib.clojure.perf :as p]
+            [reitit.core :as reitit]))
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- fn'route->path
   [reitit-router, route-tag]
@@ -27,7 +27,6 @@
         ([params]
          (reitit/match->path match params))))))
 
-
 (defn- fn'path-for-route
   [reitit-router]
   (let [compiled (reduce (fn [m tag] (assoc m tag (fn'route->path reitit-router, tag)))
@@ -40,6 +39,7 @@
        (when-some [route->path (compiled route-tag)]
          (route->path params))))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn wrap-route-tag
   "Wrap handler with route-tag functionality."
@@ -63,3 +63,4 @@
                  (update :params (fn merge-route-params [params]
                                    (p/fast-merge params path-params))))))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

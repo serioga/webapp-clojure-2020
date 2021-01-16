@@ -1,11 +1,11 @@
-(ns app.lib.http-handler.middleware.debug-response
-  (:require
-    [clojure.tools.logging :as log]
-    [lib.clojure.perf :as p]
-    [lib.ring-util.request :as ring-request]))
+(ns lib.ring-middleware.debug-response
+  (:require [clojure.tools.logging :as log]
+            [lib.clojure.perf :as p]
+            [lib.ring-util.request :as ring-request]))
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- response-description
   [request response time-millis]
@@ -19,23 +19,24 @@
                   server-name " " route-tag " " request-method " " uri " " params
                   " (" time-millis " ms)")))
 
-
-(defn- session-update-description [response]
+(defn- session-update-description
+  [response]
   (when-let [session (:session response)]
     (if (:recreate (meta session))
       (p/inline-str "Recreate :session " session)
       (p/inline-str "Update :session " session))))
 
-
-(defn- flash-update-description [response]
+(defn- flash-update-description
+  [response]
   (when-let [flash (:flash response)]
     (p/inline-str "Set :flash " flash)))
 
-
-(defn- cookies-update-description [response]
+(defn- cookies-update-description
+  [response]
   (when-let [cookies (:cookies response)]
     (p/inline-str "Set :cookies " cookies)))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn wrap-debug-response
   "Wrap handler with debug logging."
@@ -52,3 +53,5 @@
       (some-> (cookies-update-description response)
               (log/debug))
       response)))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

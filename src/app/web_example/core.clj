@@ -2,8 +2,8 @@
   (:require ; react components
     [app.rum.core])
   (:require
-    [app.lib.http-handler.core :as http-handler]
     [app.web-example.impl.handler :as handler]
+    [app.web-example.ring-handler.core :as http-handler]
     [lib.clojure.ns :as ns]))
 
 (set! *warn-on-reflection* true)
