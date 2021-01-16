@@ -30,6 +30,30 @@
       (main/ex-triage)
       (main/ex-str)))
 
+(defn- ns-alias-clash
+  "Extracts data from exception message about clashed ns alias."
+  [msg]
+  (when-some [[_ alias-sym, ns, alias-ns]
+              (re-matches #"Alias (\S+) already exists in namespace (\S+), aliasing (\S+)" msg)]
+    {:ns (symbol ns)
+     :alias-sym (symbol alias-sym)
+     :alias-ns (symbol alias-ns)}))
+
+(defn- reload-autofix
+  "Tries to reload namespace with automatic fixing of:
+   - alias already exists."
+  ([ns-sym] (reload-autofix ns-sym #{}))
+  ([ns-sym aliases]
+   (try
+     (require ns-sym :reload)
+     (catch Throwable ex
+       (let [{:keys [alias-sym]} (ns-alias-clash (-> ex e/ex-root-cause ex-message))
+             try-fix-alias? (and alias-sym (not (aliases alias-sym)))]
+         (cond
+           try-fix-alias? (do (ns-unalias ns-sym alias-sym)
+                              (reload-autofix ns-sym (conj aliases alias-sym)))
+           :else (throw ex)))))))
+
 (defn- reload-modified-namespaces
   "Return vector of reload errors."
   [ns-tracker always-reload-ns]
@@ -39,7 +63,7 @@
         var'reload-errors (volatile! [])
         reload-ns (fn [ns-sym]
                     (try
-                      (require ns-sym :reload)
+                      (reload-autofix ns-sym)
                       (log/info "[OK]" "Reload" ns-sym)
                       (catch FileNotFoundException _
                         (remove-ns ns-sym))
