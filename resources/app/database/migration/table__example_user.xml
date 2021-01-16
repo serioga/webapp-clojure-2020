@@ -1,38 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--suppress LongLine -->
-<databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-  <changeSet
-    author="Developer"
-    id="Create table `example_user`">
+  <changeSet id="Create table `example_user`" author="Developer">
     <createTable tableName="example_user">
-      <column
-        name="id"
-        autoIncrement="true"
-        type="BIGSERIAL">
-        <constraints primaryKey="true" primaryKeyName="example_user__pkey" />
+      <column name="id" type="BIGSERIAL" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="example_user__pkey"/>
       </column>
-      <column
-        name="created_at"
-        type="TIMESTAMP WITH TIME ZONE"
-        defaultValueComputed="now()" />
-      <column
-        name="user_name"
-        type="TEXT" />
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()"/>
+      <column name="user_name" type="TEXT"/>
     </createTable>
   </changeSet>
 
-  <changeSet
-    author="Developer"
-    id="Insert admin to `example_user`">
+  <changeSet id="Insert admin to `example_user`" author="Developer">
     <insert tableName="example_user">
-      <column
-        name="user_name"
-        value="admin" />
+      <column name="user_name" value="admin"/>
     </insert>
   </changeSet>
 

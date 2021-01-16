@@ -12,7 +12,7 @@
 (defmethod impl/example-handler :route/example-database
   [_]
   (let [title "SQL Database example"
-        result (db/ro db/example-user--select)]
+        result (db/ro db/example.list-user)]
     (-> [:html [:head
                 [:title title]
                 (html/include-app-css)]

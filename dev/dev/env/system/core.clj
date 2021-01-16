@@ -36,7 +36,7 @@
 
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :filter will pick out only files that match this pattern.
-              :files [".props$" ".clj$" ".cljc$" ".cljs$" ".sql$"]
+              :files [".props$" ".clj$" ".cljc$" ".cljs$" ".sql$" ".xml$"]
 
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :exclude will leave out files that match this pattern.
