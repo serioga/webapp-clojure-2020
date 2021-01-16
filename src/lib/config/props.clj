@@ -1,4 +1,4 @@
-(ns lib.app-config.props
+(ns lib.config.props
   "Application configuration."
   (:require
     [clojure.java.io :as io]

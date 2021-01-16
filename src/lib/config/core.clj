@@ -1,4 +1,4 @@
-(ns lib.app-config.core
+(ns lib.config.core
   (:require
     [lib.clojure.core :as e]))
 
