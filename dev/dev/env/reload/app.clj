@@ -34,7 +34,8 @@
   "Removes all aliases in namespace."
   [ns-sym]
   (doseq [[alias-sym _] (ns-aliases ns-sym)]
-    (ns-unalias ns-sym alias-sym)))
+    (e/try-ignore
+      (ns-unalias ns-sym alias-sym))))
 
 (defn- reload-modified-namespaces
   "Return vector of reload errors."
