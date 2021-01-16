@@ -33,9 +33,8 @@
 (defn- ns-unalias-all
   "Removes all aliases in namespace."
   [ns-sym]
-  (doseq [[alias-sym _] (ns-aliases ns-sym)]
-    (e/try-ignore
-      (ns-unalias ns-sym alias-sym))))
+  (doseq [[alias-sym _] (e/try-ignore (ns-aliases ns-sym))]
+    (ns-unalias ns-sym alias-sym)))
 
 (defn- reload-modified-namespaces
   "Return vector of reload errors."
@@ -52,9 +51,12 @@
                       (catch FileNotFoundException _
                         (remove-ns ns-sym))
                       (catch Throwable ex
-                        (let [msg (exception-log-msg ex)]
-                          (vswap! var'reload-errors conj [ns-sym msg])
-                          (log/info "[FAIL]" "Reload" ns-sym)))))]
+                        (if (e/try-ignore (require ns-sym :reload-all)
+                                          true)
+                          (log/info "[OK]" "Reload" ns-sym)
+                          (let [msg (exception-log-msg ex)]
+                            (vswap! var'reload-errors conj [ns-sym msg])
+                            (log/info "[FAIL]" "Reload" ns-sym))))))]
     (when-let [namespaces (seq (concat modified reload-always))]
       (log/info "Reloading namespaces:" (string/join ", " namespaces))
       (run! reload-ns namespaces))
