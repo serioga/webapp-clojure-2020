@@ -18,7 +18,6 @@
            :private true}
          var'system (atom nil))
 
-
 (add-watch var'system :log-system-status
            (fn [_ _ _ system]
              (some-> system impl/log-prop-files)
@@ -26,13 +25,9 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn- decompose-key
-  [key]
-  (cond-> key (vector? key) (peek)))
-
 (defn- add-to-await-before-start
   [system key]
-  (let [key (decompose-key key)]
+  (let [key (ig/decompose-key key)]
     (update system [::impl/import-map :app.system.config/await-before-start]
             assoc-in [:init-map key] (ig/ref key))))
 
@@ -40,7 +35,7 @@
   "Creates references from vector of `mounts` keywords to `key` in `:app.system.service/mount`.
    If `key` is composite then only the last value is taken."
   [system key mounts]
-  (let [key (decompose-key key)]
+  (let [key (ig/decompose-key key)]
     (reduce (fn [system mount-key]
               (-> system
                   (update :app.system.service/ref'mount assoc mount-key (ig/ref key))
@@ -56,7 +51,7 @@
 (defn- key-with-suffix
   "Adds 'extension' to keyword `key`."
   [key ext]
-  (let [key (decompose-key key)]
+  (let [key (ig/decompose-key key)]
     (keyword (namespace key) (str (name key) ext))))
 
 (defn- import-app-config
@@ -159,7 +154,7 @@
 
 (comment
   (->> (system-config) keys)
-  (->> (system-config) keys (map decompose-key) sort)
+  (->> (system-config) keys (map ig/decompose-key) sort)
   (-> (system-config) (get :app.system.service/ref'mount) keys sort)
   (-> (system-config) (get [:app.system.impl/import-map :app.system.config/await-before-start])))
 

@@ -7,6 +7,7 @@
 #?(:clj (set! *warn-on-reflection* true) :cljs (set! *warn-on-infer* true))
 #?(:clj (set! *unchecked-math* :warn-on-boxed))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn empty-coll?
   "Check if collection is empty using count if possible.
@@ -17,7 +18,6 @@
     (counted? coll) (zero? (count coll))
     :else (empty? coll)))
 
-
 (defn not-empty-coll?
   "Check if collection is empty using count if possible.
    Optimized for nil input."
@@ -27,6 +27,7 @@
     (counted? coll) (pos? (count coll))
     :else (seq coll)))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn fast-assoc*
   "Assoc using direct call to `Associative.assoc`."
@@ -34,7 +35,6 @@
   (let [m (or m {})]
     #?(:clj  (.assoc ^Associative m k v)
        :cljs (-assoc ^IAssociative m k v))))
-
 
 (defmacro fast-assoc
   "Replacement for `clojure.core/assoc`.
@@ -45,6 +45,7 @@
        ~@(map (fn [[k v]] (list 'lib.clojure.perf/fast-assoc* k v))
               (partition 2 kvs))))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn fast-merge*
   "Merge two hash-maps `m1` and `m2` using `fast-assoc*`.
@@ -55,7 +56,6 @@
     (empty-coll? m2) m1
     :else (reduce-kv fast-assoc* m1 m2)))
 
-
 (defmacro fast-merge
   "Replacement for `clojure.core/merge`.
    Multiple maps are merged with multiple calls to `fast-merge*`."
@@ -63,6 +63,7 @@
   `(-> ~m
        ~@(map #(list 'lib.clojure.perf/fast-merge* %) maps)))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmacro inline-dissoc
   "Call `clojure.core/dissoc` for multiple keys without loop over collection."
@@ -70,6 +71,7 @@
   `(-> ~m
        ~@(map (fn [k] (list 'clojure.core/dissoc k)) ks)))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn fast-select-keys
   "Alternative for `clojure.core/select-keys`.
@@ -82,6 +84,7 @@
                              {} ks)
     :else {}))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (comment
   (require '[criterium.core])
@@ -218,6 +221,7 @@
 
   :comment)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmacro inline-str
   "Build string inline using StringBuilder."
@@ -261,3 +265,5 @@
   #_"Execution time mean : 83,900023 ns"
 
   'comment)
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

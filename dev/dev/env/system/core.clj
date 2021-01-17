@@ -38,11 +38,11 @@
     :dev.env.system/ref'shadow-cljs {:builds-to-start [:example]}
 
     [:dev.env.system/watcher :dev.env.system/app-reload-watcher]
-    {:handler (app-reload/watcher-handler {:ns-tracker-dirs ["src" "dev"]
-                                           :always-reload-ns ['app.database.core]
-                                           :app-stop #'app/suspend!
-                                           :app-start #'app/resume!
-                                           :on-complete #'print-reload-on-enter})
+    {:handler (app-reload/watch-handler {:ns-tracker-dirs ["src" "dev"]
+                                         :always-reload-ns ['app.database.core]
+                                         :app-stop #'app/suspend!
+                                         :app-start #'app/resume!
+                                         :on-complete #'print-reload-on-enter})
      :options {:dirs ["src" "dev" "dev-resources/app" "resources/app"]
                ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
                ; :filter will pick out only files that match this pattern.
@@ -52,11 +52,11 @@
                :exclude []}}
 
     [:dev.env.system/watcher :dev.env.system/tailwind-watcher]
-    {:handler (tailwind/watcher-handler {:webapp "example"
-                                         :on-rebuild (fn [] (when ((mount/running-states) (str #'example-html/styles-css-uri))
-                                                              (mount/stop #'example-html/styles-css-uri)
-                                                              (mount/start #'example-html/styles-css-uri)
-                                                              (ring-refresh/send-refresh!)))})
+    {:handler (tailwind/watch-handler {:webapp "example"
+                                       :on-rebuild (fn [] (when ((mount/running-states) (str #'example-html/styles-css-uri))
+                                                            (mount/stop #'example-html/styles-css-uri)
+                                                            (mount/start #'example-html/styles-css-uri)
+                                                            (ring-refresh/send-refresh!)))})
      :options {:dirs ["tailwind/app/config" "tailwind/app/web_example"]
                :files [".css" ".js$"]}
      :run-handler-on-init? first-run?}}))

@@ -52,7 +52,7 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn watcher-handler
+(defn watch-handler
   "Builds app reloading function to be used in file watcher."
   [{:keys [ns-tracker-dirs, always-reload-ns, app-stop, app-start, on-complete]}]
   (let [ns-tracker (ns-tracker/ns-tracker ns-tracker-dirs)]

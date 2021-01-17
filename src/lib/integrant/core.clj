@@ -23,6 +23,13 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(defn decompose-key
+  "Returns key or the last component of composite key."
+  [key]
+  (cond-> key (vector? key) (peek)))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defn- init-key
   "Wrapped version of integrant's `init-key` with logging."
   [key value]

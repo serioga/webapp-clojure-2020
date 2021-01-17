@@ -11,6 +11,7 @@
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn webapp-http-handler
   "Build HTTP server handler for webapp with common middleware."
@@ -25,3 +26,5 @@
                                        (assoc-in [:security :frame-options] false)
                                        (dissoc :session)))
       (error-exception/wrap-error-exception dev-mode?)))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

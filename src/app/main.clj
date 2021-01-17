@@ -13,6 +13,7 @@
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (Thread/setDefaultUncaughtExceptionHandler
   (reify Thread$UncaughtExceptionHandler
@@ -22,6 +23,7 @@
 (SLF4JBridgeHandler/removeHandlersForRootLogger)
 (SLF4JBridgeHandler/install)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- init
   []
@@ -32,14 +34,15 @@
   []
   (app/stop!))
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defn -main
   "Application entry point."
   []
   (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable shutdown))
   (init))
 
-
-;------------------------------------------------------------------------------
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 ; Daemon implementation
 
 (defn -init
@@ -59,3 +62,5 @@
 (defn -destroy
   "Frees any resources allocated by this daemon."
   [_])
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

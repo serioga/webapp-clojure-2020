@@ -1,13 +1,13 @@
 (ns lib.liquibase.core
-  (:import
-    (javax.sql DataSource)
-    (liquibase Liquibase Contexts)
-    (liquibase.database Database DatabaseFactory)
-    (liquibase.database.jvm JdbcConnection)
-    (liquibase.resource ClassLoaderResourceAccessor)))
+  (:import (javax.sql DataSource)
+           (liquibase.database Database DatabaseFactory)
+           (liquibase.database.jvm JdbcConnection)
+           (liquibase Liquibase Contexts)
+           (liquibase.resource ClassLoaderResourceAccessor)))
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn update-database
   "Database migration using liquibase."
@@ -20,3 +20,5 @@
           resource-accessor (ClassLoaderResourceAccessor.)
           liquibase (Liquibase. changelog-path resource-accessor ^Database db)]
       (.update liquibase contexts))))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

@@ -34,7 +34,7 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn watcher-handler
+(defn watch-handler
   "Watch handler for Tailwind CSS sources."
   [options]
   (fn [& _]
