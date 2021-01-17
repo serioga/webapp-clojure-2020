@@ -1,48 +1,13 @@
-(ns app.system.impl
-  "Service functions to implement app system."
-  (:require
-    [clojure.tools.logging :as log]
-    [integrant.core :as ig]
-    [lib.clojure.core :as e]))
+(ns lib.integrant.system
+  (:require [clojure.tools.logging :as log]
+            [integrant.core :as ig]
+            [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn log-running-webapps
-  "Log info about running webapps (URLs with host/port)."
-  [system]
-  (let [webapps (some-> system
-                        :app.system.service/ref'immutant-web
-                        (deref)
-                        (meta)
-                        :running-webapps)]
-    (doseq [[name {:keys [host port ssl-port virtual-host]}] webapps
-            webapp-host (cond (sequential? virtual-host) virtual-host
-                              (string? virtual-host) [virtual-host]
-                              :else [(or host "localhost")])]
-      (log/info "Running" "webapp" (pr-str name)
-                (str (when port (str "- http://" webapp-host ":" port "/")))
-                (str (when ssl-port (str "- https://" webapp-host ":" ssl-port "/")))))))
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defn log-prop-files
-  "Log info about loaded configuration files."
-  [system]
-  (let [prop-files (some-> system
-                           :app.system.service/app-config
-                           (meta)
-                           :prop-files)]
-    (log/info "Running config from" (pr-str prop-files))))
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
 (defmethod ig/init-key ::identity [_ v] v)
-
-(derive :app.system/dev-mode? ::identity)
-(derive :dev.env.system/prepare-prop-files ::identity)
-(derive :dev.env.system/prepare-webapp ::identity)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -91,7 +56,7 @@
     (log/debug "Await before start" (keys await-for))
     (doseq [[k v] await-for]
       (e/try-log-error ["Await for" k]
-        (when (future? v)
-          (deref v))))))
+                       (when (future? v)
+                         (deref v))))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

@@ -1,10 +1,10 @@
 (ns app.system.service.immutant-web
   (:require
-    [app.system.impl :as impl]
     [clojure.tools.logging :as log]
     [immutant.web :as web]
     [integrant.core :as ig]
-    [lib.clojure.core :as e]))
+    [lib.clojure.core :as e]
+    [lib.integrant.system :as system]))
 
 (set! *warn-on-reflection* true)
 
@@ -29,7 +29,7 @@
            dev/prepare-webapp
            await-before-start]}]
 
-  (impl/await-before-start await-before-start)
+  (system/await-before-start await-before-start)
 
   (let [prepare-webapp (or prepare-webapp identity)]
     (reduce (fn [server, {:keys [enabled?] :or {enabled? true} :as webapp}]

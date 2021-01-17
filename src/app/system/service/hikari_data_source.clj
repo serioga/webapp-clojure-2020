@@ -18,7 +18,7 @@
         :app.system.service/ref'hikari-data-source)
 
 (derive :app.system.service/ref'hikari-data-source
-        :app.system.impl/keep-running-on-suspend)
+        :lib.integrant.system/keep-running-on-suspend)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

@@ -1,9 +1,10 @@
 (ns app.system.core
   (:require
-    [app.system.impl :as impl]
+    [clojure.tools.logging :as log]
     [lib.clojure.core :as e]
     [lib.clojure.ns :as ns]
-    [lib.integrant.core :as ig]))
+    [lib.integrant.core :as ig]
+    [lib.integrant.system :as system]))
 
 (set! *warn-on-reflection* true)
 
@@ -14,21 +15,10 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defonce ^{:doc "Global reference to the running system"
-           :private true}
-         var'system (atom nil))
-
-(add-watch var'system :log-system-status
-           (fn [_ _ _ system]
-             (some-> system impl/log-prop-files)
-             (some-> system impl/log-running-webapps)))
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
 (defn- add-to-await-before-start
   [system key]
   (let [key (ig/decompose-key key)]
-    (update system [::impl/import-map :app.system.config/await-before-start]
+    (update system [:lib.integrant.system/import-map :app.system.config/await-before-start]
             assoc-in [:init-map key] (ig/ref key))))
 
 (defn- mount-refs
@@ -60,11 +50,17 @@
   [system, key {:keys [config, import, mounts]}]
   (let [config-key (key-with-suffix key ".config")]
     (-> system
-        (merge {[::impl/import-map config-key] {:init-map config
-                                                :import-from (ig/ref :app.system.service/app-config)
-                                                :import-keys import}
+        (merge {[::system/import-map config-key] {:init-map config
+                                                  :import-from (ig/ref :app.system.service/app-config)
+                                                  :import-keys import}
                 key (ig/ref config-key)})
         (mount-refs key mounts))))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(derive :app.system/dev-mode? ::system/identity)
+(derive :dev.env.system/prepare-prop-files ::system/identity)
+(derive :dev.env.system/prepare-webapp ::system/identity)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -78,7 +74,7 @@
   [system {:keys [config mounts]}]
   (-> system (merge {:dev.env.system/prepare-prop-files nil
 
-                     [::impl/system-property :app.system.service/app-config.prop-files]
+                     [::system/system-property :app.system.service/app-config.prop-files]
                      {:key "config.file"}
 
                      :app.system.service/app-config
@@ -156,9 +152,13 @@
   (->> (system-config) keys)
   (->> (system-config) keys (map ig/decompose-key) sort)
   (-> (system-config) (get :app.system.service/ref'mount) keys sort)
-  (-> (system-config) (get [:app.system.impl/import-map :app.system.config/await-before-start])))
+  (-> (system-config) (get [::system/import-map :app.system.config/await-before-start])))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defonce ^{:doc "Global reference to the running system"
+           :private true}
+         var'system (atom nil))
 
 (defn stop!
   "Stop global system."
@@ -167,14 +167,10 @@
     (reset! var'system nil)
     (ig/halt! system)))
 
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
 (defn suspend!
   "Suspend global system."
   []
   (some-> @var'system (ig/suspend!)))
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn start!
   "Start global system."
@@ -185,8 +181,6 @@
    (stop!)
    (let [config (prepare-config (system-config))]
      (reset! var'system (ig/init config, (or system-keys (keys config)))))))
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn resume!
   "Resume global system."
@@ -203,15 +197,34 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(comment
-  (time (keys (start!)))
-  (time (suspend!))
-  (time (keys (resume!)))
-  (time (do
-          (suspend!)
-          (keys (resume!))))
-  (time (stop!))
+(defn- log-running-webapps
+  "Log info about running webapps (URLs with host/port)."
+  [system]
+  (let [webapps (some-> system
+                        :app.system.service/ref'immutant-web
+                        (deref)
+                        (meta)
+                        :running-webapps)]
+    (doseq [[name {:keys [host port ssl-port virtual-host]}] webapps
+            webapp-host (cond (sequential? virtual-host) virtual-host
+                              (string? virtual-host) [virtual-host]
+                              :else [(or host "localhost")])]
+      (log/info "Running" "webapp" (pr-str name)
+                (str (when port (str "- http://" webapp-host ":" port "/")))
+                (str (when ssl-port (str "- https://" webapp-host ":" ssl-port "/")))))))
 
-  (time (:app.system.service/ref'immutant-web (start! {:system-keys [:app.system.service/ref'immutant-web]}))))
+(defn- log-prop-files
+  "Log info about loaded configuration files."
+  [system]
+  (let [prop-files (some-> system
+                           :app.system.service/app-config
+                           (meta)
+                           :prop-files)]
+    (log/info "Running config from" (pr-str prop-files))))
+
+(add-watch var'system :log-system-status
+           (fn [_ _ _ system]
+             (some-> system log-prop-files)
+             (some-> system log-running-webapps)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
