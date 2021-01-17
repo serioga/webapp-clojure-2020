@@ -7,7 +7,7 @@
   @apply text-center;
 
   &:hover {
-    @apply bg-yellow-200;
+    @apply bg-yellow-100;
   }
 }
 
