@@ -7,6 +7,11 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(derive :dev.env.system/ref'nrepl
+        :app.system.impl/keep-running-on-suspend)
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defmethod ig/init-key :dev.env.system/ref'nrepl
   [_ options]
   (e/future (nrepl/start-server options)))

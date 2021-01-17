@@ -10,6 +10,7 @@
 
 (set! *warn-on-reflection* true)
 
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- init
   []
@@ -25,35 +26,29 @@
 
     (log/info "[DONE] Application has been started for development. Happy coding!")
 
-    (env/reload-on-enter)
+    (env/prompt-reload-on-enter)
 
     (catch Throwable ex
       (log/error (e/ex-message-all ex))
       (when (= ::app (:reason (ex-data ex)))
-        (env/reload-on-enter)))))
+        (env/prompt-reload-on-enter)))))
 
-
-(defn shutdown
+(defn- shutdown
   "Shutdown `env` system."
   []
   (app/stop!)
   (env/stop!))
 
+(comment
+  (time (init))
+  (time (shutdown)))
 
-(defn reload
-  "Reload `env` system."
-  []
-  (app/stop!)
-  (app/start!))
-
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn -main
-  "Entry point for development run."
+  "Runs development environment."
   []
   (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable shutdown))
   (init))
 
-
-(comment
-  (time (init))
-  (time (shutdown)))
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

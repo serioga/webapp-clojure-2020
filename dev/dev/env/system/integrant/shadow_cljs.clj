@@ -7,6 +7,11 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(derive :dev.env.system/ref'shadow-cljs
+        :app.system.impl/keep-running-on-suspend)
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defmethod ig/init-key :dev.env.system/ref'shadow-cljs
   [_ options]
   (e/future (server/start! options)))

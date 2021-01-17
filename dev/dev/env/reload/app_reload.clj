@@ -1,4 +1,4 @@
-(ns dev.env.reload.app
+(ns dev.env.reload.app-reload
   (:require [clojure.main :as main]
             [clojure.set :as set]
             [clojure.string :as string]
@@ -10,18 +10,6 @@
 (set! *warn-on-reflection* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defn- reload-on-enter
-  [handler]
-  (future
-    (print "\n\nPress ENTER to reload application: ")
-    (flush)
-    (when (some? (read-line))
-      (handler :force-reload "ENTER key pressed..."))))
-
-(defn- with-meta-reload-on-enter
-  [f]
-  (with-meta f {:reload-on-enter (partial reload-on-enter f)}))
 
 (defn- exception-log-msg
   [ex]
@@ -66,32 +54,25 @@
 
 (defn watcher-handler
   "Builds app reloading function to be used in file watcher."
-  [{:keys [ns-tracker-dirs, always-reload-ns,
-           app-start, app-suspend, app-resume, app-stop]}]
+  [{:keys [ns-tracker-dirs, always-reload-ns, app-stop, app-start, on-complete]}]
   (let [ns-tracker (ns-tracker/ns-tracker ns-tracker-dirs)]
-
-    (-> (fn app-reload [& reason]
-          (let [[start stop] (if (= :force-reload (first reason))
-                               [app-start app-stop]
-                               [app-resume app-suspend])]
-            (log/info reason)
-            (log/info "[START]" "Application reload")
-            (when stop
-              (e/try-log-error ["Stop application before namespace reloading"]
-                (stop)))
-            (if-some [reload-errors (seq (reload-modified-namespaces ns-tracker always-reload-ns))]
-              (do
-                (log/info "[FAIL]" "Application reload")
-                (doseq [[ns err] reload-errors]
-                  (log/error "[FAIL]" "Reload" ns (str "\n\n" err "\n"))))
-              (try
-                (when start (start))
-                (log/info "[DONE]" "Application reload")
-                (catch Throwable ex
-                  (log/error (e/ex-message-all ex))
-                  (log/info "[FAIL]" "Application reload"))))
-            (reload-on-enter app-reload)))
-
-        (with-meta-reload-on-enter))))
+    (fn app-reload [& reason]
+      (log/info reason)
+      (log/info "[START]" "Application reload")
+      (when app-stop
+        (e/try-log-error ["Stop application before namespace reloading"]
+          (app-stop)))
+      (if-some [reload-errors (seq (reload-modified-namespaces ns-tracker always-reload-ns))]
+        (do
+          (log/info "[FAIL]" "Application reload")
+          (doseq [[ns err] reload-errors]
+            (log/error "[FAIL]" "Reload" ns (str "\n\n" err "\n"))))
+        (try
+          (when app-start (app-start))
+          (log/info "[DONE]" "Application reload")
+          (catch Throwable ex
+            (log/error (e/ex-message-all ex))
+            (log/info "[FAIL]" "Application reload"))))
+      (when on-complete (on-complete)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
