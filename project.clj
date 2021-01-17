@@ -3,24 +3,24 @@
   :dependencies [; clojure
                  [org.clojure/clojure "1.10.1"]
                  ; clojure script
-                 [cljsjs/react "16.13.1-0"]
-                 [cljsjs/react-dom "16.13.1-0"]
+                 [cljsjs/react "17.0.1-0"]
+                 [cljsjs/react-dom "17.0.1-0"]
                  [org.clojure/clojurescript "1.10.773" :scope "provided"]
                  [rum "0.12.3"]
                  ; shadow cljs
                  [com.google.javascript/closure-compiler-externs "v20200830" :scope "provided" :upgrade false]
                  [com.google.javascript/closure-compiler-unshaded "v20200830" :scope "provided" :upgrade false]
                  [org.clojure/google-closure-library "0.0-20191016-6ae1f72f" :scope "provided"]
-                 [thheller/shadow-cljs "2.11.6" :scope "provided"]
+                 [thheller/shadow-cljs "2.11.14" :scope "provided"]
                  ; system
                  [integrant "0.8.0"]
                  [mount "0.1.16"]
                  [tolitius/mount-up "0.1.3"]
                  ; web server
-                 [io.undertow/undertow-core,,,,,,,,,, "2.2.2.Final"]
-                 [io.undertow/undertow-servlet,,,,,,, "2.2.2.Final"]
-                 [io.undertow/undertow-websockets-jsr "2.2.2.Final"]
-                 [metosin/reitit-core "0.5.10"]
+                 [io.undertow/undertow-core,,,,,,,,,, "2.2.3.Final"]
+                 [io.undertow/undertow-servlet,,,,,,, "2.2.3.Final"]
+                 [io.undertow/undertow-websockets-jsr "2.2.3.Final"]
+                 [metosin/reitit-core "0.5.11"]
                  [org.immutant/web "2.1.10"]
                  [ring/ring-core "1.8.2"]
                  [ring/ring-defaults "0.3.2"]
@@ -30,8 +30,8 @@
                  [com.layerware/hugsql-adapter-next-jdbc "0.5.1"]
                  [com.mattbertolini/liquibase-slf4j "4.0.0"]
                  [com.zaxxer/HikariCP "3.4.5"]
-                 [org.liquibase/liquibase-core "4.1.1"]
-                 [seancorfield/next.jdbc "1.1.610"]
+                 [org.liquibase/liquibase-core "4.2.2"]
+                 [seancorfield/next.jdbc "1.1.613"]
                  [p6spy/p6spy "3.9.1"]
                  ; logging (clojure)
                  [ch.qos.logback/logback-classic "1.2.3"]
