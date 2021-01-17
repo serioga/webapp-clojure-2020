@@ -38,13 +38,14 @@
                       (log/info "[OK]" "Reload" ns-sym)
                       (catch FileNotFoundException _
                         (remove-ns ns-sym))
-                      (catch Throwable ex
-                        (if (e/try-ignore (require ns-sym :reload-all)
-                                          true)
+                      (catch Throwable _
+                        (try
+                          (require ns-sym :reload-all)
                           (log/info "[OK]" "Reload" ns-sym)
-                          (let [msg (exception-log-msg ex)]
-                            (vswap! var'reload-errors conj [ns-sym msg])
-                            (log/info "[FAIL]" "Reload" ns-sym))))))]
+                          (catch Throwable ex
+                            (let [msg (exception-log-msg ex)]
+                              (vswap! var'reload-errors conj [ns-sym msg])
+                              (log/info "[FAIL]" "Reload" ns-sym)))))))]
     (when-let [namespaces (seq (concat modified reload-always))]
       (log/info "Reloading namespaces:" (string/join ", " namespaces))
       (run! reload-ns namespaces))
