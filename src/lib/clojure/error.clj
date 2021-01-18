@@ -21,15 +21,10 @@
     ""))
 
 (comment
-  (require '[criterium.core])
-  (criterium.core/quick-bench
-    (print-str "a" nil "b" "" "c")
-    #_"a nil b  c")
-  #_"Execution time mean : 2,571438 µs"
-  (criterium.core/quick-bench
-    (print-str* "a" nil "b" "" "c")
-    #_"a b c")
-  #_"Execution time mean : 105,686375 ns")
+  (print-str "a" nil "b" "" "c")                            ; "Execution time mean : 2571,438 ns"
+  #_"a nil b  c"
+  (print-str* "a" nil "b" "" "c")                           ; "Execution time mean :  105,686 ns"
+  #_"a b c")
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
