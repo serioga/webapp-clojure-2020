@@ -1,9 +1,8 @@
 (ns dev.env.shadow-cljs.server
-  (:require
-    [clojure.tools.logging :as log]
-    [shadow.cljs.devtools.api :as api]
-    [shadow.cljs.devtools.server :as server]
-    [shadow.cljs.devtools.server.runtime :as server-runtime]))
+  (:require [clojure.tools.logging :as log]
+            [shadow.cljs.devtools.api :as api]
+            [shadow.cljs.devtools.server :as server]
+            [shadow.cljs.devtools.server.runtime :as server-runtime]))
 
 (set! *warn-on-reflection* true)
 

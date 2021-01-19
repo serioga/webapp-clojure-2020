@@ -1,11 +1,9 @@
 (ns dev.env.reload.ring-refresh
-  (:require
-    [clojure.tools.logging :as log]
-    [compojure.core :as compojure]
-    [ring.middleware.params :as params]
-    [ring.middleware.refresh :as refresh])
-  (:import
-    (java.util UUID Date)))
+  (:require [clojure.tools.logging :as log]
+            [compojure.core :as compojure]
+            [ring.middleware.params :as params]
+            [ring.middleware.refresh :as refresh])
+  (:import (java.util UUID Date)))
 
 (set! *warn-on-reflection* true)
 

@@ -1,10 +1,9 @@
 (ns app.system.core
-  (:require
-    [clojure.tools.logging :as log]
-    [lib.clojure.core :as e]
-    [lib.clojure.ns :as ns]
-    [lib.integrant.core :as ig]
-    [lib.integrant.system :as system]))
+  (:require [clojure.tools.logging :as log]
+            [lib.clojure.core :as e]
+            [lib.clojure.ns :as ns]
+            [lib.integrant.core :as ig]
+            [lib.integrant.system :as system]))
 
 (set! *warn-on-reflection* true)
 

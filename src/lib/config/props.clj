@@ -1,13 +1,11 @@
 (ns lib.config.props
   "Application configuration."
-  (:require
-    [clojure.java.io :as io]
-    [clojure.string :as string]
-    [clojure.tools.logging :as log]
-    [clojurewerkz.propertied.properties :as p]
-    [lib.clojure.core :as e])
-  (:import
-    (java.util.regex Pattern)))
+  (:require [clojure.java.io :as io]
+            [clojure.string :as string]
+            [clojure.tools.logging :as log]
+            [clojurewerkz.propertied.properties :as p]
+            [lib.clojure.core :as e])
+  (:import (java.util.regex Pattern)))
 
 (set! *warn-on-reflection* true)
 

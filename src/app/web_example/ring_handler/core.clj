@@ -1,13 +1,12 @@
 (ns app.web-example.ring-handler.core
   "Ring-based definition for request-response handling."
-  (:require
-    [lib.ring-middleware.debug-response :as debug-response]
-    [lib.ring-middleware.error-exception :as error-exception]
-    [lib.ring-middleware.error-not-found :as error-not-found]
-    [lib.ring-middleware.logging-context :as logging-context]
-    [lib.ring-middleware.route-tag-reitit :as route-tag]
-    [reitit.core :as reitit]
-    [ring.middleware.defaults :as ring-defaults]))
+  (:require [lib.ring-middleware.debug-response :as debug-response]
+            [lib.ring-middleware.error-exception :as error-exception]
+            [lib.ring-middleware.error-not-found :as error-not-found]
+            [lib.ring-middleware.logging-context :as logging-context]
+            [lib.ring-middleware.route-tag-reitit :as route-tag]
+            [reitit.core :as reitit]
+            [ring.middleware.defaults :as ring-defaults]))
 
 (set! *warn-on-reflection* true)
 

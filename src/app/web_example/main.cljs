@@ -1,8 +1,8 @@
 (ns app.web-example.main
-  (:require ; react components
-    [app.rum.core])
-  (:require
-    [app.rum.mount :as rum-mount]))
+  ;; React components
+  (:require [app.rum.core])
+  ;; Imports
+  (:require [app.rum.mount :as rum-mount]))
 
 (set! *warn-on-infer* true)
 

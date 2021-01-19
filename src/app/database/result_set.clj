@@ -1,9 +1,7 @@
 (ns app.database.result-set
-  (:require
-    [lib.clojure.core :as e]
-    [next.jdbc.optional :as jdbc.rs])
-  (:import
-    (java.sql ResultSet ResultSetMetaData)))
+  (:require [lib.clojure.core :as e]
+            [next.jdbc.optional :as jdbc.rs])
+  (:import (java.sql ResultSet ResultSetMetaData)))
 
 (set! *warn-on-reflection* true)
 

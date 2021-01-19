@@ -56,7 +56,7 @@
     (log/debug "Await before start" (keys await-for))
     (doseq [[k v] await-for]
       (e/try-log-error ["Await for" k]
-                       (when (future? v)
-                         (deref v))))))
+        (when (future? v)
+          (deref v))))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

@@ -1,6 +1,5 @@
 (ns lib.ring-util.response
-  (:require
-    [potemkin :refer [import-vars]]))
+  (:require [potemkin :refer [import-vars]]))
 
 (set! *warn-on-reflection* true)
 

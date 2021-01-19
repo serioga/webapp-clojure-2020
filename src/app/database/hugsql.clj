@@ -1,10 +1,9 @@
 (ns app.database.hugsql
-  (:require
-    [app.database.hugsql-adapter :as hugsql-adapter]
-    [app.database.result-set :as rs]
-    [clojure.java.io :as io]
-    [hugsql.core :as hugsql]
-    [lib.clojure.core :as e]))
+  (:require [app.database.hugsql-adapter :as hugsql-adapter]
+            [app.database.result-set :as rs]
+            [clojure.java.io :as io]
+            [hugsql.core :as hugsql]
+            [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 

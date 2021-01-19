@@ -1,9 +1,8 @@
 (ns app.web-example.handler.example-database
-  (:require
-    [app.database.core :as db]
-    [app.web-example.impl.handler :as impl]
-    [app.web-example.impl.html :as html]
-    [clojure.pprint :as pprint]))
+  (:require [app.database.core :as db]
+            [app.web-example.impl.handler :as impl]
+            [app.web-example.impl.html :as html]
+            [clojure.pprint :as pprint]))
 
 (set! *warn-on-reflection* true)
 

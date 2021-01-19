@@ -1,9 +1,7 @@
 (ns app.html.core
-  (:require
-    [clojure.java.io :as io]
-    [rum.core :as rum])
-  (:import
-    (org.apache.commons.codec.digest DigestUtils)))
+  (:require [clojure.java.io :as io]
+            [rum.core :as rum])
+  (:import (org.apache.commons.codec.digest DigestUtils)))
 
 (set! *warn-on-reflection* true)
 

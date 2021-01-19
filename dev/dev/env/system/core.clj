@@ -1,25 +1,20 @@
 (ns dev.env.system.core
-  (:require
-    [app.web-example.impl.html :as example-html]
-    [clojure.tools.logging :as log]
-    [dev.env.reload.app-reload :as app-reload]
-    [dev.env.reload.ring-refresh :as ring-refresh]
-    [dev.env.system.app :as app]
-    [dev.env.tailwind.watcher :as tailwind]
-    [lib.clojure.core :as e]
-    [lib.clojure.ns :as ns]
-    [lib.integrant.core :as ig]
-    [mount.core :as mount]))
+  (:require [app.web-example.impl.html :as example-html]
+            [clojure.tools.logging :as log]
+            [dev.env.reload.app-reload :as app-reload]
+            [dev.env.reload.ring-refresh :as ring-refresh]
+            [dev.env.system.app :as app]
+            [dev.env.tailwind.watcher :as tailwind]
+            [lib.clojure.core :as e]
+            [lib.clojure.ns :as ns]
+            [lib.integrant.core :as ig]
+            [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (ns/require-dir 'dev.env.system.integrant._)
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defonce ^:private var'system (atom nil))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -60,6 +55,10 @@
      :options {:dirs ["tailwind/app/config" "tailwind/app/web_example"]
                :files [".css" ".js$"]}
      :run-handler-on-init? first-run?}}))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defonce ^:private var'system (atom nil))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

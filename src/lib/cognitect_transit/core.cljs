@@ -1,6 +1,5 @@
 (ns lib.cognitect-transit.core
-  (:require
-    [cognitect.transit :as transit]))
+  (:require [cognitect.transit :as transit]))
 
 (set! *warn-on-infer* true)
 

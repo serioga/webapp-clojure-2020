@@ -1,10 +1,9 @@
 (ns app.system.service.app-config
-  (:require
-    [clojure.edn :as edn]
-    [clojure.string :as string]
-    [integrant.core :as ig]
-    [lib.config.props :as props]
-    [lib.util.secret :as secret]))
+  (:require [clojure.edn :as edn]
+            [clojure.string :as string]
+            [integrant.core :as ig]
+            [lib.config.props :as props]
+            [lib.util.secret :as secret]))
 
 (set! *warn-on-reflection* true)
 

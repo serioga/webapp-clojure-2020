@@ -1,8 +1,7 @@
 (ns app.web-example.handler.example-path-param
-  (:require
-    [app.web-example.impl.handler :as impl]
-    [app.web-example.impl.html :as html]
-    [clojure.walk :as walk]))
+  (:require [app.web-example.impl.handler :as impl]
+            [app.web-example.impl.html :as html]
+            [clojure.walk :as walk]))
 
 (set! *warn-on-reflection* true)
 

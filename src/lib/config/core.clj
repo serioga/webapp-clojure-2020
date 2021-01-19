@@ -1,6 +1,5 @@
 (ns lib.config.core
-  (:require
-    [lib.clojure.core :as e]))
+  (:require [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 

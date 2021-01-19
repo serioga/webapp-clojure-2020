@@ -11,7 +11,9 @@
   :app.lib.util.perf/fast-assoc 1
   :clojure.core/cond-&gt; 1
   :clojure.core/defmulti 1
+  :clojure.test/are 2
   :cursive.formatting/align-maps false
+  :cursive.formatting/comment-align-column 50
   :lib.clojure.core/thread-off 1
   :lib.clojure.core/try-log-error 1
   :lib.clojure.core/try-wrap-ex 1

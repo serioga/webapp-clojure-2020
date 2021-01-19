@@ -1,11 +1,8 @@
 (ns app.rum.mount
-  #?(:clj  (:require
-             [clojure.string :as str])
-     :cljs (:require
-             [rum.core :as rum]))
-  (:require
-    [app.rum.component :as react-component]
-    [lib.cognitect-transit.core :as transit]))
+  #?(:clj  (:require [clojure.string :as str])
+     :cljs (:require [rum.core :as rum]))
+  (:require [app.rum.component :as react-component]
+            [lib.cognitect-transit.core :as transit]))
 
 #?(:clj  (set! *warn-on-reflection* true)
    :cljs (set! *warn-on-infer* true))

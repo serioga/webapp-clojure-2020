@@ -1,11 +1,9 @@
 (ns app.database.core
-  (:require
-    [app.database.hugsql :as hugsql]
-    [lib.clojure.core :as e]
-    [mount.core :as mount]
-    [next.jdbc :as jdbc])
-  (:import
-    (java.sql Connection)))
+  (:require [app.database.hugsql :as hugsql]
+            [lib.clojure.core :as e]
+            [mount.core :as mount]
+            [next.jdbc :as jdbc])
+  (:import (java.sql Connection)))
 
 (set! *warn-on-reflection* true)
 

@@ -1,12 +1,10 @@
 (ns app.system.service.hikari-data-source
-  (:require
-    [clojure.tools.logging :as log]
-    [integrant.core :as ig]
-    [lib.clojure.core :as e]
-    [lib.hikari-cp.data-source :as data-source])
-  (:import
-    (com.p6spy.engine.spy P6DataSource)
-    (java.io Closeable)))
+  (:require [clojure.tools.logging :as log]
+            [integrant.core :as ig]
+            [lib.clojure.core :as e]
+            [lib.hikari-cp.data-source :as data-source])
+  (:import (com.p6spy.engine.spy P6DataSource)
+           (java.io Closeable)))
 
 (set! *warn-on-reflection* true)
 

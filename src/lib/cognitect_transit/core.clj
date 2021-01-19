@@ -1,8 +1,6 @@
 (ns lib.cognitect-transit.core
-  (:require
-    [cognitect.transit :as transit])
-  (:import
-    (java.io ByteArrayOutputStream ByteArrayInputStream)))
+  (:require [cognitect.transit :as transit])
+  (:import (java.io ByteArrayOutputStream ByteArrayInputStream)))
 
 (set! *warn-on-reflection* true)
 

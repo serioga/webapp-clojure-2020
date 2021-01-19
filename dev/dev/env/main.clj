@@ -2,11 +2,10 @@
   "Initial namespace for development.
    Not included to release application!
    See `core` namespace as initial release application."
-  (:require
-    [clojure.tools.logging :as log]
-    [dev.env.system.app :as app]
-    [dev.env.system.core :as env]
-    [lib.clojure.core :as e]))
+  (:require [clojure.tools.logging :as log]
+            [dev.env.system.app :as app]
+            [dev.env.system.core :as env]
+            [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 

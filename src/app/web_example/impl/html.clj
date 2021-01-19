@@ -1,8 +1,7 @@
 (ns app.web-example.impl.html
-  (:require
-    [app.html.core :as html]
-    [lib.ring-util.response :as ring-response]
-    [mount.core :as mount]))
+  (:require [app.html.core :as html]
+            [lib.ring-util.response :as ring-response]
+            [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
 

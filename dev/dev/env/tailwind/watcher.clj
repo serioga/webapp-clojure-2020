@@ -1,8 +1,7 @@
 (ns dev.env.tailwind.watcher
-  (:require
-    [clojure.java.shell :as shell]
-    [clojure.string :as string]
-    [clojure.tools.logging :as log]))
+  (:require [clojure.java.shell :as shell]
+            [clojure.string :as string]
+            [clojure.tools.logging :as log]))
 
 (set! *warn-on-reflection* true)
 

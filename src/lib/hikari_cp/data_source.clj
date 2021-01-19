@@ -1,9 +1,7 @@
 (ns lib.hikari-cp.data-source
-  (:require
-    [clojure.spec.alpha :as s]
-    [lib.util.secret :as secret])
-  (:import
-    (com.zaxxer.hikari HikariDataSource)))
+  (:require [clojure.spec.alpha :as s]
+            [lib.util.secret :as secret])
+  (:import (com.zaxxer.hikari HikariDataSource)))
 
 (set! *warn-on-reflection* true)
 

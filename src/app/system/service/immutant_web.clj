@@ -1,10 +1,9 @@
 (ns app.system.service.immutant-web
-  (:require
-    [clojure.tools.logging :as log]
-    [immutant.web :as web]
-    [integrant.core :as ig]
-    [lib.clojure.core :as e]
-    [lib.integrant.system :as system]))
+  (:require [clojure.tools.logging :as log]
+            [immutant.web :as web]
+            [integrant.core :as ig]
+            [lib.clojure.core :as e]
+            [lib.integrant.system :as system]))
 
 (set! *warn-on-reflection* true)
 

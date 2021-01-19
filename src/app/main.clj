@@ -2,14 +2,11 @@
   "Initial namespace for release application.
    Affected in development mode!
    See `dev` namespace as initial for development."
-  (:require
-    [app.system.core :as app]
-    [clojure.tools.logging :as log]
-    [lib.clojure.core :as e])
-  (:import
-    (org.slf4j.bridge SLF4JBridgeHandler))
-  (:gen-class
-    :implements [org.apache.commons.daemon.Daemon]))
+  (:require [app.system.core :as app]
+            [clojure.tools.logging :as log]
+            [lib.clojure.core :as e])
+  (:import (org.slf4j.bridge SLF4JBridgeHandler))
+  (:gen-class :implements [org.apache.commons.daemon.Daemon]))
 
 (set! *warn-on-reflection* true)
 

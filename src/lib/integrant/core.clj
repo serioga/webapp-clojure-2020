@@ -4,12 +4,11 @@
    - system rollback on failures;
    - futures in `init-key` and `halt-key!` for parallel initialization."
   (:refer-clojure :exclude [ref])
-  (:require
-    [clojure.tools.logging :as log]
-    [integrant.core :as ig]
-    [lib.clojure.core :as e]
-    [lib.slf4j.mdc :as mdc]
-    [potemkin :refer [import-vars]]))
+  (:require [clojure.tools.logging :as log]
+            [integrant.core :as ig]
+            [lib.clojure.core :as e]
+            [lib.slf4j.mdc :as mdc]
+            [potemkin :refer [import-vars]]))
 
 (set! *warn-on-reflection* true)
 

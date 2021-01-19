@@ -21,9 +21,9 @@
     ""))
 
 (comment
-  (print-str "a" nil "b" "" "c")                            ; "Execution time mean : 2571,438 ns"
+  (print-str "a" nil "b" "" "c")                  ; "Execution time mean : 2571,438 ns"
   #_"a nil b  c"
-  (print-str* "a" nil "b" "" "c")                           ; "Execution time mean :  105,686 ns"
+  (print-str* "a" nil "b" "" "c")                 ; "Execution time mean :  105,686 ns"
   #_"a b c")
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

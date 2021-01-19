@@ -1,8 +1,7 @@
 (ns app.config.core
-  (:require
-    [lib.clojure.core :as e]
-    [lib.config.core :as config]
-    [mount.core :as mount]))
+  (:require [lib.clojure.core :as e]
+            [lib.config.core :as config]
+            [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
 

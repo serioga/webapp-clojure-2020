@@ -1,13 +1,11 @@
 (ns dev.env.system.app
   "Wrap app system with development related adjustments."
-  (:require
-    [app.system.core :as app]
-    [clojure.java.io :as io]
-    [clojure.string :as str]
-    [dev.env.reload.ring-refresh :as ring-refresh]
-    [ring.middleware.lint :as lint])
-  (:import
-    (java.io File)))
+  (:require [app.system.core :as app]
+            [clojure.java.io :as io]
+            [clojure.string :as str]
+            [dev.env.reload.ring-refresh :as ring-refresh]
+            [ring.middleware.lint :as lint])
+  (:import (java.io File)))
 
 (set! *warn-on-reflection* true)
 
@@ -57,7 +55,7 @@
    (start! {}))
   ([{:keys [system-keys]}]
    (app/start! (cond-> {:prepare-config prepare-system-config}
-                        system-keys (assoc :system-keys system-keys)))
+                 system-keys (assoc :system-keys system-keys)))
    (ring-refresh/send-refresh! true)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

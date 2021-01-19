@@ -1,9 +1,8 @@
 (ns app.rum.component.hello-world
   "Example react component, modification of
    https://github.com/tonsky/rum/blob/gh-pages/examples/rum/examples/local_state.cljc"
-  (:require
-    [app.rum.impl.component :as impl]
-    [rum.core :as rum]))
+  (:require [app.rum.impl.component :as impl]
+            [rum.core :as rum]))
 
 #?(:clj  (set! *warn-on-reflection* true)
    :cljs (set! *warn-on-infer* true))

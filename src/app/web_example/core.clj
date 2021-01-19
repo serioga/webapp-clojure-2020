@@ -1,10 +1,10 @@
 (ns app.web-example.core
-  (:require ; react components
-    [app.rum.core])
-  (:require
-    [app.web-example.impl.handler :as handler]
-    [app.web-example.ring-handler.core :as http-handler]
-    [lib.clojure.ns :as ns]))
+  ;; React components
+  (:require [app.rum.core])
+  ;; Imports
+  (:require [app.web-example.impl.handler :as handler]
+            [app.web-example.ring-handler.core :as http-handler]
+            [lib.clojure.ns :as ns]))
 
 (set! *warn-on-reflection* true)
 

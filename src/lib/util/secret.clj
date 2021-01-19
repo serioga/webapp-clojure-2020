@@ -1,7 +1,6 @@
 (ns lib.util.secret
-  (:require
-    [clojure.spec.alpha :as s]
-    [clojure.test :as test]))
+  (:require [clojure.spec.alpha :as s]
+            [clojure.test :as test]))
 
 (set! *warn-on-reflection* true)
 
