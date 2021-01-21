@@ -53,6 +53,7 @@
 
 (defmethod ig/halt-key! :app.system.service/ref'immutant-web
   [_ ref'server]
-  (e/future (stop-server @ref'server)))
+  ;; Stop service synchronously to continue shutdown of other systems when server is fully stopped.
+  (stop-server @ref'server))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

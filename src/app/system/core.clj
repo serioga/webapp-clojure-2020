@@ -166,7 +166,8 @@
   []
   (when-some [system @var'system]
     (reset! var'system nil)
-    (ig/halt! system)))
+    (ig/halt! system)
+    (log/info "[DONE] Application system stop")))
 
 (defn suspend!
   "Suspend global system."
@@ -181,7 +182,8 @@
      :or {prepare-config identity}}]
    (stop!)
    (let [config (prepare-config (system-config))]
-     (reset! var'system (ig/init config, (or system-keys (keys config)))))))
+     (reset! var'system (ig/init config, (or system-keys (keys config)))))
+   (log/info "[DONE] Application system start")))
 
 (defn resume!
   "Resume global system."
