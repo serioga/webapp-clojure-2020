@@ -27,6 +27,11 @@
   [key]
   (cond-> key (vector? key) (peek)))
 
+(defn get-init-key
+  "Finds `ig/init-key` defined for `key`."
+  [key]
+  (get-method ig/init-key (cond-> key (vector? key) (nth 0))))
+
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- init-key
