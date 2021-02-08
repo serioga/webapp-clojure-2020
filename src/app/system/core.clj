@@ -179,7 +179,7 @@
   (->> (system-config) keys)
   (->> (system-config) keys (map ig/decompose-key) sort)
   (-> (system-config) (get :app.system.service/ref'mount) keys sort)
-  (-> (system-config) (get [::system/import-map ::await-before-start])))
+  (-> (system-config) ::await-before-start))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
