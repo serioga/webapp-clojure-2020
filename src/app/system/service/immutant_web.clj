@@ -45,15 +45,15 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/init-key :app.system.service/ref'immutant-web
+(defmethod ig/init-key :app.system.service/immutant-web
   [_ options]
   (e/future (start-server options)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/halt-key! :app.system.service/ref'immutant-web
-  [_ ref'server]
+(defmethod ig/halt-key! :app.system.service/immutant-web
+  [_ server]
   ;; Stop service synchronously to continue shutdown of other systems when server is fully stopped.
-  (stop-server @ref'server))
+  (stop-server (e/unwrap-future server)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

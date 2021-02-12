@@ -7,19 +7,19 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(derive :dev.env.system/ref'nrepl
+(derive :dev.env.system.integrant/nrepl
         :lib.integrant.system/keep-running-on-suspend)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/init-key :dev.env.system/ref'nrepl
+(defmethod ig/init-key :dev.env.system.integrant/nrepl
   [_ options]
   (e/future (nrepl/start-server options)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/halt-key! :dev.env.system/ref'nrepl
-  [_ ref'server]
-  (nrepl/stop-server @ref'server))
+(defmethod ig/halt-key! :dev.env.system.integrant/nrepl
+  [_ server]
+  (nrepl/stop-server (e/unwrap-future server)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

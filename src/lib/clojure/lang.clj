@@ -1,4 +1,5 @@
-(ns lib.clojure.lang)
+(ns lib.clojure.lang
+  (:import (java.util.concurrent Future)))
 
 (set! *warn-on-reflection* true)
 
@@ -17,23 +18,30 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn test-pred
-  "Return `x` when `(pred x)` is truthy."
+(defn valid
+  "Returns `x` if `(pred x)` is logical true, else `nil`."
   [x pred]
   (when (pred x) x))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn opt-fn
-  "If `v` is a function then invoke it else keep `v` as is.
+(defn unwrap-fn
+  "If `x` is a function, returns `(x)`, else returns `x`.
    Useful to represent function parameters as value or function without arguments."
-  [v]
-  (if (fn? v) (v) v))
+  [x]
+  (if (fn? x) (x) x))
 
 (comment
-  (opt-fn 1)
-  (opt-fn (constantly 1))
-  (opt-fn nil)
-  (opt-fn :kw))
+  (unwrap-fn 1)
+  (unwrap-fn (constantly 1))
+  (unwrap-fn nil)
+  (unwrap-fn :kw))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn unwrap-future
+  "If `x` is future?, returns `(deref x)`, else returns `x`."
+  [x]
+  (if (future? x) (.get ^Future x), x))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

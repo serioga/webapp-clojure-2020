@@ -7,19 +7,19 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(derive :dev.env.system/ref'shadow-cljs
+(derive :dev.env.system.integrant/shadow-cljs
         :lib.integrant.system/keep-running-on-suspend)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/init-key :dev.env.system/ref'shadow-cljs
+(defmethod ig/init-key :dev.env.system.integrant/shadow-cljs
   [_ options]
   (e/future (server/start! options)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/halt-key! :dev.env.system/ref'shadow-cljs
-  [_ ref'server]
-  (e/future (server/stop! @ref'server)))
+(defmethod ig/halt-key! :dev.env.system.integrant/shadow-cljs
+  [_ server]
+  (e/future (server/stop! (e/unwrap-future server))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

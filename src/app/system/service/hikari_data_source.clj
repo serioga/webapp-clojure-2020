@@ -24,12 +24,12 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(derive :app.system.service/ref'hikari-data-source
+(derive :app.system.service/hikari-data-source
         :lib.integrant.system/keep-running-on-suspend)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/init-key :app.system.service/ref'hikari-data-source
+(defmethod ig/init-key :app.system.service/hikari-data-source
   [_ {:keys [dev-mode?] :as options}]
   (e/future
     (init-data-source (-> {:minimum-idle 1
@@ -42,8 +42,8 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/halt-key! :app.system.service/ref'hikari-data-source
-  [_ ref'ds]
-  (e/future (close-data-source! @ref'ds)))
+(defmethod ig/halt-key! :app.system.service/hikari-data-source
+  [_ data-source]
+  (e/future (close-data-source! (e/unwrap-future data-source))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

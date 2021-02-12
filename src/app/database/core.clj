@@ -3,7 +3,8 @@
             [lib.clojure.core :as e]
             [mount.core :as mount]
             [next.jdbc :as jdbc])
-  (:import (java.sql Connection)))
+  (:import (java.sql Connection)
+           (javax.sql DataSource)))
 
 (set! *warn-on-reflection* true)
 
@@ -14,25 +15,25 @@
   "Creates a connection to a database using read-write `data-source`."
   {:arglists '([] [options]) :on-reload :noop}
 
-  :start (let [ref'data-source (-> (::ref'data-source-read-write (mount/args))
-                                   (e/assert future?))]
+  :start (let [data-source (-> (::data-source-read-write (mount/args))
+                               (e/assert (partial instance? DataSource)))]
            (fn get-read-write-connection
              ([]
               (get-read-write-connection {}))
              ([options]
-              (jdbc/get-connection @ref'data-source options)))))
+              (jdbc/get-connection data-source options)))))
 
 (mount/defstate ^Connection get-read-only-connection
   "Creates a connection to a database using read-only `data-source`."
   {:arglists '([] [options]) :on-reload :noop}
 
-  :start (let [ref'data-source (-> (::ref'data-source-read-only (mount/args))
-                                   (e/assert future?))]
+  :start (let [data-source (-> (::data-source-read-only (mount/args))
+                               (e/assert (partial instance? DataSource)))]
            (fn get-read-only-connection
              ([]
               (get-read-only-connection {}))
              ([options]
-              (jdbc/get-connection @ref'data-source options)))))
+              (jdbc/get-connection data-source options)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 ; Helper aliases for `with-open` with database connection

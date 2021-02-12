@@ -8,10 +8,11 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/init-key :app.system.task/ref'database-migration
-  [_ {:keys [ref'data-source changelog-path enabled?] :as config}]
-  (log/info "Database migrations" (pr-str config))
-  (e/future (when enabled?
-              (liquibase/update-database @ref'data-source, changelog-path))))
+(defmethod ig/init-key :app.system.task/database-migration
+  [_ {:keys [data-source changelog-path enabled?] :as config}]
+  (when enabled?
+    (e/future
+      (log/info "Database migrations" (pr-str config))
+      (liquibase/update-database (e/unwrap-future data-source), changelog-path))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

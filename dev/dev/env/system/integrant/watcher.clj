@@ -7,7 +7,7 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/init-key :dev.env.system/watcher
+(defmethod ig/init-key :dev.env.system.integrant/watcher
   [_ {:keys [handler, options, run-handler-on-init?]}]
   (let [watcher (watcher/start-watcher handler options)]
     (when run-handler-on-init?
@@ -17,7 +17,7 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/halt-key! :dev.env.system/watcher
+(defmethod ig/halt-key! :dev.env.system.integrant/watcher
   [_ watcher]
   (watcher/stop-watcher watcher))
 

@@ -39,8 +39,8 @@
   (let [key (ig/decompose-key key)]
     (reduce (fn [system mount-key]
               (-> system
-                  (update :app.system.service/ref'mount assoc mount-key (ig/ref key))
-                  (add-to-await-before-start :app.system.service/ref'mount)))
+                  (update :app.system.service/mount assoc mount-key (ig/ref key))
+                  (add-to-await-before-start :app.system.service/mount)))
             system mounts)))
 
 (defmulti ^:private mixin
@@ -114,7 +114,7 @@
 
 (defmethod install ::hikari-data-source
   [system, key, params]
-  (install* system key (e/deep-merge params {:derive :app.system.service/ref'hikari-data-source
+  (install* system key (e/deep-merge params {:derive :app.system.service/hikari-data-source
                                              :config {:dev-mode? (ig/ref ::dev-mode?)}
                                              :import {:data-source-class "Database.DataSourceClassName"
                                                       :database-url "Database.Url"
@@ -148,25 +148,25 @@
                                                             "Development.DatabaseMigration" :edn}
                                             :prop-defaults {"HttpServer.Port" 8080}}}
 
-   ::ref'data-source-read-write {:as ::hikari-data-source
-                                 :mounts [:app.database.core/ref'data-source-read-write]}
+   ::data-source-read-write {:as ::hikari-data-source
+                             :mounts [:app.database.core/data-source-read-write]}
 
-   ::ref'data-source-read-only {:as ::hikari-data-source
-                                :mounts [:app.database.core/ref'data-source-read-only]
-                                :config {:read-only? true}}
+   ::data-source-read-only {:as ::hikari-data-source
+                            :mounts [:app.database.core/data-source-read-only]
+                            :config {:read-only? true}}
 
-   :app.system.task/ref'database-migration {:config {:ref'data-source (ig/ref ::ref'data-source-read-write)
-                                                     :changelog-path "app/database/migration/changelog.xml"
-                                                     :enabled? true}
-                                            :import {:enabled? "Development.DatabaseMigration"}
-                                            :mixins [::add-to-await-before-start]}
+   :app.system.task/database-migration {:config {:data-source (ig/ref ::data-source-read-write)
+                                                 :changelog-path "app/database/migration/changelog.xml"
+                                                 :enabled? true}
+                                        :import {:enabled? "Development.DatabaseMigration"}
+                                        :mixins [::add-to-await-before-start]}
 
-   :app.system.service/ref'immutant-web {:as ::http-server
-                                         :webapps {:app.system.service/homepage-http-handler {:config {:name "example"}
-                                                                                              :import {:hosts "Webapp.Hosts(example)"}}}
-                                         :config {:options {:host "0.0.0.0"}}
-                                         :import {:options {:host "HttpServer.Host"
-                                                            :port "HttpServer.Port"}}}})
+   :app.system.service/immutant-web {:as ::http-server
+                                     :webapps {:app.system.service/homepage-http-handler {:config {:name "example"}
+                                                                                          :import {:hosts "Webapp.Hosts(example)"}}}
+                                     :config {:options {:host "0.0.0.0"}}
+                                     :import {:options {:host "HttpServer.Host"
+                                                        :port "HttpServer.Port"}}}})
 
 (defn- system-config
   "App system configuration."
@@ -178,7 +178,7 @@
   (system-config)
   (->> (system-config) keys)
   (->> (system-config) keys (map ig/decompose-key) sort)
-  (-> (system-config) (get :app.system.service/ref'mount) keys sort)
+  (-> (system-config) (get :app.system.service/mount) keys sort)
   (-> (system-config) ::await-before-start))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -231,11 +231,7 @@
 (defn- log-running-webapps
   "Log info about running webapps (URLs with host/port)."
   [system]
-  (let [webapps (some-> system
-                        :app.system.service/ref'immutant-web
-                        (deref)
-                        (meta)
-                        :running-webapps)]
+  (let [webapps (some-> system :app.system.service/immutant-web e/unwrap-future meta :running-webapps)]
     (doseq [[name {:keys [host port ssl-port virtual-host]}] webapps
             webapp-host (cond (sequential? virtual-host) virtual-host
                               (string? virtual-host) [virtual-host]
@@ -247,15 +243,12 @@
 (defn- log-prop-files
   "Log info about loaded configuration files."
   [system]
-  (let [prop-files (some-> system
-                           :app.system.service/app-config
-                           (meta)
-                           :prop-files)]
+  (let [prop-files (some-> system :app.system.service/app-config meta :prop-files)]
     (log/info "Running config from" (pr-str prop-files))))
 
 (add-watch var'system :log-system-status
            (fn [_ _ _ system]
-             (some-> system log-prop-files)
-             (some-> system log-running-webapps)))
+             (some-> system (doto (log-prop-files)
+                                  (log-running-webapps)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

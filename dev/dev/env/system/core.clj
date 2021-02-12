@@ -28,11 +28,11 @@
 (defn- config
   ([] (config {}))
   ([{:keys [first-run?] :or {first-run? true}}]
-   {:dev.env.system/ref'nrepl {:write-port-file ".nrepl-port"}
+   {:dev.env.system.integrant/nrepl {:write-port-file ".nrepl-port"}
 
-    :dev.env.system/ref'shadow-cljs {:builds-to-start [:example]}
+    :dev.env.system.integrant/shadow-cljs {:builds-to-start [:example]}
 
-    [:dev.env.system/watcher :dev.env.system/app-reload-watcher]
+    [:dev.env.system.integrant/watcher ::app-reload-watcher]
     {:handler (app-reload/watch-handler {:ns-tracker-dirs ["src" "dev"]
                                          :always-reload-ns ['app.database.core]
                                          :app-stop #'app/suspend!
@@ -46,7 +46,7 @@
                ; :exclude will leave out files that match this pattern.
                :exclude []}}
 
-    [:dev.env.system/watcher :dev.env.system/tailwind-watcher]
+    [:dev.env.system.integrant/watcher ::tailwind-watcher]
     {:handler (tailwind/watch-handler {:webapp "example"
                                        :on-rebuild (fn [] (when ((mount/running-states) (str #'example-html/styles-css-uri))
                                                             (mount/stop #'example-html/styles-css-uri)
@@ -111,7 +111,7 @@
   "Get reference to global nREPL server instance."
   []
   (some-> @var'system
-          :dev.env.system/ref'nrepl
-          deref))
+          :dev.env.system.integrant/nrepl
+          e/unwrap-future))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

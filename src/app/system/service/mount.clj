@@ -12,18 +12,18 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/init-key :app.system.service/ref'mount
+(defmethod ig/init-key :app.system.service/mount
   [_ args]
   (e/future
     (try
-      (mount/start-with-args args)
+      (mount/start-with-args (->> args (e/map-vals e/unwrap-future)))
       (catch Throwable ex
         (mount/stop)
         (throw ex)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmethod ig/halt-key! :app.system.service/ref'mount
+(defmethod ig/halt-key! :app.system.service/mount
   [_ _]
   (e/future
     (mount/stop)))
