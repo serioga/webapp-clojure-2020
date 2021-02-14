@@ -4,6 +4,7 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [dev.env.reload.ring-refresh :as ring-refresh]
+            [lib.clojure.core :as e]
             [ring.middleware.lint :as lint])
   (:import (java.io File)))
 
@@ -54,8 +55,9 @@
   ([]
    (start! {}))
   ([{:keys [system-keys]}]
-   (app/start! (cond-> {:prepare-config prepare-system-config}
-                 system-keys (assoc :system-keys system-keys)))
+   (e/try-wrap-ex 'app/start!
+     (app/start! (cond-> {:prepare-config prepare-system-config}
+                   system-keys (assoc :system-keys system-keys))))
    (ring-refresh/send-refresh! true)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -79,7 +81,8 @@
 (defn resume!
   "Resume `app` system."
   []
-  (app/resume! {:prepare-config prepare-system-config})
+  (e/try-wrap-ex 'app/resume!
+    (app/resume! {:prepare-config prepare-system-config}))
   (ring-refresh/send-refresh! true))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

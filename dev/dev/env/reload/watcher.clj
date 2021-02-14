@@ -13,7 +13,8 @@
     (fn [& args]
       (when (compare-and-set! var'running? false true)
         (try
-          (handler args)
+          (log/debug "Trigger watcher" (str handler) args)
+          (apply handler args)
           (finally
             (reset! var'running? false)))))))
 
@@ -23,10 +24,12 @@
   "Starts the watcher."
   [handler, {:keys [dirs files exclude] :as options}]
   (log/info "Start watcher" options)
-  (watch/start-watcher (watch/watcher dirs (#'locking-handler handler) {#_#_:types #{:modify}
-                                                                        :filter files
-                                                                        :exclude exclude
-                                                                        :mode :async})))
+  (let [handler (locking-handler handler)]
+    (-> (watch/start-watcher (watch/watcher dirs handler {#_#_:types #{:modify}
+                                                          :filter files
+                                                          :exclude exclude
+                                                          :mode :async}))
+        (vary-meta assoc :handler handler))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

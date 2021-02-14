@@ -1,6 +1,5 @@
 (ns dev.env.reload.app-reload
   (:require [clojure.main :as main]
-            [clojure.set :as set]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [lib.clojure.core :as e]
@@ -11,69 +10,70 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn- exception-log-msg
-  [ex]
-  (-> ex
-      (Throwable->map)
-      (main/ex-triage)
-      (main/ex-str)))
-
 (defn- ns-unalias-all
   "Removes all aliases in namespace."
   [ns-sym]
   (doseq [[alias-sym _] (e/try-ignore (ns-aliases ns-sym))]
     (ns-unalias ns-sym alias-sym)))
 
-(defn- reload-modified-namespaces
-  "Return vector of reload errors."
-  [ns-tracker always-reload-ns]
-  (let [modified (ns-tracker)
-        reload-always (into '() (set/difference (set always-reload-ns)
-                                                (set modified)))
-        var'reload-errors (volatile! [])
-        reload-ns (fn [ns-sym]
-                    (try
-                      (ns-unalias-all ns-sym)
-                      (require ns-sym :reload)
-                      (log/info "[OK]" "Reload" ns-sym)
-                      (catch FileNotFoundException _
-                        (remove-ns ns-sym))
-                      (catch Throwable _
-                        (try
-                          (require ns-sym :reload-all)
-                          (log/info "[OK]" "Reload" ns-sym)
-                          (catch Throwable ex
-                            (let [msg (exception-log-msg ex)]
-                              (vswap! var'reload-errors conj [ns-sym msg])
-                              (log/info "[FAIL]" "Reload" ns-sym)))))))]
-    (when-let [namespaces (seq (concat modified reload-always))]
-      (log/info "Reloading namespaces:" (string/join ", " namespaces))
-      (run! reload-ns namespaces))
-    @var'reload-errors))
+(defn- reload-ns
+  "Reloads ns and returns nil or `[ns-sym err-msg]`."
+  [ns-sym]
+  (try
+    (ns-unalias-all ns-sym)
+    (require ns-sym :reload)
+    (log/info "[OK]" "Reload" ns-sym)
+    nil
+    (catch FileNotFoundException _
+      (remove-ns ns-sym)
+      nil)
+    (catch Throwable ex
+      [ns-sym ex])))
+
+(defn- reload-namespaces
+  "Returns vector of reload errors."
+  [namespaces]
+  (when-let [namespaces (some->> namespaces seq distinct)]
+    ;; Reload can fail due to the incorrect order of namespaces.
+    ;; So we reload multiple times recursively while this reduces amount of failed namespaces.
+    (loop [xs (mapv vector namespaces)]
+      (log/info "Reloading namespaces:" (string/join ", " (map first xs)))
+      (let [errors (->> xs (into [] (comp (map first) (keep reload-ns))))]
+        (if (and (seq errors), (< (count errors) (count xs)))
+          (recur errors)
+          errors)))))
+
+(defn- log-reload-error
+  [[ns ex]]
+  (log/error "[FAIL]" "Reload" (str ns "\n\n" (-> ex Throwable->map main/ex-triage main/ex-str))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(defonce ^:private ^{:doc "Keeps namespace reload errors."}
+         var'reload-errors (atom nil))
+
 (defn watch-handler
   "Builds app reloading function to be used in file watcher."
-  [{:keys [ns-tracker-dirs, always-reload-ns, app-stop, app-start, on-complete]}]
+  [{:keys [ns-tracker-dirs, always-reload-ns, never-reload-ns,
+           app-stop, app-start, on-success, on-failure]}]
   (let [ns-tracker (ns-tracker/ns-tracker ns-tracker-dirs)]
-    (fn app-reload [& reason]
-      (log/info reason)
-      (log/info "[START]" "Application reload")
+    (fn app-reload [& _]
       (when app-stop
         (e/try-log-error ["Stop application before namespace reloading"]
           (app-stop)))
-      (if-some [reload-errors (seq (reload-modified-namespaces ns-tracker always-reload-ns))]
+      (if-some [errors (seq (->> (concat always-reload-ns (ns-tracker) (map first @var'reload-errors))
+                                 (remove (set never-reload-ns))
+                                 (reload-namespaces)
+                                 (reset! var'reload-errors)))]
         (do
-          (log/info "[FAIL]" "Application reload")
-          (doseq [[ns err] reload-errors]
-            (log/error "[FAIL]" "Reload" ns (str "\n\n" err "\n"))))
+          (run! log-reload-error errors)
+          (when on-failure
+            (on-failure (e/ex-info ["Failed to reload namespaces" (map first errors)]
+                                   {:reason ::reload-namespaces, :errors errors}))))
         (try
           (when app-start (app-start))
-          (log/info "[DONE]" "Application reload")
+          (when on-success (on-success))
           (catch Throwable ex
-            (log/error (e/ex-message-all ex))
-            (log/info "[FAIL]" "Application reload"))))
-      (when on-complete (on-complete)))))
+            (when on-failure (on-failure ex))))))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

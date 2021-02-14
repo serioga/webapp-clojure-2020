@@ -23,6 +23,17 @@
   (print "\n<< Press ENTER to reload >>\n\n")
   (flush))
 
+(defn- log-reload-success
+  []
+  (log/info "[DONE] Application reload")
+  (print-reload-on-enter))
+
+(defn- log-reload-failure
+  [ex]
+  (log/error (e/ex-message-all ex))
+  (log/info "[FAIL] Application reload")
+  (print-reload-on-enter))
+
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- config
@@ -35,9 +46,11 @@
     [:dev.env.system.integrant/watcher ::app-reload-watcher]
     {:handler (app-reload/watch-handler {:ns-tracker-dirs ["src" "dev"]
                                          :always-reload-ns ['app.database.core]
+                                         :never-reload-ns ['user]
                                          :app-stop #'app/suspend!
                                          :app-start #'app/resume!
-                                         :on-complete #'print-reload-on-enter})
+                                         :on-success #'log-reload-success
+                                         :on-failure #'log-reload-failure})
      :options {:dirs ["src" "dev" "dev-resources/app" "resources/app"]
                ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
                ; :filter will pick out only files that match this pattern.
@@ -88,22 +101,27 @@
     (reset! var'system (ig/resume (config {:first-run? false}) system))
     nil))
 
+(defn- trigger-watcher
+  [k]
+  (-> (get @var'system [:dev.env.system.integrant/watcher k])
+      meta :handler (e/assert fn?) (e/invoke #'trigger-watcher k)))
+
 (defn- reload!
   "Reload actions on ENTER keypress."
   []
-  (e/try-log-error "Reload application"
+  (try
     (app/stop!)
     (restart!)
-    (app/start!)
-    (log/info "[DONE] Application reload")))
+    (trigger-watcher ::app-reload-watcher)
+    (catch Throwable ex
+      (log-reload-failure ex))))
 
 (defn prompt-reload-on-enter
   "Prompts for manual reload on ENTER keypress."
   []
   (print-reload-on-enter)
   (while (some? (read-line))
-    (reload!)
-    (print-reload-on-enter)))
+    (reload!)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
