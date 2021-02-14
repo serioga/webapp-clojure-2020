@@ -35,14 +35,14 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- init-key
-  "Wrapped version of integrant's `init-key` with logging."
+  "Wrapped version of the `integrant.core/init-key` with logging."
   [key value]
   (mdc/with-map {:init key}
     (log/info ">> starting.." key)
     (ig/init-key key value)))
 
 (defn- resume-key
-  "Wrapped version of integrant's `resume-key` with logging."
+  "Wrapped version of the `integrant.core/resume-key` with logging."
   [key value old-value old-impl]
   (mdc/with-map {:resume key}
     (log/info ">> resuming.." key)
@@ -57,7 +57,7 @@
   (not= f (get-method ig/suspend-key! :default)))
 
 (defn- fn'halt-key!
-  "Produce wrapped version of integrant's halt-key!
+  "Produce wrapped version of the `integrant.core/halt-key!`
    with logging and handling of returned futures."
   [var'futures]
   (fn halt-key!
@@ -78,7 +78,7 @@
             ret))))))
 
 (defn- fn'suspend-key!
-  "Produce wrapped version of integrant's suspend-key!
+  "Produce wrapped version of the `integrant.core/suspend-key!`
    with logging and handling of returned futures."
   [var'futures]
   (fn suspend-key!
@@ -101,35 +101,21 @@
             ret))))))
 
 (defn- ex-in-future
-  "Unwrap exception from deref'ed future."
+  "Unwrap exception from the Future."
   [ex]
   (or (ex-cause ex) ex))
-
-(defn- collect-failed-futures
-  "Scan `system` for futures and collect keys with exceptions."
-  [system]
-  (reduce (fn [failed [key state]]
-            (if (future? state)
-              (try
-                (deref state)
-                failed
-                (catch Throwable ex
-                  (conj failed [key (ex-in-future ex)])))
-              failed))
-          (list) system))
 
 (defn- await-build-futures
   "Deref all future key values.
    If there are failed futures then log errors and throw exception to halt system back."
   [system, log-key-error]
-  (when-some [failed (seq (collect-failed-futures system))]
-    (doseq [[key ex] failed]
-      (log-key-error ex key))
-    (let [failed-keys (map first failed)]
-      (throw (e/ex-info ["Errors on keys" failed-keys "when building system"]
-                        {:reason ::failed-futures
-                         :system system
-                         :failed-keys failed-keys})))))
+  (doseq [[k v] system :when (future? v)]
+    (try
+      (deref v)
+      (catch Throwable ex
+        (let [ex (ex-in-future ex)]
+          (log-key-error ex k)
+          (throw (#'ig/build-exception system nil k v ex)))))))
 
 (defn- await-futures
   "Deref all future suspend results.
@@ -145,7 +131,7 @@
 
 (defn halt!
   "Halt a system map by applying halt-key! in reverse dependency order.
-   Replacement of integrant's `halt!` with customized `halt-key!` function and handling of futures."
+   Replacement of the `integrant.core/halt!` with customized `halt-key!` function and handling of futures."
   ([system]
    (halt! system (keys system)))
   ([system keys]
@@ -160,7 +146,7 @@
 
 (defn suspend!
   "Suspend a system map by applying suspend-key! in reverse dependency order.
-   Replacement of integrant's `suspend!` with customized `suspend-key!` function and handling of futures."
+   Replacement of the `integrant.core/suspend!` with customized `suspend-key!` function and handling of futures."
   ([system]
    (suspend! system (keys system)))
   ([system keys]
@@ -174,7 +160,7 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn build
-  "Replacement of integrant's `build` with
+  "Replacement of the `integrant.core/build` with
    - handling of futures;
    - rollback on exceptions."
   ([config, system-keys, f, log-key-error]
@@ -185,21 +171,10 @@
        (await-build-futures system log-key-error)
        system)
      (catch Throwable ex
-       (let [{:keys [reason, system, key, failed-keys]} (ex-data ex)
-             cause (ex-cause ex)]
-         (cond
-           ; Integrant's exception on non-future key
-           (= reason ::ig/build-threw-exception)
-           (do
-             (log-key-error cause key)
-             (some-> system halt!))
-           ; Exception after failed future keys
-           (= reason ::failed-futures)
-           (some-> system
-                   (halt! (remove (set failed-keys) (keys system))))
-           ; Unexpected exception
-           :else
-           (log/error "Unexpected error when building system:" (e/ex-message-all ex)))
+       (let [{:keys [reason, system, key]} (ex-data ex)]
+         (when (= reason ::ig/build-threw-exception)
+           (log-key-error (ex-cause ex) key)
+           (some-> system halt!))
          (throw ex))))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -208,7 +183,7 @@
   "Turn a config map into an system map. Keys are traversed in dependency
    order, initiated via the init-key multimethod, then the refs associated with
    the key are expanded.
-   Replacement of integrant's `init` with
+   Replacement of the `integrant.core/init` with
    - customized `init-key` function;
    - handling of futures;
    - rollback on exceptions."
@@ -229,7 +204,7 @@
    system when it's possible to do so. Keys are traversed in dependency order,
    resumed with the resume-key multimethod, then the refs associated with the
    key are expanded.
-   Replacement of integrant's `resume` with
+   Replacement of the `integrant.core/resume` with
    - customized `resume-key` function;
    - handling of futures;
    - rollback on exceptions."

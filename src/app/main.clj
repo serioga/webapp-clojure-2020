@@ -22,12 +22,17 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn- init
+(defn- start
   []
-  (app/start!)
-  (log/info "[DONE] Application init"))
+  (try
+    (e/try-wrap-ex "[FAIL] Application init"
+      (app/start!))
+    (log/info "[DONE] Application init")
+    (catch Throwable ex
+      (log/error (e/ex-message-all ex))
+      (throw (e/ex-root-cause ex)))))
 
-(defn- shutdown
+(defn- stop
   []
   (app/stop!))
 
@@ -36,8 +41,8 @@
 (defn -main
   "Application entry point."
   []
-  (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable shutdown))
-  (init))
+  (start)
+  (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable stop)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 ; Daemon implementation
@@ -49,12 +54,12 @@
 (defn -start
   "Starts the operation of this `Daemon` instance."
   [_]
-  (init))
+  (start))
 
 (defn -stop
   "Stops the operation of this `Daemon` instance."
   [_]
-  (shutdown))
+  (stop))
 
 (defn -destroy
   "Frees any resources allocated by this daemon."
