@@ -73,7 +73,7 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 ; HugSQL query functions
 
-(hugsql/declare-fn example.list-user :example-user/_)
+(hugsql/dfn example.list-user :example-user/_)
 
 (comment
   (ro example.list-user))

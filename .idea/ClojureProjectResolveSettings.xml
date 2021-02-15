@@ -4,7 +4,7 @@
     <item key="clojure.core.async/defblockingop" resolves-as="clojure.core/defn" />
     <item key="mount.tools.macrovich/deftime" resolves-as="clojure.core/do" />
     <item key="clojure.core/with-open" resolves-as="clojure.core/let" />
-    <item key="app.database.hugsql/declare-fn" resolves-as="clojure.core/declare" />
+    <item key="app.database.hugsql/dfn" resolves-as="clojure.core/declare" />
     <item key="mount.core/defstate" resolves-as="clojure.core/defn" />
     <item key="clojure.core.cache/defcache" resolves-as="clojure.core/deftype" />
     <currentScheme>PROJECT</currentScheme>

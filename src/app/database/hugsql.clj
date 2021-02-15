@@ -32,7 +32,7 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmacro declare-fn
+(defmacro dfn
   "Declare single HugSQL function for symbol `sym`.
    The function definition string is loaded from resource file.
 
