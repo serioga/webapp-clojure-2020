@@ -73,9 +73,9 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 ; HugSQL query functions
 
-(hugsql/dfn example.list-user :example-user/_)
+(hugsql/dfn example-user--select-all :example-user/_)
 
 (comment
-  (ro example.list-user))
+  (ro example-user--select-all))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

@@ -1,0 +1,34 @@
+Goals:
+- Consolidate same table operations.
+- Group reading and modifying queries separately.
+- Provide info about query result type.
+
+
+Read-write queries (:command :execute):
+
+  {table}--do-{execute}-{extra}{result}.sql
+  -----------------------------------------
+
+
+Read-only queries (:command :query):
+
+  {table}--select-{where}-{extra}{result}.sql
+  -------------------------------------------
+
+
+where
+
+  {table}    Table name (real or alias).
+
+  {execute}  Description of :execute command operations.
+             Can include {where} for the update/delete commands.
+
+  {where}    Descriptions of the conditions which defines query result.
+             The `all` is user for `select` queries without conditions.
+
+  {extra}    Optional clarification of query purpose.
+
+  {result}   Optional suffix for query result
+               - `-one` - one row (:result :one)
+               - `-n`   - affected rows (:result :affected)
+               - `!`    - :execute command without result
