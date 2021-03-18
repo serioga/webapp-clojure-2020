@@ -36,29 +36,7 @@
               (jdbc/get-connection data-source options)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-; Helper aliases for `with-open` with database connection
-
-(defn rw
-  "Execute single HugSQL query with auto opened read-write connection.
-   Prefer to pass `db-fn` as var `#'db-fn` to see query name on errors."
-  ([db-fn] (rw db-fn {} {}))
-  ([db-fn param-data] (rw db-fn param-data {}))
-  ([db-fn param-data opts]
-   (with-open [conn (get-read-write-connection)]
-     (e/try-wrap-ex [[#'rw (-> db-fn meta :name)]
-                     {:param-data param-data :opts opts}]
-       (db-fn conn param-data opts)))))
-
-(defn ro
-  "Execute single HugSQL query with auto opened read-only connection.
-   Prefer to pass `db-fn` as var `#'db-fn` to see query name on errors."
-  ([db-fn] (ro db-fn {} {}))
-  ([db-fn param-data] (ro db-fn param-data {}))
-  ([db-fn param-data opts]
-   (with-open [conn (get-read-only-connection)]
-     (e/try-wrap-ex [[#'ro (-> db-fn meta :name)]
-                     {:param-data param-data :opts opts}]
-       (db-fn conn param-data opts)))))
+; JDBC helpers
 
 (defmacro with-transaction
   "Helper for `jdbc/with-transaction` allowing specify connection
@@ -76,6 +54,6 @@
 (hugsql/dfn example-user--select-all :example-user/_)
 
 (comment
-  (ro example-user--select-all))
+  (example-user--select-all))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

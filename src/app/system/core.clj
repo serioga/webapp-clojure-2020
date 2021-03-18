@@ -117,7 +117,8 @@
   (install* system key (e/deep-merge params {:derive :app.system.service/hikari-data-source
                                              :config {:dev-mode? (ig/ref ::dev-mode?)}
                                              :import {:data-source-class "Database.DataSourceClassName"
-                                                      :database-url "Database.Url"
+                                                      :database-url (if (-> params :config :read-only?)
+                                                                      "Database.Url.ReadOnly", "Database.Url")
                                                       :database-user "Database.User"
                                                       :database-password "Database.Password"}})))
 
@@ -149,10 +150,12 @@
                                             :prop-defaults {"HttpServer.Port" 8080}}}
 
    ::data-source-read-write {:as ::hikari-data-source
-                             :mounts [:app.database.core/data-source-read-write]}
+                             :mounts [:app.database.core/data-source-read-write
+                                      :app.database.hugsql/data-source-read-write]}
 
    ::data-source-read-only {:as ::hikari-data-source
-                            :mounts [:app.database.core/data-source-read-only]
+                            :mounts [:app.database.core/data-source-read-only
+                                     :app.database.hugsql/data-source-read-only]
                             :config {:read-only? true}}
 
    :app.system.task/database-migration {:config {:data-source (ig/ref ::data-source-read-write)

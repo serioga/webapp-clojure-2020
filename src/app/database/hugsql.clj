@@ -1,9 +1,10 @@
 (ns app.database.hugsql
-  (:require [app.database.hugsql-adapter :as hugsql-adapter]
-            [app.database.result-set :as rs]
-            [clojure.java.io :as io]
-            [hugsql.core :as hugsql]
-            [lib.clojure.core :as e]))
+  (:require [app.database.result-set :as rs]
+            [hugsql.adapter.next-jdbc :as adapter]
+            [lib.clojure.core :as e]
+            [lib.hugsql.core :as hugsql]
+            [mount.core :as mount])
+  (:import (javax.sql DataSource)))
 
 (set! *warn-on-reflection* true)
 
@@ -18,19 +19,39 @@
   "Default opts of the HugSQL adapter."
   ([] (def-db-fns-opts rs/as-simple-maps))
   ([builder-fn]
-   {:adapter (hugsql-adapter/hugsql-adapter-next-jdbc {:builder-fn builder-fn})}))
-
-(defn db-fn-string
-  "Read SQL query from resource file for passing to `def-db-fns-from-string`.
-   The name of HugSQL function is the same as file name."
-  [name]
-  (let [path (str sql-rc-path name ".sql")
-        body (slurp (or (io/resource path)
-                        (throw (e/ex-info ["Missing SQL query file" path]
-                                          {:name name :resource-path path}))))]
-    (str "-- :name " name "\r\n" body)))
+   {:adapter (adapter/hugsql-adapter-next-jdbc {:builder-fn builder-fn})}))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(mount/defstate ^:private data-source-read-write
+  {:on-reload :noop}
+  :start (-> (::data-source-read-write (mount/args))
+             (e/assert (partial instance? DataSource))))
+
+(mount/defstate ^:private data-source-read-only
+  {:on-reload :noop}
+  :start (-> (::data-source-read-only (mount/args))
+             (e/assert (partial instance? DataSource))))
+
+(defn- wrap-db-fn
+  [f nom var'data-source]
+  (fn db-fn
+    ([] (db-fn @var'data-source {}))
+    ([params] (db-fn @var'data-source params))
+    ([db params]
+     (e/try-wrap-ex [nom {:sql-params params}]
+       (f db params)))))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn wrap-db-fn-map
+  "Wraps db fn with customized behaviour."
+  [fm]
+  (let [fk (ffirst fm)
+        ds (if (-> fm fk :meta :command #{:query}) #'data-source-read-only #'data-source-read-write)]
+    (-> fm
+        (update-in [fk :fn] wrap-db-fn (str "db/" (name fk)) ds)
+        (update-in [fk :meta] assoc :arglists '([] [params] [db params])))))
 
 (defmacro dfn
   "Declare single HugSQL function for symbol `sym`.
@@ -39,8 +60,8 @@
    If `namespace` (string or namespaced keyword) provided
    then all keys in result set are namespaced."
   ([sym]
-   `(hugsql/def-db-fns-from-string (db-fn-string '~sym) (def-db-fns-opts)))
+   `(hugsql/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts)))
   ([sym, namespace]
-   `(hugsql/def-db-fns-from-string (db-fn-string '~sym) (def-db-fns-opts (rs/as-namespaced-maps ~namespace)))))
+   `(hugsql/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts (rs/as-namespaced-maps ~namespace)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
