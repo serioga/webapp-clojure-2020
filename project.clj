@@ -3,26 +3,27 @@
   :dependencies [; clojure
                  [org.clojure/clojure "1.10.3"]
                  ; clojure script
-                 [cljsjs/react "17.0.1-0"]
-                 [cljsjs/react-dom "17.0.1-0"]
-                 [org.clojure/clojurescript "1.10.773" :scope "provided"]
-                 [rum "0.12.4"]
+                 [cljsjs/react "17.0.2-0"]
+                 [cljsjs/react-dom "17.0.2-0"]
+                 [org.clojure/clojurescript "1.10.844" :scope "provided"]
+                 [rum "0.12.6"]
                  ; shadow cljs
-                 [com.google.javascript/closure-compiler-externs "v20200830" :scope "provided" :upgrade false]
-                 [com.google.javascript/closure-compiler-unshaded "v20200830" :scope "provided" :upgrade false]
-                 [org.clojure/google-closure-library "0.0-20191016-6ae1f72f" :scope "provided"]
-                 [thheller/shadow-cljs "2.11.23" :scope "provided"]
+                 [com.google.guava/guava "30.1.1-jre" :scope "provided"]
+                 [com.google.javascript/closure-compiler-unshaded "v20210302" :scope "provided" :upgrade false]
+                 [org.clojure/google-closure-library "0.0-20201211-3e6c510d" :scope "provided"]
+                 [org.clojure/google-closure-library-third-party "0.0-20201211-3e6c510d" :scope "provided"]
+                 [thheller/shadow-cljs "2.12.5" :scope "provided"]
                  ; system
                  [integrant "0.8.0"]
                  [mount "0.1.16"]
                  [tolitius/mount-up "0.1.3"]
                  ; web server
-                 [io.undertow/undertow-core,,,,,,,,,, "2.2.5.Final"]
-                 [io.undertow/undertow-servlet,,,,,,, "2.2.5.Final"]
-                 [io.undertow/undertow-websockets-jsr "2.2.5.Final"]
-                 [metosin/reitit-core "0.5.12"]
+                 [io.undertow/undertow-core,,,,,,,,,, "2.2.7.Final"]
+                 [io.undertow/undertow-servlet,,,,,,, "2.2.7.Final"]
+                 [io.undertow/undertow-websockets-jsr "2.2.7.Final"]
+                 [metosin/reitit-core "0.5.13"]
                  [org.immutant/web "2.1.10"]
-                 [ring/ring-core "1.9.1"]
+                 [ring/ring-core "1.9.3"]
                  [ring/ring-defaults "0.3.2"]
                  ; sql database
                  [com.h2database/h2 "1.4.200"]
@@ -30,7 +31,7 @@
                  [com.layerware/hugsql-adapter-next-jdbc "0.5.1"]
                  [com.mattbertolini/liquibase-slf4j "4.0.0"]
                  [com.zaxxer/HikariCP "4.0.3" :exclusions [org.slf4j/slf4j-api]]
-                 [org.liquibase/liquibase-core "4.3.1"]
+                 [org.liquibase/liquibase-core "4.3.4"]
                  [seancorfield/next.jdbc "1.1.646"]
                  [p6spy/p6spy "3.9.1"]
                  ; logging (clojure)
@@ -77,7 +78,7 @@
                                   [nrepl "0.8.3"]
                                   [ns-tracker "0.4.0"]
                                   [ring-refresh "0.1.2"]
-                                  [ring/ring-devel "1.9.1"]
+                                  [ring/ring-devel "1.9.3"]
                                   [zcaudate/hara.io.watch "2.8.7"]]
                    :source-paths ["dev" "tailwind"]}
 
