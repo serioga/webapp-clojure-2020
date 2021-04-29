@@ -1,16 +1,16 @@
-(ns app.web-example.core
+(ns app.-example-webapp-.core
   ;; React components
   (:require [app.rum.core])
   ;; Imports
-  (:require [app.web-example.impl.handler :as handler]
-            [app.web-example.ring-handler.core :as http-handler]
+  (:require [app.-example-webapp-.impl.handler :as handler]
+            [app.webapp.ring-handler :as ring-handler]
             [lib.clojure.ns :as ns]))
 
 (set! *warn-on-reflection* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(ns/require-dir 'app.web-example.handler._)
+(ns/require-dir 'app.-example-webapp-.handler._)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -26,6 +26,6 @@
 (defn example-http-handler
   "HTTP server handler for `example` webapp."
   [config]
-  (http-handler/webapp-http-handler handler/example-handler, (example-routes), config))
+  (ring-handler/webapp-http-handler handler/example-handler, (example-routes), config))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

@@ -4,7 +4,7 @@
  :socket-repl false
  :source-paths ["src"]
  :builds {:example {:target :browser
-                    :modules {:main {:entries [app.web-example.main]}}
+                    :modules {:main {:entries [app.-example-webapp-.main]}}
                     :asset-path "/app/example"
                     :output-dir "resources/public/app/example"
                     #_#_:devtools {:watch-dir "resources/public"}}}}

@@ -1,4 +1,4 @@
-(ns app.web-example.ring-handler.core
+(ns app.webapp.ring-handler
   "Ring-based definition for request-response handling."
   (:require [lib.ring-middleware.debug-response :as debug-response]
             [lib.ring-middleware.error-exception :as error-exception]

@@ -1,4 +1,4 @@
-(ns app.web-example.impl.handler)
+(ns app.-example-webapp-.impl.handler)
 
 (set! *warn-on-reflection* true)
 

@@ -1,4 +1,4 @@
-(ns app.web-example.main
+(ns app.-example-webapp-.main
   ;; React components
   (:require [app.rum.core])
   ;; Imports

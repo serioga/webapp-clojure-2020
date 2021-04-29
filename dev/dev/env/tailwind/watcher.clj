@@ -16,7 +16,7 @@
 (defn- tailwind-shell-cmd
   [webapp]
   [postcss-cmd
-   (str "tailwind/app/web_" webapp "/main.css")
+   (str "tailwind/app/_" webapp "_webapp_/main.css")
    "-o" (str "resources/public/app/" webapp "/main.css")
    "--config" "dev/"])
 

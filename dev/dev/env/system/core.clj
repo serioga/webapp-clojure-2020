@@ -1,5 +1,5 @@
 (ns dev.env.system.core
-  (:require [app.web-example.impl.html :as example-html]
+  (:require [app.-example-webapp-.impl.html :as example-html]
             [clojure.tools.logging :as log]
             [dev.env.reload.app-reload :as app-reload]
             [dev.env.reload.ring-refresh :as ring-refresh]
@@ -65,7 +65,7 @@
                                                             (mount/stop #'example-html/styles-css-uri)
                                                             (mount/start #'example-html/styles-css-uri)
                                                             (ring-refresh/send-refresh!)))})
-     :options {:dirs ["tailwind/app/config" "tailwind/app/web_example"]
+     :options {:dirs ["tailwind/app/config" "tailwind/app/_example_webapp_"]
                :files [".css" ".js$"]}
      :run-handler-on-init? first-run?}}))
 
