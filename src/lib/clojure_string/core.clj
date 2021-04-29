@@ -1,6 +1,6 @@
 (ns lib.clojure-string.core
   "Extension of `clojure.string`. Similar to cuerdas, superstring etc."
-  (:refer-clojure :exclude [concat empty? not-empty])
+  (:refer-clojure :exclude [concat empty? not-empty replace])
   (:require [clojure.test :as test]
             [potemkin :refer [import-vars]])
   (:import (org.apache.commons.lang3 StringUtils)))
@@ -11,6 +11,7 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (import-vars [clojure.string blank?, starts-with?, ends-with?, includes?]
+             [clojure.string replace, replace-first, re-quote-replacement]
              [clojure.string capitalize, upper-case, lower-case]
              [clojure.string join, split, split-lines]
              [clojure.string trim, triml, trimr, trim-newline]
@@ -20,19 +21,19 @@
 
 (defn empty?
   "True if string `s` is nil or has zero length."
-  {:test (fn [] (test/are [expected actual] (= expected actual)
-                  true, (empty? nil)
-                  true, (empty? "")
-                  false (empty? "-")))}
+  {:test #(test/are [form] form
+            (true?, (empty? nil))
+            (true?, (empty? ""))
+            (false? (empty? "-")))}
   [s]
   (StringUtils/isEmpty s))
 
 (defn not-empty
   "If `s` is empty, returns nil, else `s`."
-  {:test (fn [] (test/are [expected actual] (= expected actual)
-                  nil (not-empty nil)
-                  nil (not-empty "")
-                  "-" (not-empty "-")))}
+  {:test #(test/are [form] form
+            (nil?, (not-empty nil))
+            (nil?, (not-empty ""))
+            (= "-" (not-empty "-")))}
   [s]
   (when-not (empty? s) s))
 
@@ -42,12 +43,12 @@
   "Concatenates strings using native `.concat`.
    Works with strings only."
   {:tag String
-   :test (fn [] (test/are [expected actual] (= expected actual)
-                  "0123456789ABCDE" (concat "0123456789" "ABCDE")
-                  "0123456789",,,,, (concat "0123456789" nil)
-                  "ABCDE",,,,,,,,,, (concat nil,,,,,,,,, "ABCDE")
-                  "ABCDE",,,,,,,,,, (concat "A",,,,,,,,, "B" "C" "D" "E")
-                  nil,,,,,,,,,,,,,, (concat nil,,,,,,,,, nil)))}
+   :test #(test/are [form] form
+            (= "0123456789ABCDE" (concat "0123456789" "ABCDE"))
+            (= "0123456789",,,,, (concat "0123456789" nil))
+            (= "ABCDE",,,,,,,,,, (concat nil,,,,,,,,, "ABCDE"))
+            (= "ABCDE",,,,,,,,,, (concat "A",,,,,,,,, "B" "C" "D" "E"))
+            (nil?,,,,,,,,,,,,,,, (concat nil,,,,,,,,, nil)))}
   ([a b]
    (if a (if b (.concat ^String a b), a)
          (or b nil)))
@@ -79,11 +80,11 @@
 
 (defn only-chars?
   "True if `s` contains only chars satisfying `pred`. False when `s` is empty."
-  {:test (fn [] (test/are [expected actual] (= expected actual)
-                  false (only-chars? nil,, char-digit?)
-                  false (only-chars? "",,, char-digit?)
-                  false (only-chars? "---" char-digit?)
-                  true, (only-chars? "123" char-digit?)))}
+  {:test #(test/are [form] form
+            (false? (only-chars? nil,, char-digit?))
+            (false? (only-chars? "",,, char-digit?))
+            (false? (only-chars? "---" char-digit?))
+            (true?, (only-chars? "123" char-digit?)))}
   [^CharSequence s, pred]
   (if (empty? s)
     false
@@ -97,11 +98,11 @@
 
 (defn numeric?
   "True if `s` contains only digits."
-  {:test (fn [] (test/are [expected actual] (= expected actual)
-                  true, (numeric? "1234567890")
-                  false (numeric? "1234567890x")
-                  false (numeric? nil)
-                  false (numeric? "")))}
+  {:test #(test/are [form] form
+            (true?, (numeric? "1234567890"))
+            (false? (numeric? "1234567890x"))
+            (false? (numeric? nil))
+            (false? (numeric? "")))}
   [s]
   (StringUtils/isNumeric s))
 
@@ -113,15 +114,15 @@
    An empty string (\"\") input returns the empty string.
    Strips whitespaces if the string `strip-chars` is not specified."
   {:tag String
-   :test (fn [] (test/are [expected actual] (= expected actual)
-                  "test" (strip-start "test",,, " ")
-                  "test" (strip-start "   test" " ")
-                  "te  " (strip-start "   te  " " ")
-                  "test" (strip-start "   test")
-                  "test" (strip-start "///test" "/")
-                  "test" (strip-start "☺☺☺test" "☺")
-                  "test" (strip-start "/?☺test" "/?☺")
-                  nil,,, (strip-start nil "/")))}
+   :test #(test/are [form] form
+            (= "test" (strip-start "test",,, " "))
+            (= "test" (strip-start "   test" " "))
+            (= "te  " (strip-start "   te  " " "))
+            (= "test" (strip-start "   test"))
+            (= "test" (strip-start "///test" "/"))
+            (= "test" (strip-start "☺☺☺test" "☺"))
+            (= "test" (strip-start "/?☺test" "/?☺"))
+            (nil?,,,, (strip-start nil "/")))}
   ([s]
    (StringUtils/stripStart s nil))
   ([s, strip-chars]
@@ -133,15 +134,15 @@
    An empty string (\"\") input returns the empty string.
    Strips whitespaces if the string `strip-chars` is not specified."
   {:tag String
-   :test (fn [] (test/are [expected actual] (= expected actual)
-                  "test" (strip-end "test",,, " ")
-                  "test" (strip-end "test   " " ")
-                  "  st" (strip-end "  st   " " ")
-                  "test" (strip-end "test   ")
-                  "test" (strip-end "test///" "/")
-                  "test" (strip-end "test☺☺☺" "☺")
-                  "test" (strip-end "test/?☺" "/?☺")
-                  nil,,, (strip-end nil "/")))}
+   :test #(test/are [form] form
+            (= "test" (strip-end "test",,, " "))
+            (= "test" (strip-end "test   " " "))
+            (= "  st" (strip-end "  st   " " "))
+            (= "test" (strip-end "test   "))
+            (= "test" (strip-end "test///" "/"))
+            (= "test" (strip-end "test☺☺☺" "☺"))
+            (= "test" (strip-end "test/?☺" "/?☺"))
+            (nil?,,,, (strip-end nil "/")))}
   ([s]
    (StringUtils/stripEnd s nil))
   ([s, strip-chars]
@@ -151,11 +152,11 @@
   "Removes chars from the left side of string by `pred`.
    The `pred` is a predicate function for chars to be removed."
   {:tag String
-   :test (fn [] (test/are [expected actual] (= expected actual)
-                  "test" (drop-start "test",,, char-whitespace?) #_" 7 ns"
-                  "test" (drop-start "   test" char-whitespace?) #_"30 ns"
-                  "test" (drop-start "   test" (char-not= \t))
-                  nil,,, (drop-start nil char-whitespace?)))}
+   :test #(test/are [form] form
+            (= "test" (drop-start "test",,, char-whitespace?)) #_" 7 ns"
+            (= "test" (drop-start "   test" char-whitespace?)) #_"30 ns"
+            (= "test" (drop-start "   test" (char-not= \t)))
+            (nil?,,,, (drop-start nil char-whitespace?)))}
   [^CharSequence s, pred]
   (when s
     (let [len (.length s)]
@@ -170,11 +171,11 @@
   "Removes chars from the right side of string by `pred`.
    The `pred` is a predicate function for chars to be removed."
   {:tag String
-   :test (fn [] (test/are [expected actual] (= expected actual)
-                  "test" (drop-end "test",,, char-whitespace?)
-                  "test" (drop-end "test   " char-whitespace?)
-                  "test" (drop-end "test   " (char-not= \t))
-                  nil,,, (drop-end nil char-whitespace?)))}
+   :test #(test/are [form] form
+            (= "test" (drop-end "test",,, char-whitespace?))
+            (= "test" (drop-end "test   " char-whitespace?))
+            (= "test" (drop-end "test   " (char-not= \t)))
+            (nil?,,,, (drop-end nil char-whitespace?)))}
   [^CharSequence s, pred]
   (when s
     (loop [index (.length s)]
@@ -189,32 +190,32 @@
 (defn take-before
   "Gets the substring before the first occurrence of a separator."
   {:tag String
-   :test (fn [] (test/are [expected actual] (= expected actual)
-                  "test" (take-before "test,string",,,,,,,,, ",")
-                  "test" (take-before "test::string::string" "::")
-                  "test" (take-before "test" "::")
-                  "test" (take-before "test" nil)
-                  "",,,, (take-before "test" "")
-                  "",,,, (take-before "test" "test")
-                  "",,,, (take-before "test" "t")
-                  nil,,, (take-before nil nil)))}
+   :test #(test/are [form] form
+            (= "test" (take-before "test,string",,,,,,,,, ","))
+            (= "test" (take-before "test::string::string" "::"))
+            (= "test" (take-before "test" "::"))
+            (= "test" (take-before "test" nil))
+            (= "",,,, (take-before "test" ""))
+            (= "",,,, (take-before "test" "test"))
+            (= "",,,, (take-before "test" "t"))
+            (nil?,,,, (take-before nil nil)))}
   [s separator]
-  (StringUtils/substringBefore s separator))
+  (StringUtils/substringBefore ^String s ^String separator))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn surround
   "Surrounds string `s` with `x` or `left`/`right`."
   {:tag String
-   :test (fn [] (test/are [expected actual] (= expected actual)
-                  "''", (surround nil "'")
-                  "''", (surround "", "'")
-                  "'s'" (surround "s" "'")
-                  "'0'" (surround 0,, "'")
-                  "()", (surround nil "(" ")")
-                  "()", (surround "", "(" ")")
-                  "(s)" (surround "s" "(" ")")
-                  "(0)" (surround 0,, "(" ")")))}
+   :test #(test/are [form] form
+            (= "''", (surround nil "'"))
+            (= "''", (surround "", "'"))
+            (= "'s'" (surround "s" "'"))
+            (= "'0'" (surround 0,, "'"))
+            (= "()", (surround nil "(" ")"))
+            (= "()", (surround "", "(" ")"))
+            (= "(s)" (surround "s" "(" ")"))
+            (= "(0)" (surround 0,, "(" ")")))}
   ([s x]
    (.concat (.concat ^String x (str s)) x))
   ([s left right]
@@ -226,16 +227,16 @@
   "Truncates string `s` to the length `len`.
    Appends `suffix` at the end if specified."
   {:tag String
-   :test (fn [] (test/are [expected actual] (= expected actual)
-                  "12345",,, (truncate "1234567890" 5),,,,,, #_"12 ns"
-                  "12345..." (truncate "1234567890" 5 "...") #_"24 ns"
-                  "12345",,, (truncate "12345",,,,, 5)
-                  "12345",,, (truncate "12345",,,,, 5 "...")
-                  "",,,,,,,, (truncate "",,,,,,,,,, 5)
-                  "",,,,,,,, (truncate "",,,,,,,,,, 5 "...")
-                  nil,,,,,,, (truncate nil,,,,,,,,, 5)
-                  "",,,,,,,, (truncate "12345",,,,, 0)
-                  "(1 2 ..." (truncate '(1 2 3 4 5) 5 "...")))}
+   :test #(test/are [form] form
+            (= "12345",,, (truncate "1234567890" 5)),,,,,, #_"12 ns"
+            (= "12345..." (truncate "1234567890" 5 "...")) #_"24 ns"
+            (= "12345",,, (truncate "12345",,,,, 5))
+            (= "12345",,, (truncate "12345",,,,, 5 "..."))
+            (= "",,,,,,,, (truncate "",,,,,,,,,, 5))
+            (= "",,,,,,,, (truncate "",,,,,,,,,, 5 "..."))
+            (nil?,,,,,,,, (truncate nil,,,,,,,,, 5))
+            (= "",,,,,,,, (truncate "12345",,,,, 0))
+            (= "(1 2 ..." (truncate '(1 2 3 4 5) 5 "...")))}
   ([^Object s, ^long len]
    (when-some [^String s (some-> s .toString)]
      (if (< len (.length s))
@@ -248,4 +249,3 @@
        s))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-

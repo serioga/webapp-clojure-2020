@@ -33,10 +33,9 @@
 
 (defn read-secret
   "Read value from secret."
-  {:test (fn []
-           (test/are [expected actual] (= expected actual)
-             "xxx" (read-secret (->Secret "xxx"))
-             "xxx" (read-secret "xxx")))}
+  {:test #(test/are [form] form
+            (= "xxx" (read-secret (->Secret "xxx")))
+            (= "xxx" (read-secret "xxx")))}
   [value]
   (if (secret? value)
     (.value ^Secret value)
@@ -52,9 +51,9 @@
 (test/deftest secret-test
   (let [v "secret value"
         test (->Secret v)]
-    (test/are [expected actual] (= expected actual)
-      "******" (str test)
-      v,,,,,,, (read-secret test))))
+    (test/are [form] form
+      (= "******" (str test))
+      (= v,,,,,,, (read-secret test)))))
 
 (comment
   (secret-test))
