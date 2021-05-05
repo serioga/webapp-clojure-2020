@@ -1,14 +1,14 @@
-(ns app.-example-webapp-.impl.handler
-  (:require [lib.clojure.core :as e]))
+(ns lib.clojure.core
+  {:clj-kondo/config {:linters {:missing-docstring {:level :off}}}}
+  (:require [lib.clojure.lang :as lang]))
 
-(set! *warn-on-reflection* true)
+(set! *warn-on-infer* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmulti example-handler
-  "Handle ring request by route-tag."
-  :route-tag)
-
-(e/add-method example-handler nil (constantly nil))
+(def add-method lang/add-method)
+(def invoke,,,, lang/invoke)
+(def tested-by, lang/tested-by)
+(def unwrap-fn, lang/unwrap-fn)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

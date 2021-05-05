@@ -1,15 +1,13 @@
-(ns lib.clojure.lang
-  (:import (clojure.lang MultiFn)
-           (java.util.concurrent Future)))
+(ns lib.clojure.lang)
 
-(set! *warn-on-reflection* true)
+(set! *warn-on-infer* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn add-method
   "Installs a method of multimethod associated with dispatch-value."
   [multi-fn dispatch-val method]
-  (.addMethod ^MultiFn multi-fn dispatch-val method))
+  (-add-method ^cljs.core/MultiFn multi-fn dispatch-val method))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -27,9 +25,12 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn tested-by
-  "Returns `x` if `(pred x)` is logical true, else `nil`."
-  [x pred]
-  (when (pred x) x))
+  "Returns `x` if `(pred x)` is logical true, else `nil`.
+   Returns #(tested-by % pred) in case of 1-arity."
+  ([pred]
+   #(tested-by % pred))
+  ([x pred]
+   (when (pred x) x)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -44,12 +45,5 @@
   (unwrap-fn (constantly 1))
   (unwrap-fn nil)
   (unwrap-fn :kw))
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defn unwrap-future
-  "If `x` is future?, returns `(deref x)`, else returns `x`."
-  [x]
-  (if (future? x) (.get ^Future x), x))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

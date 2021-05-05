@@ -19,7 +19,7 @@
 
              [lib.clojure.future future, thread-off, thread-off!]
 
-             [lib.clojure.lang invoke, valid, unwrap-fn, unwrap-future])
+             [lib.clojure.lang add-method, invoke, tested-by, unwrap-fn, unwrap-future])
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

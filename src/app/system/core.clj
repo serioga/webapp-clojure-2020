@@ -48,13 +48,13 @@
    By default returns value as is."
   identity)
 
-(defmethod mixin :default [v] v)
+(e/add-method mixin :default identity)
 
-(defmethod mixin ::await-before-start [_]
-  {:config {:await-before-start (ig/ref ::await-before-start)}})
+(e/add-method mixin ::await-before-start
+              (constantly {:config {:await-before-start (ig/ref ::await-before-start)}}))
 
-(defmethod mixin ::add-to-await-before-start [_]
-  {::add-to-await-before-start true})
+(e/add-method mixin ::add-to-await-before-start
+              (constantly {::add-to-await-before-start true}))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

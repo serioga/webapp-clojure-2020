@@ -2,6 +2,7 @@
   "Example react component, modification of
    https://github.com/tonsky/rum/blob/gh-pages/examples/rum/examples/local_state.cljc"
   (:require [app.rum.impl.component :as impl]
+            [lib.clojure.core :as e]
             [rum.core :as rum]))
 
 #?(:clj  (set! *warn-on-reflection* true)
@@ -20,8 +21,7 @@
       :on-click (fn [_] (swap! *count inc))}
      (str "Hello, " name ": " @*count " clicks.")]))
 
-(defmethod impl/create-component :react-component/hello-world
-  [{:keys [name]}]
-  (hello-world name))
+(e/add-method impl/create-component :react-component/hello-world
+              (comp hello-world :name))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

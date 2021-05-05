@@ -1,7 +1,7 @@
 (ns app.-example-webapp-.handler.example-database
-  (:require [app.database.core :as db]
-            [app.-example-webapp-.impl.handler :as impl]
+  (:require [app.-example-webapp-.impl.handler :as impl]
             [app.-example-webapp-.impl.html :as html]
+            [app.database.core :as db]
             [clojure.pprint :as pprint]))
 
 (set! *warn-on-reflection* true)

@@ -15,9 +15,8 @@
   [{:keys [name]}]
   (throw (e/ex-info ["Webapp handler is not found for name" name])))
 
-(defmethod webapp-http-handler "example"
-  [config]
-  (example/example-http-handler config))
+(e/add-method webapp-http-handler "example"
+              example/example-http-handler)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

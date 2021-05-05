@@ -11,10 +11,10 @@
 
 (defn- split [v] (string/split v #"[\s,]+"))
 
-(defmethod props/conform-prop-val :edn,,, [_ v] (edn/read-string v))
-(defmethod props/conform-prop-val :vector [_ v] (split v))
-(defmethod props/conform-prop-val :set,,, [_ v] (set (split v)))
-(defmethod props/conform-prop-val :secret [_ v] (secret/->Secret v))
+(props/add-conform-rule :edn,,, edn/read-string)
+(props/add-conform-rule :vector split)
+(props/add-conform-rule :set,,, (comp set split))
+(props/add-conform-rule :secret secret/->Secret)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

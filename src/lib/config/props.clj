@@ -61,7 +61,7 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defmulti conform-prop-val
+(defmulti ^:private conform-prop-val
   "Define conform rule by rule keyword."
   (fn [rule _value] rule))
 
@@ -69,6 +69,13 @@
   [k rule value]
   (e/try-wrap-ex [['conform-prop-val k rule value]]
     (conform-prop-val rule value)))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn add-conform-rule
+  "Installs function f as a handler for the rule keyword in the `conform-prop-val`."
+  [rule, f]
+  (e/add-method conform-prop-val rule #(f %2)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

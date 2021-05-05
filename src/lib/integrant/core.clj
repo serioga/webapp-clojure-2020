@@ -63,7 +63,7 @@
   (fn halt-key!
     [key value]
     (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key key))
-                           (e/valid not-default-halt-key?))]
+                           (e/tested-by not-default-halt-key?))]
       (mdc/with-map {:halt key}
         (log/info ">> stopping.." key)
         (e/try-ignore
@@ -84,9 +84,9 @@
   (fn suspend-key!
     [key value]
     (when-some [method (or (-> (get-method ig/suspend-key! (#'ig/normalize-key key))
-                               (e/valid not-default-suspend-key?))
+                               (e/tested-by not-default-suspend-key?))
                            (-> (get-method ig/halt-key! (#'ig/normalize-key key))
-                               (e/valid not-default-halt-key?)))]
+                               (e/tested-by not-default-halt-key?)))]
       (mdc/with-map {:suspend key}
         (log/info ">> suspending.." key)
         (e/try-ignore
