@@ -20,7 +20,7 @@
 (s/def ::connection-timeout int?)
 (s/def ::idle-timeout int?)
 (s/def ::max-lifetime int?)
-(s/def ::read-only? boolean?)
+(s/def ::read-only boolean?)
 (s/def ::leak-detection-threshold int?)
 
 (s/def ::options (s/keys :req-un [::data-source-class
@@ -32,7 +32,7 @@
                                   ::connection-timeout
                                   ::idle-timeout
                                   ::max-lifetime
-                                  ::read-only?
+                                  ::read-only
                                   ::leak-detection-threshold]))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -50,8 +50,8 @@
   "Create HikariCP data source."
   [{:keys [data-source-class, database-url, database-user, database-password
            minimum-idle, maximum-pool-size, connection-timeout, idle-timeout, max-lifetime
-           pool-name, read-only?, leak-detection-threshold]
-    :or {read-only? false} :as options}]
+           pool-name, read-only, leak-detection-threshold]
+    :or {read-only false} :as options}]
 
   (s/assert ::options options)
 
@@ -67,9 +67,9 @@
       idle-timeout (doto (.setIdleTimeout idle-timeout))
       max-lifetime (doto (.setMaxLifetime max-lifetime))
       leak-detection-threshold (doto (.setLeakDetectionThreshold leak-detection-threshold)))
-    (.setReadOnly read-only?)
+    (.setReadOnly read-only)
     (.setPoolName (str (when pool-name (str pool-name " "))
-                       (if read-only? "RO" "RW")))
+                       (if read-only "RO" "RW")))
     (init-hikari-data-source)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

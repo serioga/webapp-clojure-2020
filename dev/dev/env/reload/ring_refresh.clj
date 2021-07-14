@@ -10,8 +10,8 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (def ^:private var'refresh-state
-  (atom {:last-modified (Date.)
-         :reload? false}))
+  (atom {::last-modified (Date.)
+         ::refresh-is-enabled false}))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -30,9 +30,9 @@
 (def ^:private source-changed-route
   (compojure/GET "/__source_changed" [since]
     (let [timestamp (Long/parseLong since)]
-      (str (watch-until var'refresh-state (fn [{:keys [last-modified, reload?]}]
+      (str (watch-until var'refresh-state (fn [{::keys [last-modified, refresh-is-enabled]}]
                                             (when (> (.getTime ^Date last-modified) timestamp)
-                                              reload?))
+                                              refresh-is-enabled))
                         60000)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -48,11 +48,11 @@
 (defn send-refresh!
   "Send response to pages with flag if they should
    reload page or just reconnect to __source_changed."
-  ([] (send-refresh! (:reload? @var'refresh-state)))
-  ([reload?]
-   (when reload?
+  ([] (send-refresh! (::refresh-is-enabled @var'refresh-state)))
+  ([refresh-is-enabled]
+   (when refresh-is-enabled
      (log/info "Send refresh command to browser pages"))
-   (reset! var'refresh-state {:last-modified (Date.)
-                              :reload? reload?})))
+   (reset! var'refresh-state {::last-modified (Date.)
+                              ::refresh-is-enabled refresh-is-enabled})))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

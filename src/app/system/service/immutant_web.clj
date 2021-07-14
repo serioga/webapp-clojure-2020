@@ -31,8 +31,8 @@
   (system/await-before-start await-before-start)
 
   (let [prepare-webapp (or prepare-webapp identity)]
-    (reduce (fn [server, {:keys [enabled?] :or {enabled? true} :as webapp}]
-              (if enabled?
+    (reduce (fn [server, {:keys [webapp-is-enabled] :or {webapp-is-enabled true} :as webapp}]
+              (if webapp-is-enabled
                 (start-webapp server (prepare-webapp webapp) options)
                 (skip-webapp server webapp)))
             (-> (or options {})

@@ -21,10 +21,10 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/init-key :app.system.service/webapp-http-handler
-  [_ {:keys [hosts, enabled?] :or {enabled? true} :as config}]
+  [_ {:keys [hosts, system-is-enabled] :or {system-is-enabled true} :as config}]
   (cond-> config
-    enabled? (-> (assoc :handler (webapp-http-handler config)
-                        :options (cond-> {}
-                                   (seq hosts) (assoc :virtual-host (vec hosts)))))))
+    system-is-enabled (-> (assoc :handler (webapp-http-handler config)
+                                 :options (cond-> {}
+                                            (seq hosts) (assoc :virtual-host (vec hosts)))))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

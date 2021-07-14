@@ -8,11 +8,11 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- response-error-not-found
-  [request, dev-mode?]
+  [request, dev-mode]
   (-> (str "[HTTP 404] Resource not found.\n\n"
            "URL: "
            (ring-request/request-url request)
-           (when dev-mode?
+           (when dev-mode
              (str
                "\n\n" "---" "\n"
                "Default not-found handler, dev mode."
@@ -24,8 +24,8 @@
 
 (defn wrap-error-not-found
   "Wrap handler with middleware replacing `nil` response with default."
-  [handler, dev-mode?]
+  [handler, dev-mode]
   (fn [request] (or (handler request)
-                    (response-error-not-found request, dev-mode?))))
+                    (response-error-not-found request, dev-mode))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

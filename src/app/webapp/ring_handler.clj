@@ -14,9 +14,9 @@
 
 (defn webapp-http-handler
   "Build HTTP server handler for webapp with common middleware."
-  [http-handler, routes, {:keys [dev-mode?]}]
+  [http-handler, routes, {:keys [dev-mode]}]
   (-> http-handler
-      (error-not-found/wrap-error-not-found dev-mode?)
+      (error-not-found/wrap-error-not-found dev-mode)
       (debug-response/wrap-debug-response)
       (logging-context/wrap-logging-context [:server-name :route-tag :session])
       (route-tag/wrap-route-tag (reitit/router routes))
@@ -24,6 +24,6 @@
                                        (assoc-in [:security :anti-forgery] false)
                                        (assoc-in [:security :frame-options] false)
                                        (dissoc :session)))
-      (error-exception/wrap-error-exception dev-mode?)))
+      (error-exception/wrap-error-exception dev-mode)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

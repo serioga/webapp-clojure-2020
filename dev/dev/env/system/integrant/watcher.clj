@@ -8,9 +8,9 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/init-key :dev.env.system.integrant/watcher
-  [_ {:keys [handler, options, run-handler-on-init?]}]
+  [_ {:keys [handler, options, handler-run-on-init]}]
   (let [watcher (watcher/start-watcher handler options)]
-    (when run-handler-on-init?
+    (when handler-run-on-init
       (e/try-log-error ["Run handler on init" handler options]
         (handler :init-watcher)))
     watcher))

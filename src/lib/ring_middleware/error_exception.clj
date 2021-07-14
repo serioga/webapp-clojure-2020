@@ -7,11 +7,11 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- response-error-exception
-  [^Throwable ex, dev-mode?]
+  [^Throwable ex, dev-mode]
   (let [status 500
         message (str "[HTTP " status "] "
                      (e/ex-message-all ex)
-                     (when dev-mode?
+                     (when dev-mode
                        (str "\n\n" "---" "\n"
                             "Default exception handler, dev mode."
                             "\n\n"
@@ -22,12 +22,12 @@
 
 (defn wrap-error-exception
   "Wrap handler with exception handler."
-  [handler, dev-mode?]
+  [handler, dev-mode]
   (fn [request]
     (try
       (handler request)
       (catch Throwable ex
         (e/log-error ex)
-        (response-error-exception ex, dev-mode?)))))
+        (response-error-exception ex, dev-mode)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

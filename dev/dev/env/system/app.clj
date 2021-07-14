@@ -16,9 +16,9 @@
   [prop-files]
   (let [user (System/getProperty "user.name")
         user-file (str "dev-resources/app/config/user." user ".props")
-        user-file-exists? (.exists ^File (io/as-file user-file))]
+        user-file (when (.exists ^File (io/as-file user-file)) user-file)]
     (cond
-      (not user-file-exists?), prop-files
+      (not user-file), prop-files
       (string? prop-files), (str/join "," [prop-files user-file])
       (sequential? prop-files), (-> (into [] prop-files)
                                     (conj user-file))
@@ -44,7 +44,7 @@
 
 (defn- prepare-system-config
   [config]
-  (assoc config ::app/dev-mode? true
+  (assoc config ::app/dev-mode true
                 :dev.env.system/prepare-prop-files prepare-prop-files
                 :dev.env.system/prepare-webapp prepare-webapp))
 

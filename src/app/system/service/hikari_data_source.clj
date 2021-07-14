@@ -30,14 +30,14 @@
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/init-key :app.system.service/hikari-data-source
-  [_ {:keys [dev-mode?] :as options}]
+  [_ {:keys [dev-mode] :as options}]
   (e/future
     (init-data-source (-> {:minimum-idle 1
                            :maximum-pool-size 10
                            :connection-timeout 5000
                            :leak-detection-threshold 30000}
-                          (cond-> dev-mode? (assoc :max-lifetime 300000
-                                                   :idle-timeout 60000))
+                          (cond-> dev-mode (assoc :max-lifetime 300000
+                                                  :idle-timeout 60000))
                           (merge options)))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

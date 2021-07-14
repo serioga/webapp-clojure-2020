@@ -9,14 +9,14 @@
 (defn- locking-handler
   "Wraps handler with locking for execution period."
   [handler]
-  (let [var'running? (atom false)]
+  (let [var'running (atom false)]
     (fn [& args]
-      (when (compare-and-set! var'running? false true)
+      (when (compare-and-set! var'running false true)
         (try
           (log/debug "Trigger watcher" (str handler) args)
           (apply handler args)
           (finally
-            (reset! var'running? false)))))))
+            (reset! var'running false)))))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

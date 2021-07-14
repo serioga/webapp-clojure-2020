@@ -14,7 +14,7 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(derive ::dev-mode? ::system/identity)
+(derive ::dev-mode ::system/identity)
 (derive ::await-before-start ::system/identity)
 (derive :dev.env.system/prepare-prop-files ::system/identity)
 (derive :dev.env.system/prepare-webapp ::system/identity)
@@ -115,9 +115,9 @@
 (defmethod install ::hikari-data-source
   [system, key, params]
   (install* system key (e/deep-merge params {:derive :app.system.service/hikari-data-source
-                                             :config {:dev-mode? (ig/ref ::dev-mode?)}
+                                             :config {:dev-mode (ig/ref ::dev-mode)}
                                              :import {:data-source-class "Database.DataSourceClassName"
-                                                      :database-url (if (-> params :config :read-only?)
+                                                      :database-url (if (-> params :config :read-only)
                                                                       "Database.Url.ReadOnly", "Database.Url")
                                                       :database-user "Database.User"
                                                       :database-password "Database.Password"}})))
@@ -128,7 +128,7 @@
   [system, key, {:keys [webapps] :as params}]
   (-> (reduce (fn [system [key params]]
                 (install system [:app.system.service/webapp-http-handler key]
-                         (update params :config merge {:dev-mode? (ig/ref ::dev-mode?)})))
+                         (update params :config merge {:dev-mode (ig/ref ::dev-mode)})))
               system webapps)
       (assoc :dev.env.system/prepare-webapp nil)
       (install* key (update params :config merge {:webapps (->> webapps (mapv (comp ig/ref first)))
@@ -138,7 +138,7 @@
 
 (defn- system-keys
   []
-  {::dev-mode? {:config false}
+  {::dev-mode {:config false}
 
    :app.system.service/app-config {:as ::app-config
                                    :mounts [:app.config.core/app-config]
@@ -156,12 +156,12 @@
    ::data-source-read-only {:as ::hikari-data-source
                             :mounts [:app.database.core/data-source-read-only
                                      :app.database.hugsql/data-source-read-only]
-                            :config {:read-only? true}}
+                            :config {:read-only true}}
 
    :app.system.task/database-migration {:config {:data-source (ig/ref ::data-source-read-write)
                                                  :changelog-path "app/database/migration/changelog.xml"
-                                                 :enabled? true}
-                                        :import {:enabled? "Development.DatabaseMigration"}
+                                                 :system-is-enabled true}
+                                        :import {:system-is-enabled "Development.DatabaseMigration"}
                                         :mixins [::add-to-await-before-start]}
 
    :app.system.service/immutant-web {:as ::http-server
@@ -188,7 +188,7 @@
 
 (defonce ^{:doc "Global reference to the running system"
            :private true}
-         var'system (atom nil))
+  var'system (atom nil))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
