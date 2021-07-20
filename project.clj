@@ -2,17 +2,9 @@
   :description "Multi-page web application prototype with Clojure(Script)"
   :dependencies [; clojure
                  [org.clojure/clojure "1.10.3"]
-                 ; clojure script
-                 [cljsjs/react "17.0.2-0"]
-                 [cljsjs/react-dom "17.0.2-0"]
-                 [org.clojure/clojurescript "1.10.844" :scope "provided"]
-                 [rum "0.12.6"]
-                 ; shadow cljs
+                 ; clojure script (shadow-cljs)
                  [com.google.guava/guava "30.1.1-jre" :scope "provided"]
-                 [com.google.javascript/closure-compiler-unshaded "v20210302" :scope "provided" :upgrade false]
-                 [org.clojure/google-closure-library "0.0-20201211-3e6c510d" :scope "provided"]
-                 [org.clojure/google-closure-library-third-party "0.0-20201211-3e6c510d" :scope "provided"]
-                 [thheller/shadow-cljs "2.12.5" :scope "provided"]
+                 [thheller/shadow-cljs "2.15.2" :scope "provided"]
                  ; system
                  [integrant "0.8.0"]
                  [mount "0.1.16"]
@@ -41,13 +33,17 @@
                  [org.codehaus.janino/janino "3.1.3"]
                  [org.slf4j/jul-to-slf4j "1.7.30"]
                  [org.slf4j/slf4j-api "1.7.30"]
-                 ; libs
+                 ; libs (clojure)
                  [clojurewerkz/propertied "1.3.0"]
                  [com.cognitect/transit-clj "1.0.324"]
                  [commons-codec/commons-codec "1.15"]
                  [medley "1.3.0"]
                  [org.apache.commons/commons-lang3 "3.12.0"]
                  [potemkin "0.4.5"]
+                 ; libs (clojure script)
+                 [cljsjs/react "17.0.2-0"]
+                 [cljsjs/react-dom "17.0.2-0"]
+                 [rum "0.12.6"]
                  ; daemon
                  [commons-daemon/commons-daemon "1.2.4"]]
 
