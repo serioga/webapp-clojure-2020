@@ -26,10 +26,13 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn tested-by
-  "Returns `x` if `(pred x)` is logical true, else `nil`."
-  [x pred]
-  (when (pred x) x))
+(defn asserted
+  "Returns `x` if `(pred x)` is logical true, else `nil`.
+   Returns #(asserted % pred) in case of 1-arity."
+  ([pred]
+   #(asserted % pred))
+  ([x pred]
+   (when (pred x) x)))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

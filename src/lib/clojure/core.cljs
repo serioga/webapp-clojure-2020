@@ -8,7 +8,7 @@
 
 (def add-method lang/add-method)
 (def invoke,,,, lang/invoke)
-(def tested-by, lang/tested-by)
+(def asserted,, lang/asserted)
 (def unwrap-fn, lang/unwrap-fn)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
