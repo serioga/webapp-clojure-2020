@@ -59,7 +59,7 @@
                                         :app-start #'app/resume!
                                         :on-success #'log-reload-success
                                         :on-failure #'log-reload-failure})
-    :options {:dirs ["src" "dev" "dev-resources/app" "resources/app"]
+    :options {:dirs ["src" "dev" "resources/app"]
               ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
               ; :filter will pick out only files that match this pattern.
               :files [".props$" ".clj$" ".cljc$" ".cljs$" ".sql$" ".xml$"]

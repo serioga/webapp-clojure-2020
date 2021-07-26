@@ -12,11 +12,11 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(def ^:private user-props-file "dev/app/config/user.props")
+
 (defn- prepare-prop-files
   [prop-files]
-  (let [user (System/getProperty "user.name")
-        user-file (str "dev-resources/app/config/user." user ".props")
-        user-file (when (.exists ^File (io/as-file user-file)) user-file)]
+  (let [user-file (when (.exists ^File (io/as-file user-props-file)) user-props-file)]
     (cond
       (not user-file), prop-files
       (string? prop-files), (str/join "," [prop-files user-file])
@@ -26,9 +26,9 @@
 
 (comment
   (prepare-prop-files nil)
-  (prepare-prop-files "dev-resources/app/config/default.props")
-  (prepare-prop-files ["dev-resources/app/config/default.props"])
-  (prepare-prop-files '("dev-resources/app/config/default.props")))
+  (prepare-prop-files "dev/app/config/default.props")
+  (prepare-prop-files ["dev/app/config/default.props"])
+  (prepare-prop-files '("dev/app/config/default.props")))
 
 (defn- wrap-webapp-handler
   [_webapp]

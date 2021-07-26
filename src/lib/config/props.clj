@@ -39,13 +39,13 @@
                {:prop-files filenames})))
 
 (comment
-  (meta (load-prop-files "dev-resources/app/config/default.props"))
-  (meta (load-prop-files ["dev-resources/app/config/default.props"]))
-  (meta (load-prop-files (list "dev-resources/app/config/default.props")))
-  (meta (load-prop-files ["dev-resources/app/config/default.props"
-                          "dev-resources/app/config/default.props"]))
+  (meta (load-prop-files "dev/app/config/default.props"))
+  (meta (load-prop-files ["dev/app/config/default.props"]))
+  (meta (load-prop-files (list "dev/app/config/default.props")))
+  (meta (load-prop-files ["dev/app/config/default.props"
+                          "dev/app/config/default.props"]))
   (meta (load-prop-files nil))
-  (meta (merge (load-prop-files (list "dev-resources/app/config/default.props"))
+  (meta (merge (load-prop-files (list "dev/app/config/default.props"))
                (System/getProperties)))
   (re-matches #"Webapp\.Hosts\(.+\)" "Webapp.Hosts(ok)")
   (re-matches #"System\.Switch\..+" "System.Switch.BackendService")
@@ -53,7 +53,7 @@
   (require '[integrant.core :as ig])
   (into (sorted-map)
         (ig/init-key :app.system.service/app-config
-                     {:prop-files "dev-resources/app/config/default.props"
+                     {:prop-files "dev/app/config/default.props"
                       :conform-rules {"Mailer.Smtp.Port" :edn
                                       "Mailer.Smtp.Options" :edn
                                       #"System\.Switch\..+" :edn

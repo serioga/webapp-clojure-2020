@@ -42,7 +42,7 @@
 (comment
   (time (let [w (time (start-watcher (fn [& reason] (println reason))
 
-                                     {:dirs ["src" "resources/app" "dev" "dev-resources/dev"]
+                                     {:dirs ["src" "resources/app" "dev"]
 
                                       ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
                                       ; :filter will pick out only files that match this pattern.
