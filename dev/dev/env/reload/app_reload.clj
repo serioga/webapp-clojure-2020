@@ -77,3 +77,24 @@
             (when on-failure (on-failure ex))))))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn print-reload-on-enter
+  "Prints prompt for application reload."
+  []
+  (print "\n<< Press ENTER to reload >>\n\n")
+  (flush))
+
+(defn log-reload-success
+  "Prints confirmation of the successful application reload."
+  []
+  (log/info "[DONE] Application reload")
+  (print-reload-on-enter))
+
+(defn log-reload-failure
+  "Prints error if application reload failed."
+  [ex]
+  (log/error (e/ex-message-all ex))
+  (log/info "[FAIL] Application reload")
+  (print-reload-on-enter))
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

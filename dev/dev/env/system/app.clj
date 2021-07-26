@@ -1,12 +1,11 @@
 (ns dev.env.system.app
   "Wrap app system with development related adjustments."
   (:require [app.system.core :as app]
-            [clojure.java.io :as io]
             [clojure.string :as str]
             [dev.env.reload.ring-refresh :as ring-refresh]
             [lib.clojure.core :as e]
-            [ring.middleware.lint :as lint])
-  (:import (java.io File)))
+            [me.raynes.fs :as fs]
+            [ring.middleware.lint :as lint]))
 
 (set! *warn-on-reflection* true)
 
@@ -16,13 +15,12 @@
 
 (defn- prepare-prop-files
   [prop-files]
-  (let [user-file (when (.exists ^File (io/as-file user-props-file)) user-props-file)]
-    (cond
-      (not user-file), prop-files
-      (string? prop-files), (str/join "," [prop-files user-file])
-      (sequential? prop-files), (-> (into [] prop-files)
-                                    (conj user-file))
-      :else user-file)))
+  (cond
+    (not (fs/file? user-props-file)), prop-files
+    (string? prop-files), (str/join "," [prop-files user-props-file])
+    (sequential? prop-files), (-> (into [] prop-files)
+                                  (conj user-props-file))
+    :else user-props-file))
 
 (comment
   (prepare-prop-files nil)

@@ -71,6 +71,7 @@
   :profiles {:dev {:jvm-opts ["-Dconfig.file=dev/app/config/default.props"]
                    :main ^:skip-aot dev.env.main
                    :dependencies [[compojure "1.6.2" #_"For ring-refresh"]
+                                  [me.raynes/fs "1.4.6"]
                                   [nrepl "0.8.3"]
                                   [ns-tracker "0.4.0"]
                                   [ring-refresh "0.1.2"]

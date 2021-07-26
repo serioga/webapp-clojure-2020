@@ -97,3 +97,8 @@ Run built release:
 Custom configuration properties can be placed in optional file (excluded from version control):
 
     dev/app/config/user.props
+
+Custom configuration for the development environment can be placed in the optional file
+(excluded from version control):
+
+    dev/dev/config/user.edn

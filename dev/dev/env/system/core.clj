@@ -1,38 +1,17 @@
 (ns dev.env.system.core
-  (:require [app.-example-webapp-.impl.html :as example-html]
-            [clojure.tools.logging :as log]
+  (:require [clojure.edn :as edn]
             [dev.env.reload.app-reload :as app-reload]
-            [dev.env.reload.ring-refresh :as ring-refresh]
             [dev.env.system.app :as app]
-            [dev.env.tailwind.watcher :as tailwind]
             [lib.clojure.core :as e]
             [lib.clojure.ns :as ns]
             [lib.integrant.core :as ig]
-            [mount.core :as mount]))
+            [me.raynes.fs :as fs]))
 
 (set! *warn-on-reflection* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (ns/require-dir 'dev.env.system.integrant._)
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defn- print-reload-on-enter
-  []
-  (print "\n<< Press ENTER to reload >>\n\n")
-  (flush))
-
-(defn- log-reload-success
-  []
-  (log/info "[DONE] Application reload")
-  (print-reload-on-enter))
-
-(defn- log-reload-failure
-  [ex]
-  (log/error (e/ex-message-all ex))
-  (log/info "[FAIL] Application reload")
-  (print-reload-on-enter))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -45,37 +24,19 @@
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn- config
+(defn- read-config-edn
+  [f]
+  (e/try-wrap-ex [[#'read-config-edn f]]
+    (some-> (slurp f)
+            (edn/read-string)
+            :dev.env.system/config)))
+
+(defn- read-config
   []
-  {:dev.env.system.integrant/nrepl {:write-port-file ".nrepl-port"}
-
-   :dev.env.system.integrant/shadow-cljs {:builds-to-start [:example]}
-
-   [:dev.env.system.integrant/watcher ::app-reload-watcher]
-   {:handler (app-reload/watch-handler {:ns-tracker-dirs ["src" "dev"]
-                                        :always-reload-ns ['app.database.core]
-                                        :never-reload-ns ['user]
-                                        :app-stop #'app/suspend!
-                                        :app-start #'app/resume!
-                                        :on-success #'log-reload-success
-                                        :on-failure #'log-reload-failure})
-    :options {:dirs ["src" "dev" "resources/app"]
-              ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
-              ; :filter will pick out only files that match this pattern.
-              :files [".props$" ".clj$" ".cljc$" ".cljs$" ".sql$" ".xml$"]
-              ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
-              ; :exclude will leave out files that match this pattern.
-              :exclude []}}
-
-   [:dev.env.system.integrant/watcher ::tailwind-watcher]
-   {:handler (tailwind/watch-handler {:webapp "example"
-                                      :on-rebuild (fn [] (when ((mount/running-states) (str #'example-html/styles-css-uri))
-                                                           (mount/stop #'example-html/styles-css-uri)
-                                                           (mount/start #'example-html/styles-css-uri)
-                                                           (ring-refresh/send-refresh!)))})
-    :options {:dirs ["tailwind/app/config" "tailwind/app/_example_webapp_"]
-              :files [".css" ".js$"]}
-    :handler-run-on-init (zero? (::start-count @var'stats))}})
+  (e/deep-merge (read-config-edn "./dev/dev/config/default.edn")
+                (some-> "./dev/dev/config/user.edn"
+                        (e/asserted fs/file?)
+                        (read-config-edn))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -95,7 +56,7 @@
   "Start `env` system."
   []
   (stop!)
-  (reset! var'system (ig/init (config)))
+  (reset! var'system (ig/init (read-config)))
   (register-successful-start!)
   nil)
 
@@ -105,16 +66,17 @@
   "Restart (suspend/resume) `env` system."
   []
   (when-some [system @var'system]
-    (reset! var'system nil)
-    (ig/suspend! system)
-    (reset! var'system (ig/resume (config) system))
-    (register-successful-start!)
-    nil))
+    (let [config (read-config)]
+      (reset! var'system nil)
+      (ig/suspend! system)
+      (reset! var'system (ig/resume config system))))
+  nil)
 
 (defn- trigger-watcher
   [k]
-  (-> (get @var'system [:dev.env.system.integrant/watcher k])
-      meta :handler (e/assert fn?) (e/invoke #'trigger-watcher k)))
+  (-> (get @var'system k) meta :handler
+      (e/assert fn? ["Trigger watcher" k])
+      (e/invoke #'trigger-watcher k)))
 
 (defn- reload!
   "Reload actions on ENTER keypress."
@@ -122,14 +84,14 @@
   (try
     (app/stop!)
     (restart!)
-    (trigger-watcher ::app-reload-watcher)
+    (trigger-watcher :dev.env.system.integrant/app-reload)
     (catch Throwable ex
-      (log-reload-failure ex))))
+      (app-reload/log-reload-failure ex))))
 
 (defn prompt-reload-on-enter
   "Prompts for manual reload on ENTER keypress."
   []
-  (print-reload-on-enter)
+  (app-reload/print-reload-on-enter)
   (while (some? (read-line))
     (reload!)))
 
