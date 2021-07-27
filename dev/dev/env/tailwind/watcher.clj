@@ -18,7 +18,7 @@
   [postcss-cmd
    (str "tailwind/app/$" webapp "$_webapp/main.css")
    "-o" (str "resources/public/app/" webapp "/main.css")
-   "--config" "dev/config/"])
+   "--config" "dev/app/config/"])
 
 (defn- build-webapp-css
   [{:keys [webapp on-rebuild]}]
