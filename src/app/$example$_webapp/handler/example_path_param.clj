@@ -1,27 +1,30 @@
-(ns app.-example-webapp-.handler.example-react
-  (:require [app.-example-webapp-.impl.handler :as impl]
-            [app.-example-webapp-.impl.html :as html]
-            [app.rum.mount :as rum-mount]))
+(ns app.$example$-webapp.handler.example-path-param
+  (:require [app.$example$-webapp.impl.handler :as impl]
+            [app.$example$-webapp.impl.html :as html]
+            [clojure.walk :as walk]))
 
 (set! *warn-on-reflection* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-; TODO: Deferred JS loading in release.
-
-(defmethod impl/example-handler :route/example-react
+(defmethod impl/example-handler :route/example-path-param
   [request]
-  (let [[var'components, mount-component] (rum-mount/init-mounter request)
-        title "React Component example"]
+  (let [title "Path Parameter example"
+        {:keys [name, value]} (:params request)]
     (-> [:html [:head
                 [:title title]
                 (html/include-app-css)]
          [:body
           [:h1 title]
-          (mount-component :react-component/hello-world {:name "World"})
-          (html/link-to-index)
-          (rum-mount/react-mount-data-js @var'components)
-          (html/include-app-js)]]
+          [:div
+           [:div.border.p-2.mb-4
+            [:tt (str (walk/prewalk-replace {'name name 'value value}
+                                            '(path-for-route :route/example-path-param
+                                                             {:name name :value value})))]]
+           [:ul
+            [:li "Name: " [:tt.bg-gray-200 name]]
+            [:li "Value: " [:tt.bg-gray-200 value]]]
+           (html/link-to-index)]]]
         (html/response))))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

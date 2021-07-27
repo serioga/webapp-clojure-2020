@@ -1,5 +1,5 @@
 (ns app.system.service.webapp-http-handler
-  (:require [app.-example-webapp-.core :as example]
+  (:require [app.$example$-webapp.core :as example]
             [integrant.core :as ig]
             [lib.clojure.core :as e]))
 

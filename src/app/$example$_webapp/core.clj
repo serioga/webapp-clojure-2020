@@ -1,22 +1,31 @@
-(ns app.-example-webapp-.main
+(ns app.$example$-webapp.core
   ;; React components
   (:require [app.rum.core])
   ;; Imports
-  (:require [app.rum.mount :as rum-mount]))
+  (:require [app.$example$-webapp.impl.handler :as handler]
+            [app.webapp.ring-handler :as ring-handler]
+            [lib.clojure.ns :as ns]))
 
-(set! *warn-on-infer* true)
-
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-#_(defn ^:dev/after-load ^:private teardown
-    []
-    (println "reloading page...")
-    (.reload (-> js/window .-location) true))
+(set! *warn-on-reflection* true)
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(enable-console-print!)
+(ns/require-dir 'app.$example$-webapp.handler._)
 
-(rum-mount/mount-all)
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn- example-routes
+  []
+  [["/" :route/index]
+   ["/example-database" :route/example-database]
+   ["/example-react" :route/example-react]
+   ["/example-path-param/:name" :route/example-path-param]])
+
+;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn example-http-handler
+  "HTTP server handler for `example` webapp."
+  [config]
+  (ring-handler/webapp-http-handler handler/example-handler, (example-routes), config))
 
 ;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

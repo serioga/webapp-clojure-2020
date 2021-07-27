@@ -1,4 +1,4 @@
-(ns app.-example-webapp-.impl.handler
+(ns app.$example$-webapp.impl.handler
   (:require [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)

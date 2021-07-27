@@ -65,7 +65,7 @@
 
             "css-example" ["shell"
                            "node_modules/.bin/postcss"
-                           "tailwind/app/_example_webapp_/main.css"
+                           "tailwind/app/$example$_webapp/main.css"
                            "-o" "resources/public/app/example/main.css"]}
 
   :profiles {:dev {:jvm-opts ["-Dconfig.file=dev/app/config/default.props"]
