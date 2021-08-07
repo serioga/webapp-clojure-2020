@@ -11,7 +11,7 @@
 
 (defmethod impl/example-handler :route/example-react
   [request]
-  (let [[var'components, mount-component] (rum-mount/init-mounter request)
+  (let [[!components, mount-component] (rum-mount/init-mounter request)
         title "React Component example"]
     (-> [:html [:head
                 [:title title]
@@ -20,7 +20,7 @@
           [:h1 title]
           (mount-component :react-component/hello-world {:name "World"})
           (html/link-to-index)
-          (rum-mount/react-mount-data-js @var'components)
+          (rum-mount/react-mount-data-js @!components)
           (html/include-app-js)]]
         (html/response))))
 

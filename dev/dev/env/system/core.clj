@@ -15,12 +15,12 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defonce ^:private var'stats
+(defonce ^:private !stats
   (atom {::start-count 0}))
 
 (defn- register-successful-start!
   []
-  (swap! var'stats update ::start-count inc))
+  (swap! !stats update ::start-count inc))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -40,14 +40,14 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defonce ^:private var'system (atom nil))
+(defonce ^:private !system (atom nil))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn stop!
   "Stop `env` system."
   []
-  (swap! var'system #(some-> % ig/halt!))
+  (swap! !system #(some-> % ig/halt!))
   nil)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -56,7 +56,7 @@
   "Start `env` system."
   []
   (stop!)
-  (reset! var'system (ig/init (read-config)))
+  (reset! !system (ig/init (read-config)))
   (register-successful-start!)
   nil)
 
@@ -65,16 +65,16 @@
 (defn- restart!
   "Restart (suspend/resume) `env` system."
   []
-  (when-some [system @var'system]
+  (when-some [system @!system]
     (let [config (read-config)]
-      (reset! var'system nil)
+      (reset! !system nil)
       (ig/suspend! system)
-      (reset! var'system (ig/resume config system))))
+      (reset! !system (ig/resume config system))))
   nil)
 
 (defn- trigger-watcher
   [k]
-  (-> (get @var'system k) meta :handler
+  (-> (get @!system k) meta :handler
       (e/assert fn? ["Trigger watcher" k])
       (e/invoke #'trigger-watcher k)))
 
@@ -100,7 +100,7 @@
 (defn nrepl-server
   "Get reference to global nREPL server instance."
   []
-  (some-> @var'system
+  (some-> @!system
           :dev.env.system.integrant/nrepl
           e/unwrap-future))
 

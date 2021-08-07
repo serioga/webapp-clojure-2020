@@ -34,10 +34,10 @@
              (e/assert (partial instance? DataSource))))
 
 (defn- wrap-db-fn
-  [f nom var'data-source]
+  [f nom !data-source]
   (fn db-fn
-    ([] (db-fn @var'data-source {}))
-    ([params] (db-fn @var'data-source params))
+    ([] (db-fn @!data-source {}))
+    ([params] (db-fn @!data-source params))
     ([db params]
      (e/try-wrap-ex [nom {:sql-params params}]
        (f db params)))))

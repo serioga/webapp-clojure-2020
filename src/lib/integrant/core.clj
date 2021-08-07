@@ -59,7 +59,7 @@
 (defn- fn'halt-key!
   "Produce wrapped version of the `integrant.core/halt-key!`
    with logging and handling of returned futures."
-  [var'futures]
+  [!futures]
   (fn halt-key!
     [key value]
     (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key key))
@@ -74,13 +74,13 @@
           (let [ret (e/try-log-error ["Stopping" key]
                       (method key value))]
             (when (future? ret)
-              (swap! var'futures conj [key ret]))
+              (swap! !futures conj [key ret]))
             ret))))))
 
 (defn- fn'suspend-key!
   "Produce wrapped version of the `integrant.core/suspend-key!`
    with logging and handling of returned futures."
-  [var'futures]
+  [!futures]
   (fn suspend-key!
     [key value]
     (when-some [method (or (-> (get-method ig/suspend-key! (#'ig/normalize-key key))
@@ -97,7 +97,7 @@
           (let [ret (e/try-log-error ["Suspending" key]
                       (method key value))]
             (when (future? ret)
-              (swap! var'futures conj [key ret]))
+              (swap! !futures conj [key ret]))
             ret))))))
 
 (defn- ex-in-future
@@ -121,9 +121,9 @@
   "Deref all future suspend results.
    Log errors for failed exceptions."
   [futures, log-key-error]
-  (doseq [[key ref'future] futures]
+  (doseq [[key ?future] futures]
     (try
-      (deref ref'future)
+      (deref ?future)
       (catch Throwable ex
         (log-key-error (ex-in-future ex) key)))))
 
@@ -136,11 +136,11 @@
    (halt! system (keys system)))
   ([system keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
-   (let [var'futures (atom [])]
-     (ig/reverse-run! system keys (fn'halt-key! var'futures))
-     (await-futures @var'futures (fn [ex key]
-                                   (mdc/with-map {:halt key}
-                                     (e/log-error ex "Stopping" key)))))))
+   (let [!futures (atom [])]
+     (ig/reverse-run! system keys (fn'halt-key! !futures))
+     (await-futures @!futures (fn [ex key]
+                                (mdc/with-map {:halt key}
+                                  (e/log-error ex "Stopping" key)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -151,11 +151,11 @@
    (suspend! system (keys system)))
   ([system keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
-   (let [var'futures (atom [])]
-     (ig/reverse-run! system keys (fn'suspend-key! var'futures))
-     (await-futures @var'futures (fn [ex key]
-                                   (mdc/with-map {:suspend key}
-                                     (e/log-error ex "Suspending" key)))))))
+   (let [!futures (atom [])]
+     (ig/reverse-run! system keys (fn'suspend-key! !futures))
+     (await-futures @!futures (fn [ex key]
+                                (mdc/with-map {:suspend key}
+                                  (e/log-error ex "Suspending" key)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
