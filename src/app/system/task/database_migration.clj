@@ -6,7 +6,7 @@
 
 (set! *warn-on-reflection* true)
 
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/init-key :app.system.task/database-migration
   [_ {:keys [data-source changelog-path system-is-enabled] :as config}]
@@ -15,4 +15,4 @@
       (log/info "Database migrations" (pr-str config))
       (liquibase/update-database (e/unwrap-future data-source), changelog-path))))
 
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

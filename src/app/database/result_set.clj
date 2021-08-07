@@ -5,7 +5,7 @@
 
 (set! *warn-on-reflection* true)
 
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- get-simple-column-names
   "Given `ResultSetMetaData`, return a vector of modified column names, each
@@ -21,7 +21,7 @@
   (mapv (fn [^Integer i] (keyword column-ns (.getColumnLabel rsmeta i)))
         (range 1 (inc (.getColumnCount rsmeta)))))
 
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn as-simple-maps
   "Given a `ResultSet` and options, return a `RowBuilder` / `ResultSetBuilder`
@@ -32,7 +32,7 @@
         cols (get-simple-column-names rsmeta)]
     (jdbc.rs/->MapResultSetOptionalBuilder rs rsmeta cols)))
 
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn as-namespaced-maps
   "Given a `ResultSet` and options, return a `RowBuilder` / `ResultSetBuilder`
@@ -48,4 +48,4 @@
             cols (get-namespaced-column-names rsmeta column-ns)]
         (jdbc.rs/->MapResultSetOptionalBuilder rs rsmeta cols)))))
 
-;•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
