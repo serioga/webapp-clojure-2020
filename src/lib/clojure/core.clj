@@ -17,7 +17,7 @@
              [lib.clojure.exception ex-message-all, ex-root-cause, ex-info]
              [lib.clojure.exception try-wrap-ex, try-ignore, try-log-error]
 
-             [lib.clojure.future future, thread-off, thread-off!]
+             [lib.clojure.future future, thread-off, thread-off-ignore]
 
              [lib.clojure.lang add-method, invoke, asserted, unwrap-fn, unwrap-future])
 

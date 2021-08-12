@@ -193,7 +193,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn stop!
+(defn stop
   "Stop global system."
   []
   (when-some [system @!system]
@@ -201,34 +201,34 @@
     (ig/halt! system)
     (log/info "[DONE] Application system stop")))
 
-(defn suspend!
+(defn suspend
   "Suspend global system."
   []
   (some-> @!system (ig/suspend!)))
 
-(defn start!
+(defn start
   "Start global system."
   {:arglists '([] [{:keys [:system-keys :prepare-config]}])}
   ([]
-   (start! {}))
+   (start {}))
   ([options]
-   (stop!)
+   (stop)
    (let [config ((:prepare-config options identity) (system-config))]
      (reset! !system (ig/init config, (or (:system-keys options) (keys config)))))
    (log/info "[DONE] Application system start")))
 
-(defn resume!
+(defn resume
   "Resume global system."
   {:arglists '([] [{:keys [:system-keys :prepare-config]}])}
   ([]
-   (resume! {}))
+   (resume {}))
   ([options]
    (if-some [system @!system]
      (do
        (reset! !system nil)
        (let [config ((:prepare-config options identity) (system-config))]
          (reset! !system (ig/resume config, system, (or (:system-keys options) (keys system))))))
-     (start! options))))
+     (start options))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

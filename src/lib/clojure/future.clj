@@ -26,7 +26,7 @@
      (future (ex/try-log-error ~context-msg ~@body))
      nil))
 
-(defmacro thread-off!
+(defmacro thread-off-ignore
   "Execute background thread.
    Don't care about exceptions!
    Returns nil."

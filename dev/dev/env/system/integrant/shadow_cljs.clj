@@ -14,7 +14,7 @@
 
 (defmethod ig/init-key :dev.env.system.integrant/shadow-cljs
   [_ options]
-  (e/future (server/start! options)))
+  (e/future (server/start options)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

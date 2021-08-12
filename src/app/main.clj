@@ -26,7 +26,7 @@
   []
   (try
     (e/try-wrap-ex "[FAIL] Application init"
-      (app/start!))
+      (app/start))
     (log/info "[DONE] Application init")
     (catch Throwable ex
       (log/error (e/ex-message-all ex))
@@ -34,7 +34,7 @@
 
 (defn- stop
   []
-  (app/stop!))
+  (app/stop))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

@@ -48,39 +48,39 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn start!
+(defn start
   "Start `app` system."
   ([]
-   (start! {}))
+   (start {}))
   ([{:keys [system-keys]}]
-   (e/try-wrap-ex 'app/start!
-     (app/start! (cond-> {:prepare-config prepare-system-config}
+   (e/try-wrap-ex 'app/start
+     (app/start (cond-> {:prepare-config prepare-system-config}
                    system-keys (assoc :system-keys system-keys))))
-   (ring-refresh/send-refresh! true)))
+   (ring-refresh/send-refresh true)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn stop!
+(defn stop
   "Stop `app` system."
   []
-  (ring-refresh/send-refresh! false)
-  (app/stop!))
+  (ring-refresh/send-refresh false)
+  (app/stop))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn suspend!
+(defn suspend
   "Suspend `app` system."
   []
-  (ring-refresh/send-refresh! false)
-  (app/suspend!))
+  (ring-refresh/send-refresh false)
+  (app/suspend))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn resume!
+(defn resume
   "Resume `app` system."
   []
-  (e/try-wrap-ex 'app/resume!
-    (app/resume! {:prepare-config prepare-system-config}))
-  (ring-refresh/send-refresh! true))
+  (e/try-wrap-ex 'app/resume
+    (app/resume {:prepare-config prepare-system-config}))
+  (ring-refresh/send-refresh true))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

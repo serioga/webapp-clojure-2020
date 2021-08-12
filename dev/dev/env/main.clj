@@ -15,10 +15,10 @@
   []
   (try
     (e/try-wrap-ex ["Start environment" {:reason ::env}]
-      (env/start!))
+      (env/start))
 
     (e/try-wrap-ex ["Start application" {:reason ::app}]
-      (app/start!))
+      (app/start))
 
     (when-some [server (env/nrepl-server)]
       (log/info "Running nREPL server on port" (:port server)))
@@ -35,8 +35,8 @@
 (defn- shutdown
   "Shutdown `env` system."
   []
-  (app/stop!)
-  (env/stop!))
+  (app/stop)
+  (env/stop))
 
 (comment
   (time (init))

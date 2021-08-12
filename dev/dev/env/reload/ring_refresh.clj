@@ -45,10 +45,10 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn send-refresh!
+(defn send-refresh
   "Send response to pages with flag if they should
    reload page or just reconnect to __source_changed."
-  ([] (send-refresh! (::refresh-is-enabled @!refresh-state)))
+  ([] (send-refresh (::refresh-is-enabled @!refresh-state)))
   ([refresh-is-enabled]
    (when refresh-is-enabled
      (log/info "Send refresh command to browser pages"))

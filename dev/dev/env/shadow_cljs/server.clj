@@ -8,7 +8,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn start!
+(defn start
   "Starts Shadow CLJS server."
   [{:keys [builds-to-start] :as options}]
   (log/info "Start Shadow CLJS" options)

@@ -30,7 +30,7 @@
                (-> watcher (assoc :handler (-> {:webapp webapp
                                                 :on-rebuild (fn []
                                                               (->> dependent-mount-states (run! mount-restart-running))
-                                                              (ring-refresh/send-refresh!))}
+                                                              (ring-refresh/send-refresh))}
                                                (tailwind/watch-handler)
                                                (wrap-handler-was-run))
                                   :handler-run-on-init (not @!handler-was-run)))))

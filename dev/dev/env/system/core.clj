@@ -18,7 +18,7 @@
 (defonce ^:private !stats
   (atom {::start-count 0}))
 
-(defn- register-successful-start!
+(defn- register-successful-start
   []
   (swap! !stats update ::start-count inc))
 
@@ -44,7 +44,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn stop!
+(defn stop
   "Stop `env` system."
   []
   (swap! !system #(some-> % ig/halt!))
@@ -52,17 +52,17 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn start!
+(defn start
   "Start `env` system."
   []
-  (stop!)
+  (stop)
   (reset! !system (ig/init (read-config)))
-  (register-successful-start!)
+  (register-successful-start)
   nil)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn- restart!
+(defn- restart
   "Restart (suspend/resume) `env` system."
   []
   (when-some [system @!system]
@@ -78,12 +78,12 @@
       (e/assert fn? ["Trigger watcher" k])
       (e/invoke #'trigger-watcher k)))
 
-(defn- reload!
+(defn- reload
   "Reload actions on ENTER keypress."
   []
   (try
-    (app/stop!)
-    (restart!)
+    (app/stop)
+    (restart)
     (trigger-watcher :dev.env.system.integrant/app-reload)
     (catch Throwable ex
       (app-reload/log-reload-failure ex))))
@@ -93,7 +93,7 @@
   []
   (app-reload/print-reload-on-enter)
   (while (some? (read-line))
-    (reload!)))
+    (reload)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
