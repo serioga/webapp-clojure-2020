@@ -13,13 +13,13 @@
 (rum/defcs hello-world
   "Example react component."
   < (rum/local 0)
-  [state name]
+  [state greeting]
   (let [*count (:rum/local state)]
     [:div
      {:style {"-webkit-user-select" "none"
               "cursor" "pointer"}
       :on-click (fn [_] (swap! *count inc))}
-     (str "Hello, " name ": " @*count " clicks.")]))
+     (str "Hello, " greeting ": " @*count " clicks.")]))
 
 (e/add-method impl/create-component :react-component/hello-world
               (comp hello-world :name))

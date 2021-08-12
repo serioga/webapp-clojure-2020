@@ -8,20 +8,20 @@
 (defn get-required
   "Get required value from config.
    Raise exception for missing keys."
-  [config key]
-  (let [nan (Object.), val (config key nan)]
-    (when (identical? val nan)
-      (throw (e/ex-info ["Missing configuration property" key])))
-    val))
+  [config k]
+  (let [none (Object.), v (config k none)]
+    (when (identical? v none)
+      (throw (e/ex-info ["Missing configuration property" k])))
+    v))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn get-optional
   "Get optional value from config.
    Return `nil` or `default` for missing keys."
-  ([config key]
-   (get-optional config key nil))
-  ([config key default]
-   (get config key default)))
+  ([config k]
+   (get-optional config k nil))
+  ([config k default]
+   (get config k default)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

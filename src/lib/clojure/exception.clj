@@ -53,10 +53,10 @@
 
 (defn ex-data->log-str
   "Convert ex-data to string for logging."
-  [ex-data]
-  (when (and (map? ex-data)
-             (pos? (count ex-data)))
-    (err/print-str* "~//~" (pr-str ex-data))))
+  [data]
+  (when (and (map? data)
+             (pos? (count data)))
+    (err/print-str* "~//~" (pr-str data))))
 
 (defmacro log-error
   "Log error message."
@@ -94,14 +94,14 @@
 (defmacro ex-info
   "Same as `ex-info`, plus:
    - expands vector in `msg` to message string;
-   - merges ex-data of `cause` to `map`."
+   - merges ex-data of `cause` to map `m`."
   ([msg] `(ex-info ~msg {}))
-  ([msg map]
-   `(clojure.core/ex-info (err/expand-msg* ~msg) ~map))
-  ([msg map cause]
+  ([msg data]
+   `(clojure.core/ex-info (err/expand-msg* ~msg) ~data))
+  ([msg data cause]
    `(let [cause# ~cause]
       (clojure.core/ex-info (err/expand-msg* ~msg)
-                            (merge (ex-data cause#) ~map)
+                            (merge (ex-data cause#) ~data)
                             cause#))))
 
 (comment

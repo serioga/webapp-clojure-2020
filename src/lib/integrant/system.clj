@@ -29,8 +29,8 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/init-key ::system-property
-  [_ {:keys [key default]}]
-  (System/getProperty key default))
+  [_ {k :key default :default}]
+  (System/getProperty k default))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -51,10 +51,10 @@
 
 (defn await-before-start
   "Wait for start of all deferred components listed in `await-for`."
-  [await-for]
-  (when (seq await-for)
-    (log/debug "Await before start" (keys await-for))
-    (doseq [[k v] await-for]
+  [map-of-await-for]
+  (when (seq map-of-await-for)
+    (log/debug "Await before start" (keys map-of-await-for))
+    (doseq [[k v] map-of-await-for]
       (e/try-log-error ["Await for" k]
         (when (future? v)
           (deref v))))))

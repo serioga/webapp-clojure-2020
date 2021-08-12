@@ -10,12 +10,12 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- start-webapp
-  [server, {:keys [name handler options]}, server-options]
-  (let [options (merge server-options options)]
-    (log/debug "Start webapp" (pr-str name) (pr-str options))
-    (-> (web/run handler (merge server options))
+  [server, {webapp-name :name :as webapp}, server-options]
+  (let [options (merge server-options (webapp :options))]
+    (log/debug "Start webapp" (pr-str webapp-name) (pr-str options))
+    (-> (web/run (webapp :handler) (merge server options))
         (with-meta (update (meta server) :running-webapps
-                           conj [name options])))))
+                           conj [webapp-name options])))))
 
 (defn- skip-webapp
   [server, webapp]

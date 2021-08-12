@@ -41,7 +41,7 @@
         content (slurp (or (io/resource path)
                            (throw (ex-info (print-str "Missing static resource" (pr-str path))
                                            {:name name :resource-path path}))))
-        hash (DigestUtils/sha256Hex content)]
-    (str uri "?" hash)))
+        content-hash (DigestUtils/sha256Hex content)]
+    (str uri "?" content-hash)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

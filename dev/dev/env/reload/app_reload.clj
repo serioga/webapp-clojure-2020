@@ -44,13 +44,13 @@
           errors)))))
 
 (defn- log-reload-error
-  [[ns ex]]
-  (log/error "[FAIL]" "Reload" (str ns "\n\n" (-> ex Throwable->map main/ex-triage main/ex-str))))
+  [[failed-ns ex]]
+  (log/error "[FAIL]" "Reload" (str failed-ns "\n\n" (-> ex Throwable->map main/ex-triage main/ex-str))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defonce ^:private ^{:doc "Keeps namespace reload errors."}
-  !reload-errors (atom nil))
+         !reload-errors (atom nil))
 
 (defn watch-handler
   "Builds app reloading function to be used in file watcher."

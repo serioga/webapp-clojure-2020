@@ -34,7 +34,7 @@
 
 (defn set-instance-id
   "Set component instance ID."
-  [data instance-id]
-  (assoc data ::instance-id instance-id))
+  [data id]
+  (assoc data ::instance-id id))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

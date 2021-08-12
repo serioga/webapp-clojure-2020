@@ -24,29 +24,29 @@
 
 (defn decompose-key
   "Returns key or the last component of composite key."
-  [key]
-  (cond-> key (vector? key) (peek)))
+  [k]
+  (cond-> k (vector? k) (peek)))
 
 (defn get-init-key
   "Finds `ig/init-key` defined for `key`."
-  [key]
-  (get-method ig/init-key (cond-> key (vector? key) (nth 0))))
+  [k]
+  (get-method ig/init-key (cond-> k (vector? k) (nth 0))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- init-key
   "Wrapped version of the `integrant.core/init-key` with logging."
-  [key value]
-  (mdc/with-map {:init key}
-    (log/info ">> starting.." key)
-    (ig/init-key key value)))
+  [k value]
+  (mdc/with-map {:init k}
+    (log/info ">> starting.." k)
+    (ig/init-key k value)))
 
 (defn- resume-key
   "Wrapped version of the `integrant.core/resume-key` with logging."
-  [key value old-value old-impl]
-  (mdc/with-map {:resume key}
-    (log/info ">> resuming.." key)
-    (ig/resume-key key value old-value old-impl)))
+  [k value old-value old-impl]
+  (mdc/with-map {:resume k}
+    (log/info ">> resuming.." k)
+    (ig/resume-key k value old-value old-impl)))
 
 (defn- not-default-halt-key?
   [f]
@@ -61,20 +61,20 @@
    with logging and handling of returned futures."
   [!futures]
   (fn halt-key!
-    [key value]
-    (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key key))
+    [k value]
+    (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key k))
                            (e/asserted not-default-halt-key?))]
-      (mdc/with-map {:halt key}
-        (log/info ">> stopping.." key)
+      (mdc/with-map {:halt k}
+        (log/info ">> stopping.." k)
         (e/try-ignore
           ; Wait for future values to complete.
           ; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
-          (let [ret (e/try-log-error ["Stopping" key]
-                      (method key value))]
+          (let [ret (e/try-log-error ["Stopping" k]
+                      (method k value))]
             (when (future? ret)
-              (swap! !futures conj [key ret]))
+              (swap! !futures conj [k ret]))
             ret))))))
 
 (defn- fn'suspend-key!
@@ -82,22 +82,22 @@
    with logging and handling of returned futures."
   [!futures]
   (fn suspend-key!
-    [key value]
-    (when-some [method (or (-> (get-method ig/suspend-key! (#'ig/normalize-key key))
+    [k value]
+    (when-some [method (or (-> (get-method ig/suspend-key! (#'ig/normalize-key k))
                                (e/asserted not-default-suspend-key?))
-                           (-> (get-method ig/halt-key! (#'ig/normalize-key key))
+                           (-> (get-method ig/halt-key! (#'ig/normalize-key k))
                                (e/asserted not-default-halt-key?)))]
-      (mdc/with-map {:suspend key}
-        (log/info ">> suspending.." key)
+      (mdc/with-map {:suspend k}
+        (log/info ">> suspending.." k)
         (e/try-ignore
           ; Wait for future values to complete.
           ; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
-          (let [ret (e/try-log-error ["Suspending" key]
-                      (method key value))]
+          (let [ret (e/try-log-error ["Suspending" k]
+                      (method k value))]
             (when (future? ret)
-              (swap! !futures conj [key ret]))
+              (swap! !futures conj [k ret]))
             ret))))))
 
 (defn- ex-in-future
@@ -121,11 +121,11 @@
   "Deref all future suspend results.
    Log errors for failed exceptions."
   [futures, log-key-error]
-  (doseq [[key ?future] futures]
+  (doseq [[k ?future] futures]
     (try
       (deref ?future)
       (catch Throwable ex
-        (log-key-error (ex-in-future ex) key)))))
+        (log-key-error (ex-in-future ex) k)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -134,13 +134,13 @@
    Replacement of the `integrant.core/halt!` with customized `halt-key!` function and handling of futures."
   ([system]
    (halt! system (keys system)))
-  ([system keys]
+  ([system ks]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [!futures (atom [])]
-     (ig/reverse-run! system keys (fn'halt-key! !futures))
-     (await-futures @!futures (fn [ex key]
-                                (mdc/with-map {:halt key}
-                                  (e/log-error ex "Stopping" key)))))))
+     (ig/reverse-run! system ks (fn'halt-key! !futures))
+     (await-futures @!futures (fn [ex k]
+                                (mdc/with-map {:halt k}
+                                  (e/log-error ex "Stopping" k)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -149,13 +149,13 @@
    Replacement of the `integrant.core/suspend!` with customized `suspend-key!` function and handling of futures."
   ([system]
    (suspend! system (keys system)))
-  ([system keys]
+  ([system ks]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [!futures (atom [])]
-     (ig/reverse-run! system keys (fn'suspend-key! !futures))
-     (await-futures @!futures (fn [ex key]
-                                (mdc/with-map {:suspend key}
-                                  (e/log-error ex "Suspending" key)))))))
+     (ig/reverse-run! system ks (fn'suspend-key! !futures))
+     (await-futures @!futures (fn [ex k]
+                                (mdc/with-map {:suspend k}
+                                  (e/log-error ex "Suspending" k)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -171,10 +171,10 @@
        (await-build-futures system log-key-error)
        system)
      (catch Throwable ex
-       (let [{:keys [reason, system, key]} (ex-data ex)]
-         (when (= reason ::ig/build-threw-exception)
-           (log-key-error (ex-cause ex) key)
-           (some-> system halt!))
+       (when-let [data (ex-data ex)]
+         (when (= (:reason data) ::ig/build-threw-exception)
+           (log-key-error (ex-cause ex) (:key data))
+           (some-> (:system data) halt!))
          (throw ex))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -192,9 +192,9 @@
   ([config system-keys]
    {:pre [(map? config)]}
    (build config system-keys init-key
-          (fn [ex key]
-            (mdc/with-map {:init key}
-              (e/log-error ex "Starting" key)))
+          (fn [ex k]
+            (mdc/with-map {:init k}
+              (e/log-error ex "Starting" k)))
           #'ig/assert-pre-init-spec)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -218,8 +218,8 @@
           (fn [k v] (if (contains? system k)
                       (resume-key k v (-> system meta ::ig/build (get k)) (system k))
                       (init-key k v)))
-          (fn [ex key]
-            (mdc/with-map {:resume key}
-              (e/log-error ex "Resuming" key))))))
+          (fn [ex k]
+            (mdc/with-map {:resume k}
+              (e/log-error ex "Resuming" k))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

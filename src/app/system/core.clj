@@ -23,23 +23,24 @@
 
 (defn- key-with-suffix
   "Adds 'extension' to keyword `key`."
-  [key ext]
-  (let [key (ig/decompose-key key)]
-    (keyword (namespace key) (str (name key) ext))))
+  [k ext]
+  (let [k (ig/decompose-key k)]
+    (keyword (namespace k) (str (name k) ext))))
 
 (defn- add-to-await-before-start
-  [system key]
-  (let [key (ig/decompose-key key)]
-    (update system ::await-before-start assoc key (ig/ref key))))
+  [system k]
+  (let [k (ig/decompose-key k)]
+    (update system ::await-before-start assoc k (ig/ref k))))
 
 (defn- mount-refs
-  "Creates references from vector of `mounts` keywords to `key` in `:app.system.service/mount`.
-   If `key` is composite then only the last value is taken."
-  [system key mounts]
-  (let [key (ig/decompose-key key)]
+  "Creates references from vector of `mounts` keywords to the key `k`
+   in `:app.system.service/mount`.
+   If `k` is composite then only the last value is taken."
+  [system k mounts]
+  (let [k (ig/decompose-key k)]
     (reduce (fn [system mount-key]
               (-> system
-                  (update :app.system.service/mount assoc mount-key (ig/ref key))
+                  (update :app.system.service/mount assoc mount-key (ig/ref k))
                   (add-to-await-before-start :app.system.service/mount)))
             system mounts)))
 
@@ -65,8 +66,8 @@
 
 (defn- install*
   "Applies default `install` without specific :as."
-  [system, key, params]
-  (install system, key, (dissoc params :as)))
+  [system, k, params]
+  (install system, k, (dissoc params :as)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -78,61 +79,61 @@
              params))
 
 (defn- import-app-config
-  "Creates pair of keys for service `key` and its configuration `config-key` imported from app-config.
+  "Creates pair of keys for service `k` and its configuration `config-k` imported from app-config.
    Also mounts references for optional vector of `mounts`."
-  [system, key {:keys [config, import]}]
-  (let [config-key (cond-> key (ig/get-init-key key) (key-with-suffix ".config"))]
-    (cond-> (assoc system [::system/import-map config-key] {:init-map (or config {})
-                                                            :import-from (ig/ref :app.system.service/app-config)
-                                                            :import-keys import})
-      (not= key config-key) (assoc key (ig/ref config-key)))))
+  [system, k {:keys [config] import-keys :import}]
+  (let [config-k (cond-> k (ig/get-init-key k) (key-with-suffix ".config"))]
+    (cond-> (assoc system [::system/import-map config-k] {:init-map (or config {})
+                                                          :import-from (ig/ref :app.system.service/app-config)
+                                                          :import-keys import-keys})
+      (not= k config-k) (assoc k (ig/ref config-k)))))
 
 (defmethod install nil
-  [system, key, params]
-  (let [{:keys [derive, config, import, mounts] :as params} (merge-mixins params)
-        key (cond->> key derive (vector derive))]
-    (cond-> (if import (import-app-config system key params)
-                       (assoc system key config))
-      mounts,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, (mount-refs key mounts)
-      (::add-to-await-before-start params) (add-to-await-before-start key))))
+  [system, k, params]
+  (let [{:keys [config, mounts] derive-k :derive :as params} (merge-mixins params)
+        k (cond->> k derive-k (vector derive-k))]
+    (cond-> (if (:import params) (import-app-config system k params)
+                                 (assoc system k config))
+      mounts,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, (mount-refs k mounts)
+      (::add-to-await-before-start params) (add-to-await-before-start k))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod install ::app-config
-  [system key {:keys [config mounts]}]
-  (let [prop-files (key-with-suffix key ".prop-files")]
+  [system k {:keys [config mounts]}]
+  (let [prop-files (key-with-suffix k ".prop-files")]
     (-> system (merge {:dev.env.system/prepare-prop-files nil
 
                        [::system/system-property prop-files] {:key "config.file"}
 
-                       key (merge {:prop-files (ig/ref prop-files)
-                                   :dev/prepare-prop-files (ig/ref :dev.env.system/prepare-prop-files)}
-                                  config)})
-        (mount-refs key mounts))))
+                       k (merge {:prop-files (ig/ref prop-files)
+                                 :dev/prepare-prop-files (ig/ref :dev.env.system/prepare-prop-files)}
+                                config)})
+        (mount-refs k mounts))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod install ::hikari-data-source
-  [system, key, params]
-  (install* system key (e/deep-merge params {:derive :app.system.service/hikari-data-source
-                                             :config {:dev-mode (ig/ref ::dev-mode)}
-                                             :import {:data-source-class "Database.DataSourceClassName"
-                                                      :database-url (if (-> params :config :read-only)
-                                                                      "Database.Url.ReadOnly", "Database.Url")
-                                                      :database-user "Database.User"
-                                                      :database-password "Database.Password"}})))
+  [system, k, params]
+  (install* system k (e/deep-merge params {:derive :app.system.service/hikari-data-source
+                                           :config {:dev-mode (ig/ref ::dev-mode)}
+                                           :import {:data-source-class "Database.DataSourceClassName"
+                                                    :database-url (if (-> params :config :read-only)
+                                                                    "Database.Url.ReadOnly", "Database.Url")
+                                                    :database-user "Database.User"
+                                                    :database-password "Database.Password"}})))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod install ::http-server
-  [system, key, {:keys [webapps] :as params}]
-  (-> (reduce (fn [system [key params]]
-                (install system [:app.system.service/webapp-http-handler key]
+  [system, k, {:keys [webapps] :as params}]
+  (-> (reduce (fn [system [k params]]
+                (install system [:app.system.service/webapp-http-handler k]
                          (update params :config merge {:dev-mode (ig/ref ::dev-mode)})))
               system webapps)
       (assoc :dev.env.system/prepare-webapp nil)
-      (install* key (update params :config merge {:webapps (->> webapps (mapv (comp ig/ref first)))
-                                                  :dev/prepare-webapp (ig/ref :dev.env.system/prepare-webapp)}))))
+      (install* k (update params :config merge {:webapps (->> webapps (mapv (comp ig/ref first)))
+                                                :dev/prepare-webapp (ig/ref :dev.env.system/prepare-webapp)}))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -188,7 +189,7 @@
 
 (defonce ^{:doc "Global reference to the running system"
            :private true}
-  !system (atom nil))
+         !system (atom nil))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -207,26 +208,26 @@
 
 (defn start!
   "Start global system."
+  {:arglists '([] [{:keys [:system-keys :prepare-config]}])}
   ([]
    (start! {}))
-  ([{:keys [system-keys, prepare-config]
-     :or {prepare-config identity}}]
+  ([options]
    (stop!)
-   (let [config (prepare-config (system-config))]
-     (reset! !system (ig/init config, (or system-keys (keys config)))))
+   (let [config ((:prepare-config options identity) (system-config))]
+     (reset! !system (ig/init config, (or (:system-keys options) (keys config)))))
    (log/info "[DONE] Application system start")))
 
 (defn resume!
   "Resume global system."
+  {:arglists '([] [{:keys [:system-keys :prepare-config]}])}
   ([]
    (resume! {}))
-  ([{:keys [system-keys, prepare-config]
-     :or {prepare-config identity} :as options}]
+  ([options]
    (if-some [system @!system]
      (do
        (reset! !system nil)
-       (let [config (prepare-config (system-config))]
-         (reset! !system (ig/resume config, system, (or system-keys (keys system))))))
+       (let [config ((:prepare-config options identity) (system-config))]
+         (reset! !system (ig/resume config, system, (or (:system-keys options) (keys system))))))
      (start! options))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -235,11 +236,11 @@
   "Log info about running webapps (URLs with host/port)."
   [system]
   (let [webapps (some-> system :app.system.service/immutant-web e/unwrap-future meta :running-webapps)]
-    (doseq [[name {:keys [host port ssl-port virtual-host]}] webapps
+    (doseq [[webapp-name {:keys [host port ssl-port virtual-host]}] webapps
             webapp-host (cond (sequential? virtual-host) virtual-host
                               (string? virtual-host) [virtual-host]
                               :else [(or host "localhost")])]
-      (log/info "Running" "webapp" (pr-str name)
+      (log/info "Running" "webapp" (pr-str webapp-name)
                 (str (when port (str "- http://" webapp-host ":" port "/")))
                 (str (when ssl-port (str "- https://" webapp-host ":" ssl-port "/")))))))
 

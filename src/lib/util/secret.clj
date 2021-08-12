@@ -50,10 +50,10 @@
 
 (test/deftest secret-test
   (let [v "secret value"
-        test (->Secret v)]
+        s (->Secret v)]
     (test/are [form] form
-      (= "******" (str test))
-      (= v,,,,,,, (read-secret test)))))
+      (= "******" (str s))
+      (= v,,,,,,, (read-secret s)))))
 
 (comment
   (secret-test))

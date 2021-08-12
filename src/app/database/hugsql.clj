@@ -57,11 +57,11 @@
   "Declare single HugSQL function for symbol `sym`.
    The function definition string is loaded from resource file.
 
-   If `namespace` (string or namespaced keyword) provided
+   If `namespaced-as` (string or namespaced keyword) provided
    then all keys in result set are namespaced."
   ([sym]
    `(hugsql/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts)))
-  ([sym, namespace]
-   `(hugsql/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts (rs/as-namespaced-maps ~namespace)))))
+  ([sym, namespaced-as]
+   `(hugsql/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts (rs/as-namespaced-maps ~namespaced-as)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
