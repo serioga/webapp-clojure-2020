@@ -189,7 +189,7 @@
 
 (defonce ^{:doc "Global reference to the running system"
            :private true}
-         !system (atom nil))
+  !system (atom nil))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

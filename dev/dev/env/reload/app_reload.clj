@@ -50,7 +50,7 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defonce ^:private ^{:doc "Keeps namespace reload errors."}
-         !reload-errors (atom nil))
+  !reload-errors (atom nil))
 
 (defn watch-handler
   "Builds app reloading function to be used in file watcher."

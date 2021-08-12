@@ -11,6 +11,7 @@
   :app.lib.util.perf/fast-assoc 1
   :clojure.core/cond-&gt; 1
   :clojure.core/defmulti 1
+  :clojure.core/defonce :only-indent
   :clojure.test/are 2
   :cursive.formatting/align-maps false
   :cursive.formatting/comment-align-column 50
