@@ -55,7 +55,7 @@
   ([{:keys [system-keys]}]
    (e/try-wrap-ex 'app/start
      (app/start (cond-> {:prepare-config prepare-system-config}
-                   system-keys (assoc :system-keys system-keys))))
+                  system-keys (assoc :system-keys system-keys))))
    (ring-refresh/send-refresh true)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
