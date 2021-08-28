@@ -44,13 +44,13 @@
 
                                      {:dirs ["src" "resources/app" "dev"]
 
-                                      ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
-                                      ; :filter will pick out only files that match this pattern.
+                                      ;; See http://docs.caudate.me/hara/hara-io-watch.html#watch-options
+                                      ;; :filter will pick out only files that match this pattern.
                                       :files [".props$" ".clj$" ".cljc$" ".js$" ".xml$"
                                               ".sql$" ".properties$" ".mustache$" ".yaml"]
 
-                                      ; http://docs.caudate.me/hara/hara-io-watch.html#watch-options
-                                      ; :exclude will leave out files that match this pattern.
+                                      ;; See http://docs.caudate.me/hara/hara-io-watch.html#watch-options
+                                      ;; :exclude will leave out files that match this pattern.
                                       :exclude []}))]
 
           (time (stop-watcher w)))))

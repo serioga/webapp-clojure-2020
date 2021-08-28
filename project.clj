@@ -1,15 +1,18 @@
 (defproject name.trofimov/webapp-clojure-2020 "1.0.0-SNAPSHOT"
   :description "Multi-page web application prototype with Clojure(Script)"
-  :dependencies [; clojure
+  :dependencies [;;; Clojure
                  [org.clojure/clojure "1.10.3"]
-                 ; clojure script (shadow-cljs)
+
+                 ;;; ClojureScript (shadow-cljs)
                  [com.google.guava/guava "30.1.1-jre" :scope "provided"]
                  [thheller/shadow-cljs "2.15.2" :scope "provided"]
-                 ; system
+
+                 ;;; System
                  [integrant "0.8.0"]
                  [mount "0.1.16"]
                  [tolitius/mount-up "0.1.3"]
-                 ; web server
+
+                 ;;; Web Server
                  [io.undertow/undertow-core,,,,,,,,,, "2.2.8.Final"]
                  [io.undertow/undertow-servlet,,,,,,, "2.2.8.Final"]
                  [io.undertow/undertow-websockets-jsr "2.2.8.Final"]
@@ -17,7 +20,8 @@
                  [org.immutant/web "2.1.10"]
                  [ring/ring-core "1.9.4"]
                  [ring/ring-defaults "0.3.3"]
-                 ; sql database
+
+                 ;;; Database
                  [com.h2database/h2 "1.4.200"]
                  [com.layerware/hugsql "0.5.1"]
                  [com.layerware/hugsql-adapter-next-jdbc "0.5.1"]
@@ -26,25 +30,29 @@
                  [org.liquibase/liquibase-core "4.4.1"]
                  [seancorfield/next.jdbc "1.2.659"]
                  [p6spy/p6spy "3.9.1"]
-                 ; logging (clojure)
+
+                 ;;; Logging
                  [ch.qos.logback/logback-classic "1.2.4"]
                  [ch.qos.logback/logback-core "1.2.4"]
                  [org.clojure/tools.logging "1.1.0"]
                  [org.codehaus.janino/janino "3.1.4"]
                  [org.slf4j/jul-to-slf4j "1.7.31"]
                  [org.slf4j/slf4j-api "1.7.31"]
-                 ; libs (clojure)
+
+                 ;;; Libs (Clojure)
                  [clojurewerkz/propertied "1.3.0"]
                  [com.cognitect/transit-clj "1.0.324"]
                  [commons-codec/commons-codec "1.15"]
                  [medley "1.3.0"]
                  [org.apache.commons/commons-lang3 "3.12.0"]
                  [potemkin "0.4.5"]
-                 ; libs (clojure script)
+
+                 ;;; Libs (ClojureScript)
                  [cljsjs/react "17.0.2-0"]
                  [cljsjs/react-dom "17.0.2-0"]
                  [rum "0.12.6"]
-                 ; daemon
+
+                 ;;; Daemon
                  [commons-daemon/commons-daemon "1.2.4"]]
 
   :main ^:skip-aot app.main

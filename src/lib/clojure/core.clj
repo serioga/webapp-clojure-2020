@@ -23,8 +23,8 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-;; `declare` is a workaround for name resolution in Cursive
-;; https://github.com/cursive-ide/cursive/issues/2411
+;; The `declare` is a workaround for name resolution in Cursive.
+;; See https://github.com/cursive-ide/cursive/issues/2411.
 
 (declare find-first map-entry)
 (import-vars [medley.core find-first map-entry])

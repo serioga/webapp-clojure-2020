@@ -26,7 +26,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-; TODO: Push state.
+;; TODO: Push state.
 
 #?(:clj (defn mount-component!
           "Hiccup-style element with pre-rendered react component.

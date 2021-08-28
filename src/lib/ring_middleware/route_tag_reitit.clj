@@ -11,7 +11,7 @@
   [reitit-router, route-tag]
   (let [match (reitit/match-by-name reitit-router, route-tag)]
     (if (reitit/partial-match? match)
-      ; Route with path parameters
+      ;; Route with path parameters.
       (let [required (:required match)]
         (fn param-route->path
           ([]
@@ -21,7 +21,7 @@
              (if (== (count required) (count params))
                (reitit/match->path match)
                (reitit/match->path match (remove #(required (key %)) params)))))))
-      ; Route without path parameters
+      ;; Route without path parameters.
       (fn simple-route->path
         ([]
          (reitit/match->path match))

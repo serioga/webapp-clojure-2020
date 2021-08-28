@@ -14,8 +14,8 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-;; Workaround for name resolution in Cursive
-;; https://github.com/cursive-ide/cursive/issues/2411
+;; Workaround for name resolution in Cursive.
+;; See https://github.com/cursive-ide/cursive/issues/2411.
 (declare ref)
 
 (import-vars [integrant.core ref])
@@ -67,8 +67,8 @@
       (mdc/with-map {:halt k}
         (log/info ">> stopping.." k)
         (e/try-ignore
-          ; Wait for future values to complete.
-          ; Ignore errors, they are reported by `init`.
+          ;; Wait for future values to complete.
+          ;; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
           (let [ret (e/try-log-error ["Stopping" k]
@@ -90,8 +90,8 @@
       (mdc/with-map {:suspend k}
         (log/info ">> suspending.." k)
         (e/try-ignore
-          ; Wait for future values to complete.
-          ; Ignore errors, they are reported by `init`.
+          ;; Wait for future values to complete.
+          ;; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
           (let [ret (e/try-log-error ["Suspending" k]

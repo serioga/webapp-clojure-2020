@@ -14,7 +14,6 @@
   :clojure.core/defonce :only-indent
   :clojure.test/are 2
   :cursive.formatting/align-maps false
-  :cursive.formatting/comment-align-column 50
   :lib.clojure.core/thread-off 1
   :lib.clojure.core/try-log-error 1
   :lib.clojure.core/try-wrap-ex 1

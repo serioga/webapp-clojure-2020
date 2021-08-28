@@ -9,7 +9,8 @@
 (set! *warn-on-reflection* true)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-; Database connection
+
+;;; Database connection
 
 (mount/defstate ^Connection get-read-write-connection
   "Creates a connection to a database using read-write `data-source`."
@@ -36,7 +37,8 @@
               (jdbc/get-connection data-source options)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-; JDBC helpers
+
+;;; JDBC helpers
 
 (defmacro with-transaction
   "Helper for `jdbc/with-transaction` allowing specify connection
@@ -49,7 +51,8 @@
                             ~@body)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-; HugSQL query functions
+
+;;; HugSQL query functions
 
 (hugsql/dfn example-user--select-all :example-user/_)
 

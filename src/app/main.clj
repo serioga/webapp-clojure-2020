@@ -45,7 +45,8 @@
   (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable stop)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-; Daemon implementation
+
+;;; Daemon implementation
 
 (defn -init
   "Initializes this `Daemon` instance."

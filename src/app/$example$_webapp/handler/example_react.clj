@@ -7,7 +7,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-; TODO: Deferred JS loading in release.
+;; TODO: Deferred JS loading in release.
 
 (defmethod impl/example-handler :route/example-react
   [request]

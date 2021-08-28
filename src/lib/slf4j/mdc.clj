@@ -13,31 +13,31 @@
    When `ks` sequence provided then only these keys are taken."
   ([m]
    (cond
-     ; Process clojure map with conversion of keys/values to strings.
+     ;; Process clojure map with conversion of keys/values to strings.
      (map? m)
      (reduce-kv (fn [_ k v] (MDC/put (name k) (str v))), nil, m)
 
-     ; Process java map without conversion of keys/values.
+     ;; Process java map without conversion of keys/values.
      (instance? Map m)
      (reduce (fn [_ k] (MDC/put k (.get ^Map m k))), nil, (.keySet ^Map m))
 
-     ; Ignore non-maps.
+     ;; Ignore non-maps.
      :else nil))
   ([m ks]
    (cond
-     ; Process clojure map with conversion of keys/values to strings.
+     ;; Process clojure map with conversion of keys/values to strings.
      (map? m)
      (reduce (fn [_ k] (when-some [v (m k)]
                          (MDC/put (name k) (str v))))
              nil, ks)
 
-     ; Process java map without conversion of keys/values.
+     ;; Process java map without conversion of keys/values.
      (instance? Map m)
      (reduce (fn [_ k] (when-some [v (.get ^Map m k)]
                          (MDC/put k v)))
              nil, ks)
 
-     ; Ignore non-maps.
+     ;; Ignore non-maps.
      :else nil)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
