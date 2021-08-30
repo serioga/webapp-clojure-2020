@@ -6,8 +6,11 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(declare secret?)
+
 (deftype Secret [value]
   Object
+  (equals [_ obj] (and (secret? obj) (= value (.value ^Secret obj))))
   (toString [_] "******"))
 
 (comment
@@ -15,7 +18,8 @@
   (str "My secret: " (->Secret "xxx"))
   (pr-str (->Secret "xxx"))
   (.value (->Secret "xxx"))
-  (= (->Secret "xxx") (->Secret "xxx")))
+  (= (->Secret "xxx") (->Secret "xxx"))
+  (= (->Secret nil) (->Secret nil)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -53,7 +57,8 @@
         s (->Secret v)]
     (test/are [form] form
       (= "******" (str s))
-      (= v,,,,,,, (read-secret s)))))
+      (= v,,,,,,, (read-secret s))
+      (= s,,,,,,, (->Secret v)))))
 
 (comment
   (secret-test))
