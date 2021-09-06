@@ -14,13 +14,13 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- wrap-mdc
-  ([handler]
-   (fn [request]
-     (with-open [_ (mdc/put-closeable "hostname" (request :server-name))
-                 _ (mdc/put-closeable "route-tag" (some-> (request :route-tag) (str)))
-                 _ (mdc/put-closeable "session" (some-> (request :session) (str)))
-                 _ (mdc/put-closeable "request-id" (.toString (UUID/randomUUID)))]
-       (handler request)))))
+  [handler]
+  (fn [request]
+    (with-open [_ (mdc/put-closeable "hostname" (request :server-name))
+                _ (mdc/put-closeable "route-tag" (some-> (request :route-tag) (str)))
+                _ (mdc/put-closeable "session" (some-> (request :session) (str)))
+                _ (mdc/put-closeable "request-id" (.toString (UUID/randomUUID)))]
+      (handler request))))
 
 (defn webapp-http-handler
   "Build HTTP server handler for webapp with common middleware."
@@ -28,6 +28,7 @@
   (-> http-handler
       (error-not-found/wrap-error-not-found dev-mode)
       (debug-response/wrap-debug-response)
+      (wrap-mdc)
       (route-tag/wrap-route-tag (reitit/router routes))
       (ring-defaults/wrap-defaults (-> ring-defaults/site-defaults
                                        (assoc-in [:security :anti-forgery] false)

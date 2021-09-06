@@ -1,5 +1,4 @@
-(ns lib.config.core
-  (:require [lib.clojure.core :as e]))
+(ns lib.config.core)
 
 (set! *warn-on-reflection* true)
 
@@ -11,7 +10,7 @@
   [config k]
   (let [none (Object.), v (config k none)]
     (when (identical? v none)
-      (throw (e/ex-info ["Missing configuration property" k])))
+      (throw (ex-info (str "Missing configuration property " k) {})))
     v))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

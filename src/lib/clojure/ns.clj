@@ -1,7 +1,6 @@
 (ns lib.clojure.ns
   (:require [clojure.java.io :as io]
-            [clojure.string :as string]
-            [lib.clojure.core :as e])
+            [clojure.string :as string])
   (:import (java.io FilenameFilter)))
 
 (set! *warn-on-reflection* true)
@@ -28,7 +27,7 @@
      (map (fn [filename]
             (symbol (str n "." (filename->ns filename))))
           (-> (or (io/resource path)
-                  (throw (e/ex-info [" Folder not found " path])))
+                  (throw (ex-info (str "Folder not found " path) {})))
               (io/as-file)
               (.list (reify FilenameFilter
                        (accept [_ _ name] (string/ends-with? name ext)))))))))

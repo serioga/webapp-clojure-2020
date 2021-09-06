@@ -14,9 +14,7 @@
 
 (import-vars [lib.clojure.error assert, assert?]
 
-             [lib.clojure.exception throwable?]
-             [lib.clojure.exception ex-message-all, ex-root-cause, ex-info]
-             [lib.clojure.exception try-wrap-ex, try-ignore]
+             [lib.clojure.exception ex-message-all, ex-root-cause]
 
              [lib.clojure.future future]
 

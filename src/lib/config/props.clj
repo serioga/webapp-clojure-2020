@@ -65,8 +65,9 @@
 
 (defn- conform-prop-val*
   [k rule value]
-  (e/try-wrap-ex [['conform-prop-val k rule value]]
-    (conform-prop-val rule value)))
+  (try (conform-prop-val rule value)
+       (catch Throwable t
+         (throw (ex-info (e/p-str 'conform-prop-val k rule value) {} t)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

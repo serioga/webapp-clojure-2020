@@ -3,7 +3,6 @@
   (:require [app.system.core :as app]
             [clojure.string :as str]
             [dev.env.reload.ring-refresh :as ring-refresh]
-            [lib.clojure.core :as e]
             [me.raynes.fs :as fs]
             [ring.middleware.lint :as lint]))
 
@@ -53,9 +52,10 @@
   ([]
    (start {}))
   ([{:keys [system-keys]}]
-   (e/try-wrap-ex 'app/start
-     (app/start (cond-> {:prepare-config prepare-system-config}
-                  system-keys (assoc :system-keys system-keys))))
+   (try (app/start (cond-> {:prepare-config prepare-system-config}
+                     system-keys (assoc :system-keys system-keys)))
+        (catch Throwable t
+          (throw (ex-info (str 'app/start) {} t))))
    (ring-refresh/send-refresh true)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -79,8 +79,9 @@
 (defn resume
   "Resume `app` system."
   []
-  (e/try-wrap-ex 'app/resume
-    (app/resume {:prepare-config prepare-system-config}))
+  (try (app/resume {:prepare-config prepare-system-config})
+       (catch Throwable t
+         (throw (ex-info (str 'app/resume) {} t))))
   (ring-refresh/send-refresh true))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

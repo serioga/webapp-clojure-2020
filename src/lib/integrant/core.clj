@@ -68,16 +68,17 @@
                            (e/asserted not-default-halt-key?))]
       (with-open [_ (mdc/put-closeable "integrant" (str ['halt-key! (decompose-key k)]))]
         (logger/info logger (str ">> stopping.. " k))
-        (e/try-ignore
-          ;; Wait for future values to complete.
-          ;; Ignore errors, they are reported by `init`.
-          (when (future? value)
-            (deref value))
-          (let [ret (try (method k value)
-                         (catch Throwable t (logger/log-throwable logger t (str "Stopping " k))))]
-            (when (future? ret)
-              (swap! !futures conj [k ret]))
-            ret))))))
+        (when (future? value)
+          (try
+            ;; Wait for initialization future values to complete.
+            (deref value)
+            ;; Ignore errors, they are reported by `init`.
+            (catch Throwable _)))
+        (let [ret (try (method k value)
+                       (catch Throwable t (logger/log-throwable logger t (str "Stopping " k))))]
+          (when (future? ret)
+            (swap! !futures conj [k ret]))
+          ret)))))
 
 (defn- fn'suspend-key!
   "Produce wrapped version of the `integrant.core/suspend-key!`
@@ -91,16 +92,17 @@
                                (e/asserted not-default-halt-key?)))]
       (with-open [_ (mdc/put-closeable "integrant" (str ['suspend-key! (decompose-key k)]))]
         (logger/info logger (str ">> suspending.. " k))
-        (e/try-ignore
-          ;; Wait for future values to complete.
-          ;; Ignore errors, they are reported by `init`.
-          (when (future? value)
-            (deref value))
-          (let [ret (try (method k value)
-                         (catch Throwable t (logger/log-throwable logger t (str "Suspending " k))))]
-            (when (future? ret)
-              (swap! !futures conj [k ret]))
-            ret))))))
+        (when (future? value)
+          (try
+            ;; Wait for initialization future values to complete.
+            (deref value)
+            ;; Ignore errors, they are reported by `init`.
+            (catch Throwable _)))
+        (let [ret (try (method k value)
+                       (catch Throwable t (logger/log-throwable logger t (str "Suspending " k))))]
+          (when (future? ret)
+            (swap! !futures conj [k ret]))
+          ret)))))
 
 (defn- ex-in-future
   "Unwrap exception from the Future."

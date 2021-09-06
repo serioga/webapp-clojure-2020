@@ -39,8 +39,9 @@
     ([] (db-fn @?data-source {}))
     ([params] (db-fn @?data-source params))
     ([db params]
-     (e/try-wrap-ex [nom {:sql-params params}]
-       (f db params)))))
+     (try (f db params)
+          (catch Throwable t
+            (throw (ex-info nom {:sql-params params} t)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

@@ -15,7 +15,7 @@
 (defn- ns-unalias-all
   "Removes all aliases in namespace."
   [ns-sym]
-  (doseq [[alias-sym _] (e/try-ignore (ns-aliases ns-sym))]
+  (doseq [[alias-sym _] (try (ns-aliases ns-sym) (catch Throwable _))]
     (ns-unalias ns-sym alias-sym)))
 
 (defn- reload-ns
@@ -70,8 +70,8 @@
         (do
           (run! log-reload-error errors)
           (when on-failure
-            (on-failure (e/ex-info ["Failed to reload namespaces" (map first errors)]
-                                   {:reason ::reload-namespaces, :errors errors}))))
+            (on-failure (ex-info (e/p-str "Failed to reload namespaces" (map first errors))
+                                 {:reason ::reload-namespaces, :errors errors}))))
         (try
           (when app-start (app-start))
           (when on-success (on-success))

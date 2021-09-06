@@ -16,11 +16,11 @@
 (defn- init
   []
   (try
-    (e/try-wrap-ex ["Start environment" {:reason ::env}]
-      (env/start))
+    (try (env/start)
+         (catch Throwable t (throw (ex-info "Start environment" {:reason ::env} t))))
 
-    (e/try-wrap-ex ["Start application" {:reason ::app}]
-      (app/start))
+    (try (app/start)
+         (catch Throwable t (throw (ex-info "Start application" {:reason ::app} t))))
 
     (when-some [server (env/nrepl-server)]
       (logger/info logger (e/p-str "Running nREPL server on port" (:port server))))

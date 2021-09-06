@@ -26,10 +26,11 @@
 
 (defn- read-config-edn
   [f]
-  (e/try-wrap-ex [[#'read-config-edn f]]
-    (some-> (slurp f)
-            (edn/read-string)
-            :dev.env.system/config)))
+  (try (some-> (slurp f)
+               (edn/read-string)
+               :dev.env.system/config)
+       (catch Throwable t
+         (throw (ex-info (e/p-str #'read-config-edn f) {} t)))))
 
 (defn- read-config
   []

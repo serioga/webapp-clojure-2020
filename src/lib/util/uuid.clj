@@ -11,10 +11,9 @@
    Accept only zero-padded representation."
   [s]
   {:pre [(e/assert? s (some-fn string? nil?) #'from-string)]}
-  (e/try-ignore
-    (let [uuid (UUID/fromString s)]
-      (when (= s (str uuid))
-        uuid))))
+  (let [uuid (try (UUID/fromString s) (catch Throwable _))]
+    (when (= s (str uuid))
+      uuid)))
 
 (comment
   (str (UUID/randomUUID))
