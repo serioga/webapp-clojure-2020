@@ -1,82 +1,24 @@
 (ns lib.slf4j.mdc
-  "MDC logging context."
-  (:import
-    (java.util Map)
-    (org.slf4j MDC)))
+  "MDC logging context utility."
+  (:import (java.io Closeable)
+           (org.slf4j MDC)))
 
 (set! *warn-on-reflection* true)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn add-context-map
-  "Add keys/values from Clojure/Java map to logging context (as side-effect).
-   When `ks` sequence provided then only these keys are taken."
-  ([m]
-   (cond
-     ;; Process clojure map with conversion of keys/values to strings.
-     (map? m)
-     (reduce-kv (fn [_ k v] (MDC/put (name k) (str v))), nil, m)
-
-     ;; Process java map without conversion of keys/values.
-     (instance? Map m)
-     (reduce (fn [_ k] (MDC/put k (.get ^Map m k))), nil, (.keySet ^Map m))
-
-     ;; Ignore non-maps.
-     :else nil))
-  ([m ks]
-   (cond
-     ;; Process clojure map with conversion of keys/values to strings.
-     (map? m)
-     (reduce (fn [_ k] (when-some [v (m k)]
-                         (MDC/put (name k) (str v))))
-             nil, ks)
-
-     ;; Process java map without conversion of keys/values.
-     (instance? Map m)
-     (reduce (fn [_ k] (when-some [v (.get ^Map m k)]
-                         (MDC/put k v)))
-             nil, ks)
-
-     ;; Ignore non-maps.
-     :else nil)))
+(def ^:private noop-closeable
+  (reify Closeable (close [_])))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn get-context-map
-  "Return a copy of the current thread's context map,
-   with keys and values of type String.
-   Returned value may be null."
-  ^Map []
-  (MDC/getCopyOfContextMap))
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defmacro with-map
-  "Execute `body` wrapped with added context from map.
-   Restore context map at the end."
-  [m & body]
-  `(let [context-map# ~m
-         old-context# (MDC/getCopyOfContextMap)]
-     (try
-       (add-context-map context-map#)
-       ~@body
-       (finally
-         (if old-context# (MDC/setContextMap old-context#)
-                          (MDC/clear))))))
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defmacro with-keys
-  "Execute `body` wrapped with added context for keys from map.
-   Restore context map at the end."
-  [m ks & body]
-  `(let [context-map# ~m
-         old-context# (MDC/getCopyOfContextMap)]
-     (try
-       (add-context-map context-map# ~ks)
-       ~@body
-       (finally
-         (if old-context# (MDC/setContextMap old-context#)
-                          (MDC/clear))))))
+(defn ^Closeable put-closeable
+  "Puts a diagnostic context value `v` as identified with the key `k`
+   into the current thread's diagnostic context map.
+   Returns a Closeable object who can remove key when close is called.
+   The `k` cannot be null.
+   If the `v` is null then nothing is put and noop Closeable returned."
+  [k v]
+  (if (some? v) (MDC/putCloseable k v), noop-closeable))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

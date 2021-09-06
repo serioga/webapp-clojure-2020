@@ -39,14 +39,14 @@
 (defn- init-key
   "Wrapped version of the `integrant.core/init-key` with logging."
   [k value]
-  (mdc/with-map {:init k}
+  (with-open [_ (mdc/put-closeable "integrant" (str ['init-key (decompose-key k)]))]
     (logger/info logger (str ">> starting.. " k))
     (ig/init-key k value)))
 
 (defn- resume-key
   "Wrapped version of the `integrant.core/resume-key` with logging."
   [k value old-value old-impl]
-  (mdc/with-map {:resume k}
+  (with-open [_ (mdc/put-closeable "integrant" (str ['resume-key (decompose-key k)]))]
     (logger/info logger (str ">> resuming.. " k))
     (ig/resume-key k value old-value old-impl)))
 
@@ -66,7 +66,7 @@
     [k value]
     (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key k))
                            (e/asserted not-default-halt-key?))]
-      (mdc/with-map {:halt k}
+      (with-open [_ (mdc/put-closeable "integrant" (str ['halt-key! (decompose-key k)]))]
         (logger/info logger (str ">> stopping.. " k))
         (e/try-ignore
           ;; Wait for future values to complete.
@@ -89,7 +89,7 @@
                                (e/asserted not-default-suspend-key?))
                            (-> (get-method ig/halt-key! (#'ig/normalize-key k))
                                (e/asserted not-default-halt-key?)))]
-      (mdc/with-map {:suspend k}
+      (with-open [_ (mdc/put-closeable "integrant" (str ['suspend-key! (decompose-key k)]))]
         (logger/info logger (str ">> suspending.. " k))
         (e/try-ignore
           ;; Wait for future values to complete.
@@ -141,7 +141,7 @@
    (let [!futures (atom [])]
      (ig/reverse-run! system ks (fn'halt-key! !futures))
      (await-futures @!futures (fn [t k]
-                                (mdc/with-map {:halt k}
+                                (with-open [_ (mdc/put-closeable "integrant" (str ['halt-key! (decompose-key k)]))]
                                   (logger/log-throwable logger t (str "Stopping " k))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -156,7 +156,7 @@
    (let [!futures (atom [])]
      (ig/reverse-run! system ks (fn'suspend-key! !futures))
      (await-futures @!futures (fn [t k]
-                                (mdc/with-map {:suspend k}
+                                (with-open [_ (mdc/put-closeable "integrant" (str ['suspend-key! (decompose-key k)]))]
                                   (logger/log-throwable logger t (str "Suspending " k))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -195,7 +195,7 @@
    {:pre [(map? config)]}
    (build config system-keys init-key
           (fn [t k]
-            (mdc/with-map {:init k}
+            (with-open [_ (mdc/put-closeable "integrant" (str ['init-key (decompose-key k)]))]
               (logger/log-throwable logger t (str "Starting " k))))
           #'ig/assert-pre-init-spec)))
 
@@ -221,7 +221,7 @@
                       (resume-key k v (-> system meta ::ig/build (get k)) (system k))
                       (init-key k v)))
           (fn [t k]
-            (mdc/with-map {:resume k}
+            (with-open [_ (mdc/put-closeable "integrant" (str ['resume-key (decompose-key k)]))]
               (logger/log-throwable logger t (str "Resuming " k)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

@@ -1,17 +1,19 @@
 (ns lib.clojure.future
   (:refer-clojure :exclude [future])
-  (:require [lib.slf4j.mdc :as mdc]))
+  (:import (org.slf4j MDC)))
 
 (set! *warn-on-reflection* true)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmacro future
-  "Same as `clojure.core/future` but preserving MDC context."
+  "Same as `clojure.core/future` but preserving MDC context map."
   [& body]
-  `(let [ctx# (mdc/get-context-map)]
+  `(let [cm# (MDC/getCopyOfContextMap)]
      (clojure.core/future
-       (mdc/with-map ctx#
-         ~@body))))
+       (some-> cm# (MDC/setContextMap))
+       (try
+         ~@body
+         (finally (MDC/clear))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
