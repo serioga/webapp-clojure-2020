@@ -4,6 +4,7 @@
             [lib.clojure.exception]
             [lib.clojure.future]
             [lib.clojure.lang]
+            [lib.clojure.print]
             [medley.core]
             [potemkin :refer [import-vars]]))
 
@@ -11,13 +12,15 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(import-vars [lib.clojure.error assert, assert?, print-str*]
+(import-vars [lib.clojure.error assert, assert?]
 
-             [lib.clojure.exception throwable?, log-error]
+             [lib.clojure.exception throwable?]
              [lib.clojure.exception ex-message-all, ex-root-cause, ex-info]
-             [lib.clojure.exception try-wrap-ex, try-ignore, try-log-error]
+             [lib.clojure.exception try-wrap-ex, try-ignore]
 
-             [lib.clojure.future future, thread-off, thread-off-ignore]
+             [lib.clojure.future future]
+
+             [lib.clojure.print p-str]
 
              [lib.clojure.lang add-method, invoke, asserted, unwrap-fn, unwrap-future])
 

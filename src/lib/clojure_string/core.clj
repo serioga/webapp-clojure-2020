@@ -1,7 +1,8 @@
 (ns lib.clojure-string.core
   "Extension of `clojure.string`. Similar to cuerdas, superstring etc."
   (:refer-clojure :exclude [concat empty? not-empty replace])
-  (:require [clojure.test :as test]
+  (:require [clojure.string :as string]
+            [clojure.test :as test]
             [potemkin :refer [import-vars]])
   (:import (org.apache.commons.lang3 StringUtils)))
 
@@ -58,6 +59,13 @@
    (-> a (concat b) (concat c) (concat d)))
   ([a b c d e]
    (-> a (concat b) (concat c) (concat d) (concat e))))
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn join-not-empty
+  "Similar to `clojure.core/join` but skipping elements which produce empty output."
+  [sep coll]
+  (string/join sep (keep (comp not-empty str) coll)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

@@ -1,10 +1,13 @@
 (ns dev.env.reload.watcher
-  (:require [clojure.tools.logging :as log]
-            [hara.io.watch :as watch]))
+  (:require [hara.io.watch :as watch]
+            [lib.clojure-tools-logging.logger :as logger]
+            [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(def ^:private logger (logger/get-logger *ns*))
 
 (defn- locking-handler
   "Wraps handler with locking for execution period."
@@ -13,7 +16,7 @@
     (fn [& args]
       (when (compare-and-set! !running false true)
         (try
-          (log/debug "Trigger watcher" (str handler) args)
+          (logger/debug logger (e/p-str "Trigger watcher" (str handler) args))
           (apply handler args)
           (finally
             (reset! !running false)))))))
@@ -23,7 +26,7 @@
 (defn start-watcher
   "Starts the watcher."
   [handler, {:keys [dirs files exclude] :as options}]
-  (log/info "Start watcher" options)
+  (logger/info logger (e/p-str "Start watcher" options))
   (let [handler (locking-handler handler)]
     (-> (watch/start-watcher (watch/watcher dirs handler {#_#_:types #{:modify}
                                                           :filter files
@@ -36,7 +39,7 @@
 (defn stop-watcher
   "Stops the watcher."
   [watcher]
-  (log/info "Stop watcher" watcher)
+  (logger/info logger (e/p-str "Stop watcher" watcher))
   (watch/stop-watcher watcher))
 
 (comment

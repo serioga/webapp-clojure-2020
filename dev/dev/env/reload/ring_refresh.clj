@@ -1,6 +1,6 @@
 (ns dev.env.reload.ring-refresh
-  (:require [clojure.tools.logging :as log]
-            [compojure.core :as compojure]
+  (:require [compojure.core :as compojure]
+            [lib.clojure-tools-logging.logger :as logger]
             [ring.middleware.params :as params]
             [ring.middleware.refresh :as refresh])
   (:import (java.util UUID Date)))
@@ -51,7 +51,7 @@
   ([] (send-refresh (::refresh-is-enabled @!refresh-state)))
   ([refresh-is-enabled]
    (when refresh-is-enabled
-     (log/info "Send refresh command to browser pages"))
+     (logger/info (logger/get-logger *ns*) "Send refresh command to browser pages"))
    (reset! !refresh-state {::last-modified (Date.)
                            ::refresh-is-enabled refresh-is-enabled})))
 

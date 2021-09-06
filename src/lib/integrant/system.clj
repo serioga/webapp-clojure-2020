@@ -1,6 +1,6 @@
 (ns lib.integrant.system
-  (:require [clojure.tools.logging :as log]
-            [integrant.core :as ig]
+  (:require [integrant.core :as ig]
+            [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
@@ -53,10 +53,12 @@
   "Wait for start of all deferred components listed in `await-for`."
   [map-of-await-for]
   (when (seq map-of-await-for)
-    (log/debug "Await before start" (keys map-of-await-for))
-    (doseq [[k v] map-of-await-for]
-      (e/try-log-error ["Await for" k]
-        (when (future? v)
-          (deref v))))))
+    (let [logger (logger/get-logger *ns*)]
+      (logger/debug logger (str "Await before start " (keys map-of-await-for)))
+      (doseq [[k v] map-of-await-for]
+        (try
+          (when (future? v) (deref v))
+          (catch Throwable t
+            (logger/log-throwable logger t (str "Await for " k))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

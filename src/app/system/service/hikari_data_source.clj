@@ -1,6 +1,5 @@
 (ns app.system.service.hikari-data-source
-  (:require [clojure.tools.logging :as log]
-            [integrant.core :as ig]
+  (:require [integrant.core :as ig]
             [lib.clojure.core :as e]
             [lib.hikari-cp.data-source :as data-source])
   (:import (com.p6spy.engine.spy P6DataSource)
@@ -12,14 +11,12 @@
 
 (defn- init-data-source
   [options]
-  (log/info "Init Hikari data source" options)
   (let [ds (data-source/create-data-source options)
         spy-wrapped-ds (P6DataSource. ds)]
     spy-wrapped-ds))
 
 (defn- close-data-source!
   [^P6DataSource spy-wrapped-ds]
-  (log/info "Close Hikari data source")
   (.close ^Closeable (.unwrap spy-wrapped-ds Closeable)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

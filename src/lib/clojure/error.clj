@@ -1,30 +1,8 @@
 (ns lib.clojure.error
-  (:refer-clojure :exclude [assert]))
+  (:refer-clojure :exclude [assert])
+  (:require [lib.clojure.print :as print]))
 
 (set! *warn-on-reflection* true)
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defn print-str*
-  "Similar to `print-str` but ignoring nils and empty strings."
-  [& tokens]
-  (if-some [tokens (seq tokens)]
-    (-> ^StringBuilder (reduce (fn [^StringBuilder sb, ^Object x]
-                                 (if-some [s (some-> x
-                                                     (.toString)
-                                                     (as-> <> (when-not (.isEmpty <>) <>)))]
-                                   (-> sb (.append " "), (.append s))
-                                   sb))
-                               (StringBuilder.) tokens)
-        (.substring 1)
-        (str))
-    ""))
-
-(comment
-  (print-str "a" nil "b" "" "c")                            ; Execution time mean : 2571,438 ns
-  #_"a nil b  c"
-  (print-str* "a" nil "b" "" "c")                           ; Execution time mean :  105,686 ns
-  #_"a b c")
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -33,12 +11,8 @@
    All symbolic tokens are wrapped with `pr-str`."
   [tokens]
   (cond
-    (vector? tokens)
-    `(print-str* ~@(let [wrap? (complement string?)
-                         wrap-pr (fn [v] (if (wrap? v) (list pr-str v), v))]
-                     (map wrap-pr tokens)))
-    :else
-    `(str ~tokens)))
+    (vector? tokens) `(print/p-str ~@tokens)
+    :else `(str ~tokens)))
 
 (comment
   (expand-msg* ["a" "b" "c" 'd (str "e") {:f "f"}])
@@ -63,15 +37,15 @@
   ([x pred]
    `(let [x# ~x]
       (when-not (try (~pred x#) (catch Throwable _# false))
-        (throw (new AssertionError (print-str* "Assert failed:" '(~pred ~x)
-                                               "- input" {:value x# :type (type x#)}))))
+        (throw (new AssertionError (str "Assert failed: " '(~pred ~x)
+                                        " - input " {:value x# :type (type x#)}))))
       x#))
   ([x pred msg]
    `(let [x# ~x]
       (when-not (try (~pred x#) (catch Throwable _# false))
-        (throw (new AssertionError (print-str* (expand-msg* ~msg)
-                                               "- Assert failed:" '(~pred ~x)
-                                               "- input" {:value x# :type (type x#)}))))
+        (throw (new AssertionError (str (expand-msg* ~msg)
+                                        " - Assert failed: " '(~pred ~x)
+                                        " - input " {:value x# :type (type x#)}))))
 
       x#)))
 

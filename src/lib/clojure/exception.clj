@@ -1,7 +1,6 @@
 (ns lib.clojure.exception
   (:refer-clojure :exclude [ex-info])
-  (:require [clojure.tools.logging :as log]
-            [lib.clojure.error :as err]))
+  (:require [lib.clojure.error :as err]))
 
 (set! *warn-on-reflection* true)
 
@@ -20,14 +19,23 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(defn ex-message-or-name
+  "Returns the message attached to ex if ex is a Throwable.
+   If message is null then class name is used."
+  [^Throwable ex]
+  (or (.getMessage ex)
+      (.getCanonicalName (class ex))))
+
 (defn ex-message-all
   "Collect single message from all nested exceptions."
   [^Throwable ex]
-  (loop [msg (ex-message ex)
-         cause (ex-cause ex)]
-    (if cause
-      (recur (err/print-str* msg _->_ (ex-message cause)) (ex-cause cause))
-      msg)))
+  (when (instance? Throwable ex)
+    (loop [message (ex-message-or-name ex)
+           cause (ex-cause ex)]
+      (if cause
+        (recur (str message \space _->_ \space (ex-message-or-name cause))
+               (ex-cause cause))
+        message))))
 
 (comment
   (ex-message-all (clojure.core/ex-info "One" {:x :one}
@@ -48,46 +56,6 @@
   (ex-root-cause (clojure.core/ex-info "One" {:x :one}
                                        (clojure.core/ex-info "Two" {:x :two}
                                                              (clojure.core/ex-info "Three" {:x :three})))))
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defn ex-data->log-str
-  "Convert ex-data to string for logging."
-  [data]
-  (when (and (map? data)
-             (pos? (count data)))
-    (err/print-str* "~//~" (pr-str data))))
-
-(defmacro log-error
-  "Log error message."
-  {:arglists '([msg*]
-               [exception, msg*])}
-  [ex & msg-tokens]
-  (let [msg (vec msg-tokens)]
-    `(let [ex# ~ex
-           msg# (err/expand-msg* ~msg)
-           msg# (if (throwable? ex#)
-                  (err/print-str* (when (not= "" msg#) (err/print-str* msg# _->_))
-                                  (ex-message-all ex#)
-                                  (some-> ex# ex-data ex-data->log-str))
-                  msg#)]
-       (log/error ex# msg#))))
-
-(comment
-  (log-error (clojure.core/ex-info "One" {:x :one :y "y"}
-                                   (clojure.core/ex-info "Two" {:x :two}
-                                                         (clojure.core/ex-info "Three" {:x :three})))
-             "A" "B" "C" (str "D" "E" "F"))
-  #_"A B C \"DEF\" -> One -> Two -> Three ~//~ {:x :one, :y \"y\"}"
-  (log-error (clojure.core/ex-info "One" {:x :one}
-                                   (clojure.core/ex-info "Two" {:x :two}
-                                                         (clojure.core/ex-info "Three" {:x :three})))
-             ["A" "B" "C" (str "D" "E" "F")])
-  #_"[\"A\" \"B\" \"C\" \"DEF\"] -> One -> Two -> Three ~//~ {:x :one}"
-  (log-error (clojure.core/ex-info "One" {:x :one}
-                                   (clojure.core/ex-info "Two" {:x :two}
-                                                         (clojure.core/ex-info "Three" {:x :three}))))
-  #_"One -> Two -> Three ~//~ {:x :one}")
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -144,7 +112,6 @@
     (try-wrap-ex [["Wrap context" (str 1 2 3)] {:test true}]
       (throw (ex-info "Inner exception" {:inner true})))
     (catch Throwable ex
-      (log-error ex)
       [(ex-message-all ex) (ex-data ex)]))
   #_["Wrap context \"123\" -> Inner exception" {:test true}]
 
@@ -152,7 +119,6 @@
     (try-wrap-ex "Wrap context"
       (throw (ex-info "Inner exception")))
     (catch Throwable ex
-      (log-error ex)
       [(ex-message-all ex) (ex-data ex)]))
   #_["Wrap context -> Inner exception" {}])
 
@@ -172,37 +138,5 @@
   (try-ignore :ok)
   (try-ignore
     (throw (ex-info "Test ex-info" {}))))
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defmacro try-log-error
-  "Execute throwable block of code.
-   Catch any exceptions.
-   Log error and return `nil` on exception.
-   `error-log-args` is a string or vector of args to `log-error`."
-  [error-log-args & body]
-  (let [error-log-args (cond-> error-log-args
-                         (not (vector? error-log-args)) (vector))]
-    `(try
-       ~@body
-       (catch Throwable ex#
-         (log-error ex# ~@error-log-args)
-         nil))))
-
-(comment
-  (macroexpand '(try-log-error ["A" "B"] :body))
-  (try-log-error ["Context message" 'log/error [1 "2" 3] {}]
-    (throw (ex-info ["Test" "throw ex-info"] {:test-data "123"}))
-    (throw (ex-info ["Test" "throw ex-info"]))
-    (throw (ex-info "Test ex-info" {}))
-    (throw (Exception. "Test exception")))
-  #_"Context message log/error [1 \"2\" 3] {} -> Test throw ex-info ~//~ {:test-data \"123\"}"
-
-  (try-log-error "Context message"
-    (throw (ex-info ["Test" "throw ex-info"] {:test-data "123"}))
-    (throw (ex-info ["Test" "throw ex-info"]))
-    (throw (ex-info "Test ex-info" {}))
-    (throw (Exception. "Test exception")))
-  #_"Context message -> Test throw ex-info ~//~ {:test-data \"123\"}")
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

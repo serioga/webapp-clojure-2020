@@ -1,11 +1,13 @@
 (ns lib.ring-middleware.debug-response
-  (:require [clojure.tools.logging :as log]
+  (:require [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.perf :as p]
             [lib.ring-util.request :as ring-request]))
 
 (set! *warn-on-reflection* true)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(def ^:private logger (logger/get-logger *ns*))
 
 (defn- response-description
   [request response time-millis]
@@ -16,7 +18,7 @@
         {:keys [status]} response
         uri (ring-request/request-uri request)]
     (p/inline-str "HTTP " status " < "
-                  server-name " " route-tag " " request-method " " uri " " params
+                  server-name " " route-tag (when route-tag " ") request-method " " uri " " params
                   " (" time-millis " ms)")))
 
 (defn- session-update-description
@@ -45,13 +47,10 @@
     (let [start-millis (System/currentTimeMillis)
           response (handler request)
           time-millis (- (System/currentTimeMillis) start-millis)]
-      (log/debug (response-description request response time-millis))
-      (some-> (session-update-description response)
-              (log/debug))
-      (some-> (flash-update-description response)
-              (log/debug))
-      (some-> (cookies-update-description response)
-              (log/debug))
+      (logger/debug logger (response-description request response time-millis))
+      (some->> (session-update-description response) (logger/debug logger))
+      (some->> (flash-update-description response) (logger/debug logger))
+      (some->> (cookies-update-description response) (logger/debug logger))
       response)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

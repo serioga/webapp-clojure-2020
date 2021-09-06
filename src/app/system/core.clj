@@ -1,5 +1,5 @@
 (ns app.system.core
-  (:require [clojure.tools.logging :as log]
+  (:require [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.core :as e]
             [lib.clojure.ns :as ns]
             [lib.integrant.core :as ig]
@@ -18,6 +18,10 @@
 (derive ::await-before-start ::system/identity)
 (derive :dev.env.system/prepare-prop-files ::system/identity)
 (derive :dev.env.system/prepare-webapp ::system/identity)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(def ^:private logger (logger/get-logger *ns*))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -199,7 +203,7 @@
   (when-some [system @!system]
     (reset! !system nil)
     (ig/halt! system)
-    (log/info "[DONE] Application system stop")))
+    (logger/info logger "[DONE] Application system stop")))
 
 (defn suspend
   "Suspend global system."
@@ -215,7 +219,7 @@
    (stop)
    (let [config ((:prepare-config options identity) (system-config))]
      (reset! !system (ig/init config, (or (:system-keys options) (keys config)))))
-   (log/info "[DONE] Application system start")))
+   (logger/info logger "[DONE] Application system start")))
 
 (defn resume
   "Resume global system."
@@ -240,15 +244,15 @@
             webapp-host (cond (sequential? virtual-host) virtual-host
                               (string? virtual-host) [virtual-host]
                               :else [(or host "localhost")])]
-      (log/info "Running" "webapp" (pr-str webapp-name)
-                (str (when port (str "- http://" webapp-host ":" port "/")))
-                (str (when ssl-port (str "- https://" webapp-host ":" ssl-port "/")))))))
+      (logger/info logger (print-str "Running webapp" (pr-str webapp-name)
+                                     (str (when port (str "- http://" webapp-host ":" port "/")))
+                                     (str (when ssl-port (str "- https://" webapp-host ":" ssl-port "/"))))))))
 
 (defn- log-prop-files
   "Log info about loaded configuration files."
   [system]
   (let [prop-files (some-> system :app.system.service/app-config meta :prop-files)]
-    (log/info "Running config from" (pr-str prop-files))))
+    (logger/info logger (e/p-str "Running config from" prop-files))))
 
 (add-watch !system :log-system-status
            (fn [_ _ _ system]

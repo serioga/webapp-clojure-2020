@@ -1,5 +1,6 @@
 (ns lib.ring-middleware.error-exception
-  (:require [lib.clojure.core :as e]
+  (:require [lib.clojure-tools-logging.logger :as logger]
+            [lib.clojure.core :as e]
             [lib.ring-util.response :as ring-response]))
 
 (set! *warn-on-reflection* true)
@@ -27,7 +28,7 @@
     (try
       (handler request)
       (catch Throwable ex
-        (e/log-error ex)
+        (logger/log-throwable (logger/get-logger *ns*) ex "Handle HTTP request")
         (response-error-exception ex, dev-mode)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

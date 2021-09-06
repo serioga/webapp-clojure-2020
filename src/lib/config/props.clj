@@ -2,7 +2,6 @@
   "Application configuration."
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
             [clojurewerkz.propertied.properties :as p]
             [lib.clojure.core :as e])
   (:import (java.util.regex Pattern)))
@@ -32,7 +31,6 @@
   (let [filenames (cond-> filenames
                     (string? filenames) string->filenames)]
     (e/assert filenames sequential?)
-    (log/debug "Load properties from" (pr-str filenames))
     (with-meta (->> filenames
                     (map load-map-from-props-file)
                     (reduce merge {}))

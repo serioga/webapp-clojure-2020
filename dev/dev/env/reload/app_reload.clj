@@ -1,7 +1,7 @@
 (ns dev.env.reload.app-reload
   (:require [clojure.main :as main]
             [clojure.string :as string]
-            [clojure.tools.logging :as log]
+            [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.core :as e]
             [ns-tracker.core :as ns-tracker])
   (:import (java.io FileNotFoundException)))
@@ -9,6 +9,8 @@
 (set! *warn-on-reflection* true)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(def ^:private logger (logger/get-logger *ns*))
 
 (defn- ns-unalias-all
   "Removes all aliases in namespace."
@@ -22,7 +24,7 @@
   (try
     (ns-unalias-all ns-sym)
     (require ns-sym :reload)
-    (log/info "[OK]" "Reload" ns-sym)
+    (logger/info logger (str "[OK] Reload " ns-sym))
     nil
     (catch FileNotFoundException _
       (remove-ns ns-sym)
@@ -37,7 +39,7 @@
     ;; Reload can fail due to the incorrect order of namespaces.
     ;; So we reload multiple times recursively while this reduces amount of failed namespaces.
     (loop [xs (mapv vector namespaces)]
-      (log/info "Reloading namespaces:" (string/join ", " (map first xs)))
+      (logger/info logger (str "Reloading namespaces: " (string/join ", " (map first xs))))
       (let [errors (->> xs (into [] (comp (map first) (keep reload-ns))))]
         (if (and (seq errors), (< (count errors) (count xs)))
           (recur errors)
@@ -45,7 +47,7 @@
 
 (defn- log-reload-error
   [[failed-ns ex]]
-  (log/error "[FAIL]" "Reload" (str failed-ns "\n\n" (-> ex Throwable->map main/ex-triage main/ex-str))))
+  (logger/error logger (str "[FAIL] Reload " (str failed-ns "\n\n" (-> ex Throwable->map main/ex-triage main/ex-str)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -59,8 +61,8 @@
   (let [ns-tracker (ns-tracker/ns-tracker ns-tracker-dirs)]
     (fn app-reload [& _]
       (when app-stop
-        (e/try-log-error ["Stop application before namespace reloading"]
-          (app-stop)))
+        (try (app-stop) (catch Throwable t
+                          (logger/log-throwable logger t "Stop application before namespace reloading"))))
       (if-some [errors (seq (->> (concat always-reload-ns (ns-tracker) (map first @!reload-errors))
                                  (remove (set never-reload-ns))
                                  (reload-namespaces)
@@ -87,14 +89,14 @@
 (defn log-reload-success
   "Prints confirmation of the successful application reload."
   []
-  (log/info "[DONE] Application reload")
+  (logger/info logger "[DONE] Application reload")
   (print-reload-on-enter))
 
 (defn log-reload-failure
   "Prints error if application reload failed."
   [ex]
-  (log/error (e/ex-message-all ex))
-  (log/info "[FAIL] Application reload")
+  (logger/error logger (e/ex-message-all ex))
+  (logger/info logger "[FAIL] Application reload")
   (print-reload-on-enter))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

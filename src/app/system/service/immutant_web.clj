@@ -1,7 +1,7 @@
 (ns app.system.service.immutant-web
-  (:require [clojure.tools.logging :as log]
-            [immutant.web :as web]
+  (:require [immutant.web :as web]
             [integrant.core :as ig]
+            [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.core :as e]
             [lib.integrant.system :as system]))
 
@@ -12,14 +12,14 @@
 (defn- start-webapp
   [server, {webapp-name :name :as webapp}, server-options]
   (let [options (merge server-options (webapp :options))]
-    (log/debug "Start webapp" (pr-str webapp-name) (pr-str options))
+    (logger/debug (logger/get-logger *ns*) (e/p-str "Start webapp" webapp-name options))
     (-> (web/run (webapp :handler) (merge server options))
         (with-meta (update (meta server) :running-webapps
                            conj [webapp-name options])))))
 
 (defn- skip-webapp
   [server, webapp]
-  (log/debug "Skip webapp" (pr-str webapp))
+  (logger/debug (logger/get-logger *ns*) (e/p-str "Skip webapp" webapp))
   server)
 
 (defn- start-server

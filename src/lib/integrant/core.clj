@@ -4,8 +4,8 @@
    - system rollback on failures;
    - futures in `init-key` and `halt-key!` for parallel initialization."
   (:refer-clojure :exclude [ref])
-  (:require [clojure.tools.logging :as log]
-            [integrant.core :as ig]
+  (:require [integrant.core :as ig]
+            [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.core :as e]
             [lib.slf4j.mdc :as mdc]
             [potemkin :refer [import-vars]]))
@@ -34,18 +34,20 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(def ^:private logger (logger/get-logger *ns*))
+
 (defn- init-key
   "Wrapped version of the `integrant.core/init-key` with logging."
   [k value]
   (mdc/with-map {:init k}
-    (log/info ">> starting.." k)
+    (logger/info logger (str ">> starting.. " k))
     (ig/init-key k value)))
 
 (defn- resume-key
   "Wrapped version of the `integrant.core/resume-key` with logging."
   [k value old-value old-impl]
   (mdc/with-map {:resume k}
-    (log/info ">> resuming.." k)
+    (logger/info logger (str ">> resuming.. " k))
     (ig/resume-key k value old-value old-impl)))
 
 (defn- not-default-halt-key?
@@ -65,14 +67,14 @@
     (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key k))
                            (e/asserted not-default-halt-key?))]
       (mdc/with-map {:halt k}
-        (log/info ">> stopping.." k)
+        (logger/info logger (str ">> stopping.. " k))
         (e/try-ignore
           ;; Wait for future values to complete.
           ;; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
-          (let [ret (e/try-log-error ["Stopping" k]
-                      (method k value))]
+          (let [ret (try (method k value)
+                         (catch Throwable t (logger/log-throwable logger t (str "Stopping " k))))]
             (when (future? ret)
               (swap! !futures conj [k ret]))
             ret))))))
@@ -88,14 +90,14 @@
                            (-> (get-method ig/halt-key! (#'ig/normalize-key k))
                                (e/asserted not-default-halt-key?)))]
       (mdc/with-map {:suspend k}
-        (log/info ">> suspending.." k)
+        (logger/info logger (str ">> suspending.. " k))
         (e/try-ignore
           ;; Wait for future values to complete.
           ;; Ignore errors, they are reported by `init`.
           (when (future? value)
             (deref value))
-          (let [ret (e/try-log-error ["Suspending" k]
-                      (method k value))]
+          (let [ret (try (method k value)
+                         (catch Throwable t (logger/log-throwable logger t (str "Suspending " k))))]
             (when (future? ret)
               (swap! !futures conj [k ret]))
             ret))))))
@@ -138,9 +140,9 @@
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [!futures (atom [])]
      (ig/reverse-run! system ks (fn'halt-key! !futures))
-     (await-futures @!futures (fn [ex k]
+     (await-futures @!futures (fn [t k]
                                 (mdc/with-map {:halt k}
-                                  (e/log-error ex "Stopping" k)))))))
+                                  (logger/log-throwable logger t (str "Stopping " k))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -153,9 +155,9 @@
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [!futures (atom [])]
      (ig/reverse-run! system ks (fn'suspend-key! !futures))
-     (await-futures @!futures (fn [ex k]
+     (await-futures @!futures (fn [t k]
                                 (mdc/with-map {:suspend k}
-                                  (e/log-error ex "Suspending" k)))))))
+                                  (logger/log-throwable logger t (str "Suspending " k))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -192,9 +194,9 @@
   ([config system-keys]
    {:pre [(map? config)]}
    (build config system-keys init-key
-          (fn [ex k]
+          (fn [t k]
             (mdc/with-map {:init k}
-              (e/log-error ex "Starting" k)))
+              (logger/log-throwable logger t (str "Starting " k))))
           #'ig/assert-pre-init-spec)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -212,14 +214,14 @@
    (resume config system (keys config)))
   ([config system system-keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
-   (e/try-log-error "Halt missing keys on resume"
-     (#'ig/halt-missing-keys! config system system-keys))
+   (try (#'ig/halt-missing-keys! config system system-keys)
+        (catch Throwable t (logger/log-throwable logger t "Halt missing keys on resume")))
    (build config system-keys
           (fn [k v] (if (contains? system k)
                       (resume-key k v (-> system meta ::ig/build (get k)) (system k))
                       (init-key k v)))
-          (fn [ex k]
+          (fn [t k]
             (mdc/with-map {:resume k}
-              (e/log-error ex "Resuming" k))))))
+              (logger/log-throwable logger t (str "Resuming " k)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
