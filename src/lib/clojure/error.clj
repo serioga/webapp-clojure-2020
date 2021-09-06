@@ -1,32 +1,7 @@
 (ns lib.clojure.error
-  (:refer-clojure :exclude [assert])
-  (:require [lib.clojure.print :as print]))
+  (:refer-clojure :exclude [assert]))
 
 (set! *warn-on-reflection* true)
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defmacro expand-msg*
-  "Convert vector of message tokens to string.
-   All symbolic tokens are wrapped with `pr-str`."
-  [tokens]
-  (cond
-    (vector? tokens) `(print/p-str ~@tokens)
-    :else `(str ~tokens)))
-
-(comment
-  (expand-msg* ["a" "b" "c" 'd (str "e") {:f "f"}])
-  #_"a b c d \"e\" {:f \"f\"}"
-  (expand-msg* (str 1 2 3))
-  #_"123"
-  (expand-msg* :a)
-  #_":a"
-  (let [x {:a "1"}
-        y "y"
-        z :z]
-    (expand-msg* [1 2 3 x y z {:a "1"}]))
-  #_"1 2 3 {:a \"1\"} \"y\" :z {:a \"1\"}"
-  (clojure.core/ex-info (expand-msg* [1 2 3 4 5 {1 2}]) {}))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -43,8 +18,7 @@
   ([x pred msg]
    `(let [x# ~x]
       (when-not (try (~pred x#) (catch Throwable _# false))
-        (throw (new AssertionError (str (expand-msg* ~msg)
-                                        " - Assert failed: " '(~pred ~x)
+        (throw (new AssertionError (str ~msg " - Assert failed: " '(~pred ~x)
                                         " - input " {:value x# :type (type x#)}))))
 
       x#)))

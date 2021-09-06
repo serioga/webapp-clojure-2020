@@ -76,7 +76,7 @@
 (defn- trigger-watcher
   [k]
   (-> (get @!system k) meta :handler
-      (e/assert fn? ["Trigger watcher" k])
+      (e/assert fn? (str "Trigger watcher " k))
       (e/invoke #'trigger-watcher k)))
 
 (defn- reload
