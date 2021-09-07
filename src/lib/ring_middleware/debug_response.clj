@@ -11,14 +11,10 @@
 
 (defn- response-description
   [request response time-millis]
-  (let [{:keys [route-tag
-                params
-                request-method
-                server-name]} request
-        {:keys [status]} response
+  (let [{:keys [server-name, request-method, route-tag]} request
         uri (ring-request/request-uri request)]
-    (p/inline-str "HTTP " status " < "
-                  server-name " " route-tag (when route-tag " ") request-method " " uri " " params
+    (p/inline-str "HTTP " (:status response) " < "
+                  server-name " " route-tag (when route-tag " ") request-method " " uri
                   " (" time-millis " ms)")))
 
 (defn- session-update-description
