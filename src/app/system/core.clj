@@ -174,7 +174,8 @@
                                                                                           :import {:hosts "Webapp.Hosts(example)"}}}
                                      :config {:options {:host "0.0.0.0"}}
                                      :import {:options {:host "HttpServer.Host"
-                                                        :port "HttpServer.Port"}}}})
+                                                        :port "HttpServer.Port"}}
+                                     :mixins [::await-before-start]}})
 
 (defn- system-config
   "App system configuration."
