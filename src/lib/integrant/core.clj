@@ -75,7 +75,7 @@
             ;; Ignore errors, they are reported by `init`.
             (catch Throwable _)))
         (let [ret (try (method k value)
-                       (catch Throwable t (logger/log-throwable logger t (str "Stopping " k))))]
+                       (catch Throwable e (logger/log-throwable logger e (str "Stopping " k))))]
           (when (future? ret)
             (swap! !futures conj [k ret]))
           ret)))))
@@ -99,7 +99,7 @@
             ;; Ignore errors, they are reported by `init`.
             (catch Throwable _)))
         (let [ret (try (method k value)
-                       (catch Throwable t (logger/log-throwable logger t (str "Suspending " k))))]
+                       (catch Throwable e (logger/log-throwable logger e (str "Suspending " k))))]
           (when (future? ret)
             (swap! !futures conj [k ret]))
           ret)))))
@@ -116,10 +116,10 @@
   (doseq [[k v] system :when (future? v)]
     (try
       (deref v)
-      (catch Throwable ex
-        (let [ex (ex-in-future ex)]
-          (log-key-error ex k)
-          (throw (#'ig/build-exception system nil k v ex)))))))
+      (catch Throwable e
+        (let [e (ex-in-future e)]
+          (log-key-error k e)
+          (throw (#'ig/build-exception system nil k v e)))))))
 
 (defn- await-futures
   "Deref all future suspend results.
@@ -128,8 +128,8 @@
   (doseq [[k ?future] futures]
     (try
       (deref ?future)
-      (catch Throwable ex
-        (log-key-error (ex-in-future ex) k)))))
+      (catch Throwable e
+        (log-key-error k (ex-in-future e))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -142,9 +142,9 @@
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [!futures (atom [])]
      (ig/reverse-run! system ks (fn'halt-key! !futures))
-     (await-futures @!futures (fn [t k]
+     (await-futures @!futures (fn [k throwable]
                                 (with-open [_ (mdc/put-closeable "integrant" (str ['halt-key! (decompose-key k)]))]
-                                  (logger/log-throwable logger t (str "Stopping " k))))))))
+                                  (logger/log-throwable logger throwable (str "Stopping " k))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -157,9 +157,9 @@
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [!futures (atom [])]
      (ig/reverse-run! system ks (fn'suspend-key! !futures))
-     (await-futures @!futures (fn [t k]
+     (await-futures @!futures (fn [k throwable]
                                 (with-open [_ (mdc/put-closeable "integrant" (str ['suspend-key! (decompose-key k)]))]
-                                  (logger/log-throwable logger t (str "Suspending " k))))))))
+                                  (logger/log-throwable logger throwable (str "Suspending " k))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -174,12 +174,12 @@
      (let [system (ig/build config system-keys f assert-fn)]
        (await-build-futures system log-key-error)
        system)
-     (catch Throwable ex
-       (when-let [data (ex-data ex)]
+     (catch Throwable e
+       (when-let [data (ex-data e)]
          (when (= (:reason data) ::ig/build-threw-exception)
-           (log-key-error (ex-cause ex) (:key data))
+           (log-key-error (:key data) (ex-cause e))
            (some-> (:system data) halt!))
-         (throw ex))))))
+         (throw e))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -196,9 +196,9 @@
   ([config system-keys]
    {:pre [(map? config)]}
    (build config system-keys init-key
-          (fn [t k]
+          (fn [k throwable]
             (with-open [_ (mdc/put-closeable "integrant" (str ['init-key (decompose-key k)]))]
-              (logger/log-throwable logger t (str "Starting " k))))
+              (logger/log-throwable logger throwable (str "Starting " k))))
           #'ig/assert-pre-init-spec)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -217,13 +217,13 @@
   ([config system system-keys]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (try (#'ig/halt-missing-keys! config system system-keys)
-        (catch Throwable t (logger/log-throwable logger t "Halt missing keys on resume")))
+        (catch Throwable e (logger/log-throwable logger e "Halt missing keys on resume")))
    (build config system-keys
           (fn [k v] (if (contains? system k)
                       (resume-key k v (-> system meta ::ig/build (get k)) (system k))
                       (init-key k v)))
-          (fn [t k]
+          (fn [k throwable]
             (with-open [_ (mdc/put-closeable "integrant" (str ['resume-key (decompose-key k)]))]
-              (logger/log-throwable logger t (str "Resuming " k)))))))
+              (logger/log-throwable logger throwable (str "Resuming " k)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

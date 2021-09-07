@@ -27,8 +27,8 @@
   (fn [request]
     (try
       (handler request)
-      (catch Throwable ex
-        (logger/log-throwable (logger/get-logger *ns*) ex "Handle HTTP request")
-        (response-error-exception ex, dev-mode)))))
+      (catch Throwable e
+        (logger/log-throwable (logger/get-logger *ns*) e "Handle HTTP request")
+        (response-error-exception e, dev-mode)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

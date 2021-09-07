@@ -54,8 +54,8 @@
   ([{:keys [system-keys]}]
    (try (app/start (cond-> {:prepare-config prepare-system-config}
                      system-keys (assoc :system-keys system-keys)))
-        (catch Throwable t
-          (throw (ex-info (str 'app/start) {} t))))
+        (catch Throwable e
+          (throw (->> e (Exception. (str 'app/start))))))
    (ring-refresh/send-refresh true)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -80,8 +80,8 @@
   "Resume `app` system."
   []
   (try (app/resume {:prepare-config prepare-system-config})
-       (catch Throwable t
-         (throw (ex-info (str 'app/resume) {} t))))
+       (catch Throwable e
+         (throw (->> e (Exception. (str 'app/resume))))))
   (ring-refresh/send-refresh true))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

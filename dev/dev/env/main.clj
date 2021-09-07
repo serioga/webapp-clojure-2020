@@ -17,10 +17,10 @@
   []
   (try
     (try (env/start)
-         (catch Throwable t (throw (ex-info "Start environment" {:reason ::env} t))))
+         (catch Throwable e (throw (->> e (ex-info "Start environment" {:reason ::env})))))
 
     (try (app/start)
-         (catch Throwable t (throw (ex-info "Start application" {:reason ::app} t))))
+         (catch Throwable e (throw (->> e (ex-info "Start application" {:reason ::app})))))
 
     (when-some [server (env/nrepl-server)]
       (logger/info logger (e/p-str "Running nREPL server on port" (:port server))))
@@ -29,9 +29,9 @@
 
     (env/prompt-reload-on-enter)
 
-    (catch Throwable ex
-      (logger/error logger (e/ex-message-all ex))
-      (when (= ::app (:reason (ex-data ex)))
+    (catch Throwable e
+      (logger/error logger (e/ex-message-all e))
+      (when (= ::app (:reason (ex-data e)))
         (env/prompt-reload-on-enter)))))
 
 (defn- shutdown

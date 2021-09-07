@@ -58,7 +58,7 @@
       (doseq [[k v] map-of-await-for]
         (try
           (when (future? v) (deref v))
-          (catch Throwable t
-            (logger/log-throwable logger t (str "Await for " k))))))))
+          (catch Throwable e
+            (logger/log-throwable logger e (str "Await for " k))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

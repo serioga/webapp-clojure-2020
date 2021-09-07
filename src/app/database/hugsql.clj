@@ -40,8 +40,8 @@
     ([params] (db-fn @?data-source params))
     ([db params]
      (try (f db params)
-          (catch Throwable t
-            (throw (ex-info nom {:sql-params params} t)))))))
+          (catch Throwable e
+            (throw (->> e (ex-info nom {:sql-params params}))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

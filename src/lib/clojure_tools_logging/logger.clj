@@ -3,8 +3,7 @@
   (:require [clojure.tools.logging :as log]
             [clojure.tools.logging.impl :as impl]
             [lib.clojure-string.core :as string]
-            [lib.clojure.exception :as ex]
-            [lib.clojure.print :as print]))
+            [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 
@@ -28,8 +27,8 @@
 (comment
   (let [logger (impl/get-logger log/*logger-factory* "test")
         s "4" n nil]
-    (log-enabled logger :info (print/p-str 1 2 3 "X" s n :k))
-    (log-enabled logger :error (print/p-str 1 2 3 "X" s n :k))))
+    (log-enabled logger :info (e/p-str 1 2 3 "X" s n :k))
+    (log-enabled logger :error (e/p-str 1 2 3 "X" s n :k))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -51,7 +50,7 @@
   "Returns message string for the throwable."
   [throwable message]
   (let [data (str-ex-data throwable)]
-    (cond-> ^String (ex/ex-message-all throwable (-> (str message) (string/not-empty)))
+    (cond-> ^String (e/ex-message-all throwable (-> (str message) (string/not-empty)))
       data (-> (.concat " ") (.concat data)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -80,7 +79,7 @@
 (comment
   (let [logger (get-logger "test")
         throwable (ex-info "Exception" {:error true} (ex-info "Cause" {:cause true}))
-        message (print/p-str 1 2 3 (str "4") "X")]
+        message (e/p-str 1 2 3 (str "4") "X")]
     (info logger message)
     (debug logger message)
     (error logger message)

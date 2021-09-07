@@ -7,8 +7,8 @@
 
 (defn ex-message-or-name
   "Returns the exception message or class name if the message is empty."
-  [^Throwable throwable]
-  (or (-> (.getMessage throwable) (string/not-empty))
+  [throwable]
+  (or (-> (.getMessage ^Throwable throwable) (string/not-empty))
       (.getCanonicalName (class throwable))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -17,32 +17,32 @@
   "Builds single message from all nested exceptions.
    Includes optional `context` string as part of the message."
   ([throwable] (ex-message-all throwable nil))
-  ([^Throwable throwable, context]
+  ([throwable, context]
    (when throwable
      (loop [sb (-> (StringBuilder.)
                    (cond-> context (-> (.append (str context))
                                        (.append " -> ")))
                    (.append (ex-message-or-name throwable)))
-            cause (.getCause throwable)]
+            cause (.getCause ^Throwable throwable)]
        (if cause
          (recur (-> sb (.append " -> ") (.append (ex-message-or-name cause)))
                 (.getCause cause))
          (.toString sb))))))
 
 (comment
-  (def t (ex-info "One" {:x :one}
+  (def e (ex-info "One" {:x :one}
                   (ex-info "Two" {:x :two}
                            (ex-info "Three" {:x :three}))))
-  (ex-message-all t)
+  (ex-message-all e)
   #_"One -> Two -> Three"
-  (ex-message-all t "Prefix")
+  (ex-message-all e "Prefix")
   #_"Prefix -> One -> Two -> Three")
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn ex-root-cause
-  "Find root cause for exception."
-  [^Throwable throwable]
+  "Find root cause for the throwable."
+  [throwable]
   (if-let [cause (ex-cause throwable)]
     (recur cause)
     throwable))

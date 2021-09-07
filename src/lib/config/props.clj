@@ -66,8 +66,8 @@
 (defn- conform-prop-val*
   [k rule value]
   (try (conform-prop-val rule value)
-       (catch Throwable t
-         (throw (ex-info (e/p-str 'conform-prop-val k rule value) {} t)))))
+       (catch Throwable e
+         (throw (->> e (Exception. (e/p-str 'conform-prop-val k rule value)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

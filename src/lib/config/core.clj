@@ -10,7 +10,7 @@
   [config k]
   (let [none (Object.), v (config k none)]
     (when (identical? v none)
-      (throw (ex-info (str "Missing configuration property " k) {})))
+      (throw (Exception. (str "Missing configuration property " k))))
     v))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

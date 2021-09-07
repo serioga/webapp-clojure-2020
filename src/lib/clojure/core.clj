@@ -1,5 +1,5 @@
 (ns lib.clojure.core
-  (:refer-clojure :exclude [ex-info, future, assert])
+  (:refer-clojure :exclude [future, assert])
   (:require [lib.clojure.error]
             [lib.clojure.exception]
             [lib.clojure.future]

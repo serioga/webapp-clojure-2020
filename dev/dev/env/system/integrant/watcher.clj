@@ -18,8 +18,8 @@
     (when handler-run-on-init
       (try
         (handler :init-watcher)
-        (catch Throwable t
-          (logger/log-throwable logger t (e/p-str "Run handler on init" handler options)))))
+        (catch Throwable e
+          (logger/log-throwable logger e (e/p-str "Run handler on init" handler options)))))
     watcher))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

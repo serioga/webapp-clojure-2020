@@ -29,8 +29,8 @@
   (try (some-> (slurp f)
                (edn/read-string)
                :dev.env.system/config)
-       (catch Throwable t
-         (throw (ex-info (e/p-str #'read-config-edn f) {} t)))))
+       (catch Throwable e
+         (throw (->> e (Exception. (e/p-str #'read-config-edn f)))))))
 
 (defn- read-config
   []
@@ -86,8 +86,8 @@
     (app/stop)
     (restart)
     (trigger-watcher :dev.env.system.integrant/app-reload)
-    (catch Throwable ex
-      (app-reload/log-reload-failure ex))))
+    (catch Throwable e
+      (app-reload/log-reload-failure e))))
 
 (defn prompt-reload-on-enter
   "Prompts for manual reload on ENTER keypress."

@@ -27,7 +27,7 @@
      (map (fn [filename]
             (symbol (str n "." (filename->ns filename))))
           (-> (or (io/resource path)
-                  (throw (ex-info (str "Folder not found " path) {})))
+                  (throw (Exception. (str "Folder not found " path))))
               (io/as-file)
               (.list (reify FilenameFilter
                        (accept [_ _ name] (string/ends-with? name ext)))))))))

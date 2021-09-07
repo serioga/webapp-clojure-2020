@@ -17,9 +17,9 @@
   (e/future
     (try
       (mount/start-with-args (->> args (e/map-vals e/unwrap-future)))
-      (catch Throwable ex
+      (catch Throwable e
         (mount/stop)
-        (throw ex)))))
+        (throw e)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

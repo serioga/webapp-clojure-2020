@@ -29,8 +29,8 @@
     (catch FileNotFoundException _
       (remove-ns ns-sym)
       nil)
-    (catch Throwable ex
-      [ns-sym ex])))
+    (catch Throwable e
+      [ns-sym e])))
 
 (defn- reload-namespaces
   "Returns vector of reload errors."
@@ -46,8 +46,8 @@
           errors)))))
 
 (defn- log-reload-error
-  [[failed-ns ex]]
-  (logger/error logger (str "[FAIL] Reload " (str failed-ns "\n\n" (-> ex Throwable->map main/ex-triage main/ex-str)))))
+  [[failed-ns, throwable]]
+  (logger/error logger (str "[FAIL] Reload " (str failed-ns "\n\n" (-> throwable Throwable->map main/ex-triage main/ex-str)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -61,8 +61,8 @@
   (let [ns-tracker (ns-tracker/ns-tracker ns-tracker-dirs)]
     (fn app-reload [& _]
       (when app-stop
-        (try (app-stop) (catch Throwable t
-                          (logger/log-throwable logger t "Stop application before namespace reloading"))))
+        (try (app-stop) (catch Throwable e
+                          (logger/log-throwable logger e "Stop application before namespace reloading"))))
       (if-some [errors (seq (->> (concat always-reload-ns (ns-tracker) (map first @!reload-errors))
                                  (remove (set never-reload-ns))
                                  (reload-namespaces)
@@ -75,8 +75,8 @@
         (try
           (when app-start (app-start))
           (when on-success (on-success))
-          (catch Throwable ex
-            (when on-failure (on-failure ex))))))))
+          (catch Throwable e
+            (when on-failure (on-failure e))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -94,8 +94,8 @@
 
 (defn log-reload-failure
   "Prints error if application reload failed."
-  [ex]
-  (logger/error logger (e/ex-message-all ex))
+  [throwable]
+  (logger/error logger (e/ex-message-all throwable))
   (logger/info logger "[FAIL] Application reload")
   (print-reload-on-enter))
 
