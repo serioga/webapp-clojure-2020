@@ -34,25 +34,25 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- str-ex-data
-  "Converts all nested ex-data to string for logging."
-  [ex]
-  (loop [s nil ex ex]
-    (if ex
-      (recur (if-let [d (not-empty (ex-data ex))]
-               (-> ^String (or s "~//~")
-                   (.concat " ")
-                   (.concat (str d)))
-               s)
-             (.getCause ^Throwable ex))
-      s)))
+  "Converts all nested ex-data to the logging string."
+  [throwable]
+  (loop [sb (StringBuilder.), nothing true, throwable throwable]
+    (if throwable
+      (let [data (not-empty (ex-data throwable))]
+        (recur (cond-> sb data (-> (cond-> nothing (.append "~//~"))
+                                   (.append \space)
+                                   (.append (str data))))
+               (and nothing (not data))
+               (.getCause ^Throwable throwable)))
+      (when (pos? (.length sb))
+        (.toString sb)))))
 
 (defn str-throwable
-  "Returns message string for throwable."
+  "Returns message string for the throwable."
   [throwable message]
-  (let [message (string/not-empty message)]
-    (string/join-not-empty \space [message, (when message ex/_->_)
-                                   (ex/ex-message-all throwable)
-                                   (str-ex-data throwable)])))
+  (let [data (str-ex-data throwable)]
+    (cond-> ^String (ex/ex-message-all throwable (-> (str message) (string/not-empty)))
+      data (-> (.concat " ") (.concat data)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
