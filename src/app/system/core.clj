@@ -253,7 +253,7 @@
   "Log info about loaded configuration files."
   [system]
   (let [prop-files (some-> system :app.system.service/app-config meta :prop-files)]
-    (logger/info logger (e/p-str "Running config from" prop-files))))
+    (logger/info logger (e/prs "Running config from" prop-files))))
 
 (add-watch !system :log-system-status
            (fn [_ _ _ system]

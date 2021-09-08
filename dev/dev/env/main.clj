@@ -23,7 +23,7 @@
          (catch Throwable e (throw (->> e (ex-info "Start application" {:reason ::app})))))
 
     (when-some [server (env/nrepl-server)]
-      (logger/info logger (e/p-str "Running nREPL server on port" (:port server))))
+      (logger/info logger (e/prs "Running nREPL server on port" (:port server))))
 
     (logger/info logger "[DONE] Application has been started for development. Happy coding!")
 

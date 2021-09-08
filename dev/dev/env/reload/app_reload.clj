@@ -70,7 +70,7 @@
         (do
           (run! log-reload-error errors)
           (when on-failure
-            (on-failure (ex-info (e/p-str "Failed to reload namespaces" (map first errors))
+            (on-failure (ex-info (e/prs "Failed to reload namespaces" (map first errors))
                                  {:reason ::reload-namespaces, :errors errors}))))
         (try
           (when app-start (app-start))

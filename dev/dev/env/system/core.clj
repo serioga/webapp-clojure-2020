@@ -30,7 +30,7 @@
                (edn/read-string)
                :dev.env.system/config)
        (catch Throwable e
-         (throw (->> e (Exception. (e/p-str #'read-config-edn f)))))))
+         (throw (->> e (Exception. (e/prs #'read-config-edn f)))))))
 
 (defn- read-config
   []

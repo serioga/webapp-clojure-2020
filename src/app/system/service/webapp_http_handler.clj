@@ -13,7 +13,7 @@
 
 (defmethod webapp-http-handler :default
   [{webapp-name :name}]
-  (throw (Exception. (e/p-str "Webapp handler is not found for name" webapp-name) nil)))
+  (throw (Exception. (e/prs "Webapp handler is not found for name" webapp-name) nil)))
 
 (e/add-method webapp-http-handler "example"
               example/example-http-handler)

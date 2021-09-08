@@ -12,14 +12,14 @@
 (defn- start-webapp
   [server, {webapp-name :name :as webapp}, server-options]
   (let [options (merge server-options (webapp :options))]
-    (logger/debug (logger/get-logger *ns*) (e/p-str "Start webapp" webapp-name options))
+    (logger/debug (logger/get-logger *ns*) (e/prs "Start webapp" webapp-name options))
     (-> (web/run (webapp :handler) (merge server options))
         (with-meta (update (meta server) :running-webapps
                            conj [webapp-name options])))))
 
 (defn- skip-webapp
   [server, webapp]
-  (logger/debug (logger/get-logger *ns*) (e/p-str "Skip webapp" webapp))
+  (logger/debug (logger/get-logger *ns*) (e/prs "Skip webapp" webapp))
   server)
 
 (defn- start-server
