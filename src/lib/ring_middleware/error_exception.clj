@@ -8,15 +8,15 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- response-error-exception
-  [^Throwable ex, dev-mode]
+  [throwable, dev-mode]
   (let [status 500
         message (str "[HTTP " status "] "
-                     (e/ex-message-all ex)
+                     (e/ex-message-all throwable)
                      (when dev-mode
                        (str "\n\n" "---" "\n"
                             "Default exception handler, dev mode."
                             "\n\n"
-                            (prn-str ex))))]
+                            (prn-str throwable))))]
     (ring-response/plain-text message status)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
