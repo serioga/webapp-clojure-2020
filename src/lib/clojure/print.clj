@@ -16,10 +16,10 @@
   `(pr-str ~@(->> more (map #(if (string? %) (list ->StringLiteral %), %)))))
 
 (comment
-  (macroexpand-1 '(prs "a" "b" "c" 'd (str "e") {:f "f"} "" (str "")))
-  (prs "a" "b" "c" 'd (str "e") {:f "f"} nil (str ""))
+  (macroexpand-1 '(spr "a" "b" "c" 'd (str "e") {:f "f"} "" (str "")))
+  (spr "a" "b" "c" 'd (str "e") {:f "f"} nil (str ""))
   #_"a b c d \"e\" {:f \"f\"} nil \"\""
-  (println (prs "a" "b" "c" 'd (str "e") {:f "f"} nil (str "")))
+  (println (spr "a" "b" "c" 'd (str "e") {:f "f"} nil (str "")))
   ;;a b c d "e" {:f "f"} nil ""
   )
 
