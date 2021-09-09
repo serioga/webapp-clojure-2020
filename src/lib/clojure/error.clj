@@ -5,22 +5,52 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(defn assert-pred-error*
+  "Returns predicate error for `assert` macro."
+  [x pred]
+  (try
+    (when-not (pred x)
+      (if-some [explain (-> pred meta :assert/explain)]
+        {:explain (explain x)}
+        {}))
+    (catch Throwable e
+      {:ex-message (ex-message e)})))
+
+(defn assert-ex-message*
+  "Returns exception message for `assert` macro."
+  ([x msg]
+   (str msg " - Assert failed on input " {:value x}))
+  ([x msg pred-form pred-error]
+   (let [pred-error (not-empty pred-error)]
+     (str msg " - Assert failed: " pred-form " - input " {:value x :type (type x)}
+          (when pred-error " - ") pred-error))))
+
+(defn assert-ex-data*
+  "Returns ex-data for `assert` macro."
+  []
+  {::failure :assert-failed})
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defmacro assert
   "Simple assert for predicate function `pred`.
    Returns `x` if `(pred x)` is logical true, otherwise throws AssertionError.
-   Expands vector in `msg` to message string."
-  ([x pred]
+   Expands vector in `msg` to message string.
+   Uses :assert/explain from `pred`s meta for extra failure explanation (i.e. for spec asserts)."
+  ([x]
    `(let [x# ~x]
-      (when-not (try (~pred x#) (catch Throwable _# false))
-        (throw (new AssertionError (str "Assert failed: " '(~pred ~x)
-                                        " - input " {:value x# :type (type x#)}))))
+      (when-not x#
+        (throw (ex-info (assert-ex-message* x# (pr-str '~x)) (assert-ex-data*))))
+      x#))
+  ([x pred]
+   `(let [x# ~x, pred-error# (assert-pred-error* x# ~pred)]
+      (when pred-error#
+        (throw (ex-info (assert-ex-message* x# (pr-str '~x) '~pred pred-error#) (assert-ex-data*))))
       x#))
   ([x pred msg]
-   `(let [x# ~x]
-      (when-not (try (~pred x#) (catch Throwable _# false))
-        (throw (new AssertionError (str ~msg " - Assert failed: " '(~pred ~x)
-                                        " - input " {:value x# :type (type x#)}))))
-
+   `(let [x# ~x, pred-error# (assert-pred-error* x# ~pred)]
+      (when pred-error#
+        (throw (ex-info (assert-ex-message* x# (str ~msg) '~pred pred-error#) (assert-ex-data*))))
       x#)))
 
 (defmacro assert?
@@ -32,13 +62,30 @@
    `(do (assert ~x ~pred ~msg) true)))
 
 (comment
+  (macroexpand '(assert "1"))
+  (macroexpand '(assert "1" string?))
+  (macroexpand '(assert "1" string? "Message"))
 
-  (assert "1" string?) #_"1"
-  (assert? "1" string?) #_true
-  (assert (inc 0) string?) #_"Assert failed: (string? (inc 0)) - input {:value 1, :type java.lang.Long}"
-  (assert? (inc 0) string?) #_"Assert failed: (string? (inc 0)) - input {:value 1, :type java.lang.Long}"
-  (assert nil string?) #_"Assert failed: (string? nil) - input {:value nil, :type nil}"
-  (assert (inc 0) string? "Require string") #_"Require string - Assert failed: (string? (inc 0)) - input {:value 1, :type java.lang.Long}"
-  (assert 1 first) #_"Assert failed: (first 1) - input {:value 1, :type java.lang.Long}")
+  (assert "1" string?)
+  #_"1"
+  (assert? "1" string?)
+  #_true
+  (assert (inc 0) string?)
+  ;;(inc 0) - Assert failed: string? - input {:value 1, :type java.lang.Long}
+  (assert? (inc 0) string?)
+  ;;(inc 0) - Assert failed: string? - input {:value 1, :type java.lang.Long}
+  (assert nil)
+  ;;nil - Assert failed on input {:value nil}
+  (assert nil string?)
+  ;;nil - Assert failed: string? - input {:value nil, :type nil}
+  (assert "" number?)
+  ;;"" - Assert failed: number? - input {:value "", :type java.lang.String}
+  (assert (inc 0) string? "Require string")
+  ;;Require string - Assert failed: string? - input {:value 1, :type java.lang.Long}
+  (assert (inc 0) string? ["Require string" 0])
+  ;;["Require string" 0] - Assert failed: string? - input {:value 1, :type java.lang.Long}
+  (assert 1 first)
+  ;;1 - Assert failed: first - input {:value 1, :type java.lang.Long} - {:ex-message "Don't know how to create ISeq from: java.lang.Long"}
+  )
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
