@@ -67,7 +67,7 @@
   [k rule value]
   (try (conform-prop-val rule value)
        (catch Throwable e
-         (throw (->> e (Exception. (e/prs 'conform-prop-val k rule value)))))))
+         (throw (->> e (Exception. (e/spr 'conform-prop-val k rule value)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

@@ -10,7 +10,7 @@
   (binding [*print-readably* nil]
     (print-method (.x ^StringLiteral o) w)))
 
-(defmacro prs
+(defmacro spr
   "Prints to string like `clojure.core/pr-str` but string literals without quotes."
   [& more]
   `(pr-str ~@(->> more (map #(if (string? %) (list ->StringLiteral %), %)))))

@@ -27,8 +27,8 @@
 (comment
   (let [logger (impl/get-logger log/*logger-factory* "test")
         s "4" n nil]
-    (log-enabled logger :info (e/prs 1 2 3 "X" s n :k))
-    (log-enabled logger :error (e/prs 1 2 3 "X" s n :k))))
+    (log-enabled logger :info (e/spr 1 2 3 "X" s n :k))
+    (log-enabled logger :error (e/spr 1 2 3 "X" s n :k))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -79,7 +79,7 @@
 (comment
   (let [logger (get-logger "test")
         throwable (ex-info "Exception" {:error true} (ex-info "Cause" {:cause true}))
-        message (e/prs 1 2 3 (str "4") "X")]
+        message (e/spr 1 2 3 (str "4") "X")]
     (info logger message)
     (debug logger message)
     (error logger message)

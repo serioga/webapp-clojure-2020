@@ -18,7 +18,7 @@
 
              [lib.clojure.future future]
 
-             [lib.clojure.print prs]
+             [lib.clojure.print spr]
 
              [lib.clojure.lang add-method, invoke, asserted, unwrap-fn, unwrap-future])
 
