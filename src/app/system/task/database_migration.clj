@@ -12,7 +12,7 @@
   [_ {:keys [data-source changelog-path system-is-enabled] :as config}]
   (when system-is-enabled
     (e/future
-      (logger/info (logger/get-logger *ns*) (e/spr "Database migrations" config))
+      (logger/info (logger/get-logger *ns*) (e/pr-str* "Database migrations" config))
       (liquibase/update-database (e/unwrap-future data-source), changelog-path))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

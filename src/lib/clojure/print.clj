@@ -10,16 +10,16 @@
   (binding [*print-readably* nil]
     (print-method (.x ^StringLiteral o) w)))
 
-(defmacro spr
+(defmacro pr-str*
   "Prints to string like `clojure.core/pr-str` but string literals without quotes."
   [& more]
   `(pr-str ~@(->> more (map #(if (string? %) (list ->StringLiteral %), %)))))
 
 (comment
-  (macroexpand-1 '(spr "a" "b" "c" 'd (str "e") {:f "f"} "" (str "")))
-  (spr "a" "b" "c" 'd (str "e") {:f "f"} nil (str ""))
+  (macroexpand-1 '(pr-str* "a" "b" "c" 'd (str "e") {:f "f"} "" (str "")))
+  (pr-str* "a" "b" "c" 'd (str "e") {:f "f"} nil (str ""))
   #_"a b c d \"e\" {:f \"f\"} nil \"\""
-  (println (spr "a" "b" "c" 'd (str "e") {:f "f"} nil (str "")))
+  (println (pr-str* "a" "b" "c" 'd (str "e") {:f "f"} nil (str "")))
   ;;a b c d "e" {:f "f"} nil ""
   )
 
