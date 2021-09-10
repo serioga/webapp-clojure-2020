@@ -1,4 +1,4 @@
-(ns lib.ring-middleware.debug-response
+(ns lib.ring-middleware.response-logger
   (:require [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.perf :as p]
             [lib.ring-util.request :as ring-request]))
@@ -11,11 +11,17 @@
 
 (defn- response-description
   [request response time-millis]
-  (let [{:keys [server-name, request-method, route-tag]} request
-        uri (ring-request/request-uri request)]
-    (p/inline-str "HTTP " (:status response) " < "
-                  server-name " " route-tag (when route-tag " ") request-method " " uri
-                  " (" time-millis " ms)")))
+  (let [{:keys [server-name, request-method, form-params, route-tag]} request
+        {:keys [status, response-logger/log-response]} response
+        uri (ring-request/request-uri request)
+        form-params (not-empty form-params)
+        log-response (or log-response (some-> response :headers (get "Content-Type")))]
+    (p/inline-str "HTTP " status " >> "
+                  route-tag (when route-tag " ")
+                  request-method " " server-name " " uri
+                  (when form-params " ") form-params
+                  (when log-response "   >>   ") log-response
+                  " | " time-millis " ms")))
 
 (defn- session-update-description
   [response]
@@ -36,8 +42,8 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn wrap-debug-response
-  "Wrap handler with debug logging."
+(defn wrap-response-logger
+  "Wrap handler with response logging."
   [handler]
   (fn [request]
     (let [start-millis (System/currentTimeMillis)

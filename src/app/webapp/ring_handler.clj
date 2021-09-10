@@ -1,6 +1,6 @@
 (ns app.webapp.ring-handler
   "Ring-based definition for request-response handling."
-  (:require [lib.ring-middleware.debug-response :as debug-response]
+  (:require [lib.ring-middleware.response-logger :as debug-response]
             [lib.ring-middleware.error-exception :as error-exception]
             [lib.ring-middleware.error-not-found :as error-not-found]
             [lib.ring-middleware.route-tag-reitit :as route-tag]
@@ -27,7 +27,7 @@
   [http-handler, routes, {:keys [dev-mode]}]
   (-> http-handler
       (error-not-found/wrap-error-not-found dev-mode)
-      (debug-response/wrap-debug-response)
+      (debug-response/wrap-response-logger)
       (wrap-mdc)
       (route-tag/wrap-route-tag (reitit/router routes))
       (ring-defaults/wrap-defaults (-> ring-defaults/site-defaults
