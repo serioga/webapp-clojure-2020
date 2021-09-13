@@ -1,6 +1,5 @@
 (ns lib.ring-middleware.route-tag-reitit
-  (:require [lib.clojure.core :as e]
-            [lib.clojure.perf :as p]
+  (:require [lib.clojure.perf :as p]
             [reitit.core :as reitit]))
 
 (set! *warn-on-reflection* true)
@@ -52,9 +51,9 @@
     [request]
     (let [match (reitit/match-by-path reitit-router, (request :uri))
           route-tag (-> match :data :name)
-          path-params (-> match :path-params (e/asserted p/not-empty-coll?))]
-      (handler (cond-> (p/fast-assoc request :route-tag/path-for-route (fn'path-for-route reitit-router))
-                 route-tag,, (p/fast-assoc :route-tag route-tag)
+          path-params (-> match :path-params not-empty)]
+      (handler (cond-> (p/inline-assoc request :route-tag/path-for-route (fn'path-for-route reitit-router))
+                 route-tag,, (p/inline-assoc :route-tag route-tag)
                  path-params (update :params (fn merge-route-params [params]
                                                (p/fast-merge params path-params))))))))
 

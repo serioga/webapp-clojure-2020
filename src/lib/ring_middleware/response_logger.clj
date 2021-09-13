@@ -27,18 +27,18 @@
   [response]
   (when-let [session (:session response)]
     (if (:recreate (meta session))
-      (p/inline-str "Recreate :session " session)
-      (p/inline-str "Update :session " session))))
+      (.concat "Recreate :session " (pr-str session))
+      (.concat "Update :session " (pr-str session)))))
 
 (defn- flash-update-description
   [response]
   (when-let [flash (:flash response)]
-    (p/inline-str "Set :flash " flash)))
+    (.concat "Set :flash " (pr-str flash))))
 
 (defn- cookies-update-description
   [response]
   (when-let [cookies (:cookies response)]
-    (p/inline-str "Set :cookies " cookies)))
+    (.concat "Set :cookies " (pr-str cookies))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
