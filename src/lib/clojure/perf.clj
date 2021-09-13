@@ -97,7 +97,7 @@
   (assoc a 10 1 11 1 12 1 13 1 14 1                         ;Execution time mean : 2,315429 µs
            15 1 16 1 17 1 18 1 19 1)
   (inline-assoc a 10 1 11 1 12 1 13 1 14 1                  ;Execution time mean : 1,136405 µs
-                15 1 16 1 17 1 18 1 19 1)
+                  15 1 16 1 17 1 18 1 19 1)
   (-> (inline-assoc! (transient a)                          ;Execution time mean : 1,123020 µs
                      10 1 11 1 12 1 13 1 14 1
                      15 1 16 1 17 1 18 1 19 1)
