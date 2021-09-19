@@ -52,8 +52,8 @@
     (let [match (reitit/match-by-path reitit-router, (request :uri))
           route-tag (-> match :data :name)
           path-params (-> match :path-params not-empty)]
-      (handler (cond-> (p/inline-assoc request :route-tag/path-for-route (fn'path-for-route reitit-router))
-                 route-tag,, (p/inline-assoc :route-tag route-tag)
+      (handler (cond-> (assoc request :route-tag/path-for-route (fn'path-for-route reitit-router))
+                 route-tag,, (assoc :route-tag route-tag)
                  path-params (update :params (fn merge-route-params [params]
                                                (p/fast-merge params path-params))))))))
 

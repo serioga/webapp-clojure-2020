@@ -7,7 +7,6 @@
   :clojure.core/defmulti 1
   :clojure.test/are 2
   :cursive.formatting/align-maps false
-  :lib.clojure.perf/inline-assoc 1
 }</ClojureCodeStyleSettings>
   </code_scheme>
 </component>

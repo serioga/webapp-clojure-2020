@@ -1,8 +1,8 @@
 (ns app.webapp.ring-handler
   "Ring-based definition for request-response handling."
-  (:require [lib.ring-middleware.response-logger :as debug-response]
-            [lib.ring-middleware.error-exception :as error-exception]
+  (:require [lib.ring-middleware.error-exception :as error-exception]
             [lib.ring-middleware.error-not-found :as error-not-found]
+            [lib.ring-middleware.response-logger :as debug-response]
             [lib.ring-middleware.route-tag-reitit :as route-tag]
             [lib.slf4j.mdc :as mdc]
             [reitit.core :as reitit]

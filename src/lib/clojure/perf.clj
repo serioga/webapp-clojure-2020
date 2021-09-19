@@ -1,6 +1,6 @@
 (ns lib.clojure.perf
   "Faster implementation of some core functions."
-  (:import (clojure.lang Associative Counted ITransientAssociative ITransientMap IPersistentMap)))
+  (:import (clojure.lang Counted)))
 
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* :warn-on-boxed)
@@ -11,17 +11,22 @@
   "Merges two hash-maps `a` and `b` using direct assoc and skipping empty input.
    (!) Does not preserve meta of the empty `a`."
   [a b]
-  (cond (or (nil? b) (zero? (.count ^Counted b))) a
-        (or (nil? a) (zero? (.count ^Counted a))) b
-        :else (reduce-kv (fn [m k v] (.assoc ^Associative m k v))
-                         a b)))
+  (if b
+    (if a
+      (if (zero? (.count ^Counted b))
+        a
+        (if (zero? (.count ^Counted a))
+          b
+          (reduce-kv assoc a b)))
+      b)
+    a))
 
 (defn fast-merge!
   "Merges hash-map `b` into transient map `a` using direct assoc."
   [a b]
-  (if b (reduce-kv (fn [m k v] (.assoc ^ITransientAssociative m k v))
-                   a b)
-        a))
+  (if b
+    (reduce-kv assoc! a b)
+    a))
 
 (comment
   (merge {0 0} {1 1})                                       ;Execution time mean : 310,933558 ns
@@ -70,66 +75,6 @@
 
   (merge {} {})                                             ;Execution time mean : 246,174180 ns
   (fast-merge {} {})                                        ;Execution time mean :   7,683187 ns
-  )
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defmacro inline-assoc
-  "Inlined `clojure.core/assoc.`"
-  [m & kvs]
-  (assert (even? (count kvs)))
-  `(let [^Associative m# (or ~m {})]
-     (-> m# ~@(map (fn [[k v]] (list '.assoc k v))
-                   (partition 2 kvs)))))
-
-(defmacro inline-assoc!
-  "Inlined `clojure.core/assoc!.`"
-  [m & kvs]
-  (assert (even? (count kvs)))
-  `(let [^ITransientAssociative m# ~m]
-     (-> m# ~@(map (fn [[k v]] (list '.assoc k v))
-                   (partition 2 kvs)))))
-
-(comment
-  (def a ^:test {0 0 1 0 2 0 3 0 4 0 5 0 6 0 7 0 8 0 9 0})
-  (macroexpand-1 '(inline-assoc a 10 1 11 1 12 1 13 1 14 1 15 1 16 1 17 1 18 1 19 1))
-
-  (assoc a 10 1 11 1 12 1 13 1 14 1                         ;Execution time mean : 2,315429 µs
-           15 1 16 1 17 1 18 1 19 1)
-  (inline-assoc a 10 1 11 1 12 1 13 1 14 1                  ;Execution time mean : 1,136405 µs
-                  15 1 16 1 17 1 18 1 19 1)
-  (-> (inline-assoc! (transient a)                          ;Execution time mean : 1,123020 µs
-                     10 1 11 1 12 1 13 1 14 1
-                     15 1 16 1 17 1 18 1 19 1)
-      (persistent!))
-  )
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(defmacro inline-dissoc
-  "Inlined `clojure.core/dissoc`."
-  [m & ks]
-  `(let [^IPersistentMap m# ~m]
-     (-> m# ~@(map #(list '.without %) ks))))
-
-(defmacro inline-dissoc!
-  "Inlined `clojure.core/dissoc!`."
-  [m & ks]
-  `(let [^ITransientMap m# ~m]
-     (-> m# ~@(map #(list '.without %) ks))))
-
-(comment
-  (macroexpand-1 '(inline-dissoc {} 1 2 3 4 5))
-  (dissoc {} 1 2 3 4 5)                                     ;Execution time mean :  94,260732 ns
-  (inline-dissoc {} 1 2 3 4 5)                              ;Execution time mean :  19,025974 ns
-  (-> (inline-dissoc! (transient {}) 1 2 3 4 5)             ;Execution time mean :  44,977257 ns
-      (persistent!))
-
-  (dissoc {1 1 2 2 3 3 4 4 5 5} 1 2 3 4 5)                  ;Execution time mean : 300,851040 ns
-  (inline-dissoc {1 1 2 2 3 3 4 4 5 5} 1 2 3 4 5)           ;Execution time mean : 203,756272 ns
-  (-> (inline-dissoc! (transient {1 1 2 2 3 3 4 4 5 5})     ;Execution time mean : 158,575963 ns
-                      1 2 3 4 5)
-      (persistent!))
   )
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
