@@ -7,8 +7,8 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn fast-merge
-  "Merges two hash-maps `a` and `b` using direct assoc and skipping empty input.
+(defn merge-not-empty
+  "Merges two hash-maps `a` and `b` skipping empty input.
    (!) Does not preserve meta of the empty `a`."
   [a b]
   (if b
@@ -17,64 +17,31 @@
         a
         (if (zero? (.count ^Counted a))
           b
-          (reduce-kv assoc a b)))
+          (merge a b)))
       b)
     a))
 
-(defn fast-merge!
-  "Merges hash-map `b` into transient map `a` using direct assoc."
-  [a b]
-  (if b
-    (reduce-kv assoc! a b)
-    a))
-
 (comment
-  (merge {0 0} {1 1})                                       ;Execution time mean : 310,933558 ns
-  (into {0 0} {1 1})                                        ;Execution time mean : 417,663587 ns
-  (fast-merge {0 0} {1 1})                                  ;Execution time mean :  65,105927 ns
-  (-> (fast-merge! (transient {0 0}) {1 1})                 ;Execution time mean : 123,863403 ns
-      (persistent!))
-
-  (merge {0 0} {1 1 2 2 3 3 4 4 5 5})                       ;Execution time mean : 673,807932 ns
-  (into {0 0} {1 1 2 2 3 3 4 4 5 5})                        ;Execution time mean : 723,114249 ns
-  (fast-merge {0 0} {1 1 2 2 3 3 4 4 5 5})                  ;Execution time mean : 399,628167 ns
-  (-> (fast-merge! (transient {1 1}) {1 1 2 2 3 3 4 4 5 5}) ;Execution time mean : 263,551012 ns
-      (persistent!))
-
-  (merge {0 0 1 1 2 2 3 3 4 4} {5 5})                       ;Execution time mean : 370,321250 ns
-  (into {0 0 1 1 2 2 3 3 4 4} {5 5})                        ;Execution time mean : 488,377325 ns
-  (fast-merge {0 0 1 1 2 2 3 3 4 4} {5 5})                  ;Execution time mean : 119,066136 ns
-  (-> (fast-merge! (transient {0 0 1 1 2 2 3 3 4 4}) {5 5}) ;Execution time mean : 152,394523 ns
-      (persistent!))
-
-  (merge {0 0 1 1 2 2 3 3 4 4} {5 5 6 6 7 7 8 8 9 9})       ;Execution time mean : 1788,143 ns
-  (into {0 0 1 1 2 2 3 3 4 4} {5 5 6 6 7 7 8 8 9 9})        ;Execution time mean : 1661,969 ns
-  (fast-merge {0 0 1 1 2 2 3 3 4 4} {5 5 6 6 7 7 8 8 9 9})  ;Execution time mean : 1568,274 ns
-  (-> (fast-merge! (transient {0 0 1 1 2 2 3 3 4 4})        ;Execution time mean : 1324,278 ns
-                   {5 5 6 6 7 7 8 8 9 9})
-      (persistent!))
+  (merge {0 0} {5 5 6 6 7 7 8 8 9 9})                       ;Execution time mean : 701,882584 ns
+  (merge-not-empty {0 0} {5 5 6 6 7 7 8 8 9 9})             ;Execution time mean : 706,529319 ns
 
   (merge nil {0 0})                                         ;Execution time mean : 301,955790 ns
-  (fast-merge nil {0 0})                                    ;Execution time mean :   5,475567 ns
+  (merge-not-empty nil {0 0})                               ;Execution time mean :   5,475567 ns
 
   (merge {} {0 0})                                          ;Execution time mean : 274,920615 ns
-  (fast-merge {} {0 0})                                     ;Execution time mean :   6,310723 ns
+  (merge-not-empty {} {0 0})                                ;Execution time mean :   6,678426 ns
 
   (merge {0 0} nil)                                         ;Execution time mean : 126,049276 ns
-  (fast-merge {0 0} nil)                                    ;Execution time mean :   7,454297 ns
-  (-> (fast-merge! (transient {0 0}) nil)                   ;Execution time mean :  87,183660 ns
-      (persistent!))
+  (merge-not-empty {0 0} nil)                               ;Execution time mean :   6,130941 ns
 
   (merge {0 0} {})                                          ;Execution time mean : 267,252445 ns
-  (fast-merge {0 0} {})                                     ;Execution time mean :   7,414466 ns
-  (-> (fast-merge! (transient {0 0}) {})                    ;Execution time mean : 98,556042 ns
-      (persistent!))
+  (merge-not-empty {0 0} {})                                ;Execution time mean :   7,414466 ns
 
   (merge nil nil)                                           ;Execution time mean :  68,336964 ns
-  (fast-merge nil nil)                                      ;Execution time mean :   0,298792 ns
+  (merge-not-empty nil nil)                                 ;Execution time mean :   0,298792 ns
 
   (merge {} {})                                             ;Execution time mean : 246,174180 ns
-  (fast-merge {} {})                                        ;Execution time mean :   7,683187 ns
+  (merge-not-empty {} {})                                   ;Execution time mean :   6,895146 ns
   )
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

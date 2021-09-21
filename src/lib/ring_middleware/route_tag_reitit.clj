@@ -55,6 +55,6 @@
       (handler (cond-> (assoc request :route-tag/path-for-route (fn'path-for-route reitit-router))
                  route-tag,, (assoc :route-tag route-tag)
                  path-params (update :params (fn merge-route-params [params]
-                                               (p/fast-merge params path-params))))))))
+                                               (p/merge-not-empty params path-params))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
