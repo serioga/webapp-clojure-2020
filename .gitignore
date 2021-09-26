@@ -16,6 +16,7 @@
 /target/
 dev/app/config/user.*
 dev/dev/config/user.*
+dev/user/
 node_modules/
 pom.xml
 pom.xml.asc

@@ -13,7 +13,7 @@
                        :files [".props$" ".clj$" ".cljc$" ".cljs$" ".sql$" ".xml$"]
                        ;; See http://docs.caudate.me/hara/hara-io-watch.html#watch-options
                        ;; :exclude will leave out files that match this pattern.
-                       :exclude []}}}
+                       :exclude ["dev\\\\user"]}}}
 
   :dev.env.system.integrant/tailwind
   {:webapp "example"
