@@ -56,7 +56,7 @@
 
 (defn watch-handler
   "Builds app reloading function to be used in file watcher."
-  [{:keys [ns-tracker-dirs, always-reload-ns, never-reload-ns,
+  [{:keys [ns-tracker-dirs, always-reload-ns, never-reload-ns, never-reload-ns-in,
            app-stop, app-start, on-success, on-failure]}]
   (let [ns-tracker (ns-tracker/ns-tracker ns-tracker-dirs)]
     (fn app-reload [& _]
@@ -65,6 +65,7 @@
                           (logger/log-throwable logger e "Stop application before namespace reloading"))))
       (if-some [errors (seq (->> (concat always-reload-ns (ns-tracker) (map first @!reload-errors))
                                  (remove (set never-reload-ns))
+                                 (remove (fn [n] (->> never-reload-ns-in (some (partial string/starts-with? (str n "."))))))
                                  (reload-namespaces)
                                  (reset! !reload-errors)))]
         (do

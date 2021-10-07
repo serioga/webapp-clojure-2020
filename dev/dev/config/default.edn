@@ -6,14 +6,15 @@
   :dev.env.system.integrant/app-reload
   {:watcher {:handler {:ns-tracker-dirs ["src" "dev"]
                        :always-reload-ns [app.database.core]
-                       :never-reload-ns [user]}
+                       :never-reload-ns []
+                       :never-reload-ns-in ["user"]}
              :options {:dirs ["src" "dev" "resources/app"]
                        ;; See http://docs.caudate.me/hara/hara-io-watch.html#watch-options
                        ;; :filter will pick out only files that match this pattern.
-                       :files [".props$" ".clj$" ".cljc$" ".cljs$" ".sql$" ".xml$"]
+                       :files [".props$" ".clj$" ".cljc$" ".cljs$" ".sql$" ".xml$" ".edn"]
                        ;; See http://docs.caudate.me/hara/hara-io-watch.html#watch-options
                        ;; :exclude will leave out files that match this pattern.
-                       :exclude []}}}
+                       :exclude ["dev\\\\user"]}}}
 
   :dev.env.system.integrant/tailwind
   {:webapp "example"

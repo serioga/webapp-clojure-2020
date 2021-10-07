@@ -12,10 +12,11 @@
 .shadow-cljs/
 /checkouts/
 /classes/
+/dev/app/config/user.*
+/dev/dev/config/user.*
+/dev/user/
 /lib/
 /target/
-dev/app/config/user.*
-dev/dev/config/user.*
 node_modules/
 pom.xml
 pom.xml.asc

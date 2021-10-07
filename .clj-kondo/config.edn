@@ -6,4 +6,5 @@
  :lint-as {app.database.hugsql/dfn clojure.core/declare
            mount.core/defstate clojure.core/def
            mount.tools.macrovich/deftime clojure.core/do
-           rum.core/defcc rum.core/defc}}
+           rum.core/defcc rum.core/defc}
+ :output {:exclude-files ["^dev\\\\user\\\\"]}}
