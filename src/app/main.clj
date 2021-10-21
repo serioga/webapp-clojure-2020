@@ -14,7 +14,7 @@
 (Thread/setDefaultUncaughtExceptionHandler
   (reify Thread$UncaughtExceptionHandler
     (uncaughtException [_ _ e]
-      (logger/log-throwable (logger/get-logger *ns*) e "UncaughtExceptionHandler"))))
+      (logger/log-throwable e "UncaughtExceptionHandler"))))
 
 (SLF4JBridgeHandler/removeHandlersForRootLogger)
 (SLF4JBridgeHandler/install)
@@ -27,7 +27,7 @@
     (app/start)
     (logger/info (logger/get-logger *ns*) "[DONE] Application init")
     (catch Throwable e
-      (logger/log-throwable (logger/get-logger *ns*) e "[FAIL] Application init")
+      (logger/log-throwable e "[FAIL] Application init")
       (throw e))))
 
 (defn- stop

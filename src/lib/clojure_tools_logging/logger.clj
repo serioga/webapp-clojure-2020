@@ -66,15 +66,21 @@
   `(log-enabled ~logger :debug ~message))
 
 (defmacro error
-  "Error level logging."
-  [logger message]
-  `(log-enabled ~logger :error ~message))
+  "Error level logging.
+   Uses logger `(get-logger *ns*)` if not specified."
+  ([message]
+   `(error (get-logger *ns*) ~message))
+  ([logger message]
+   `(log-enabled ~logger :error ~message)))
 
 (defmacro log-throwable
-  "Error level logging of the throwable."
-  [logger throwable message]
-  `(let [throwable# ~throwable]
-     (log/log* ~logger :error throwable# (str-throwable throwable# ~message))))
+  "Error level logging of the throwable.
+   Uses logger `(get-logger *ns*)` if not specified."
+  ([throwable message]
+   `(log-throwable (get-logger *ns*) ~throwable ~message))
+  ([logger throwable message]
+   `(let [throwable# ~throwable]
+      (log/log* ~logger :error throwable# (str-throwable throwable# ~message)))))
 
 (comment
   (let [logger (get-logger "test")

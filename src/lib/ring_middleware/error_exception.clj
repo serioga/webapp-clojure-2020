@@ -28,7 +28,7 @@
     (try
       (handler request)
       (catch Throwable e
-        (logger/log-throwable (logger/get-logger *ns*) e "Handle HTTP request")
+        (logger/log-throwable e "Handle HTTP request")
         (response-error-exception e, dev-mode)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
