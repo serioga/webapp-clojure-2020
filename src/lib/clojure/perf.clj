@@ -50,7 +50,7 @@
   "Builds string inline."
   [& args]
   `(-> (StringBuilder.)
-       ~@(->> args (map #(list '.append (cond->> % (list? %) (list 'clojure.core/str)))))
+       ~@(->> args (map #(list '.append (cond->> % ((some-fn symbol? list?) %) (list 'clojure.core/str)))))
        (.toString)))
 
 (comment
