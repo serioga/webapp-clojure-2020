@@ -4,8 +4,8 @@
                  [org.clojure/clojure "1.10.3"]
 
                  ;;; ClojureScript (shadow-cljs)
-                 [com.google.guava/guava "30.1.1-jre" :scope "provided"]
-                 [thheller/shadow-cljs "2.15.2" :scope "provided"]
+                 [com.google.guava/guava "31.0.1-jre" :scope "provided"]
+                 [thheller/shadow-cljs "2.16.8" :scope "provided"]
 
                  ;;; System
                  [integrant "0.8.0"]
@@ -13,44 +13,47 @@
                  [tolitius/mount-up "0.1.3"]
 
                  ;;; Web Server
-                 [io.undertow/undertow-core,,,,,,,,,, "2.2.8.Final"]
-                 [io.undertow/undertow-servlet,,,,,,, "2.2.8.Final"]
-                 [io.undertow/undertow-websockets-jsr "2.2.8.Final"]
-                 [metosin/reitit-core "0.5.13"]
+                 [io.undertow/undertow-core,,,,,,,,,, "2.2.14.Final"]
+                 [io.undertow/undertow-servlet,,,,,,, "2.2.14.Final"]
+                 [io.undertow/undertow-websockets-jsr "2.2.14.Final"]
+                 [metosin/reitit-core "0.5.15"]
                  [org.immutant/web "2.1.10"]
                  [ring/ring-core "1.9.4"]
                  [ring/ring-defaults "0.3.3"]
 
                  ;;; Database
                  [com.h2database/h2 "1.4.200"]
-                 [com.layerware/hugsql "0.5.1"]
+                 [com.layerware/hugsql "0.5.1" :exclusions [com.layerware/hugsql-adapter-clojure-java-jdbc]]
                  [com.layerware/hugsql-adapter-next-jdbc "0.5.1"]
                  [com.mattbertolini/liquibase-slf4j "4.0.0"]
                  [com.zaxxer/HikariCP "5.0.0" :exclusions [org.slf4j/slf4j-api]]
-                 [org.liquibase/liquibase-core "4.4.1"]
+                 [org.liquibase/liquibase-core "4.6.2"]
                  [seancorfield/next.jdbc "1.2.659"]
                  [p6spy/p6spy "3.9.1"]
 
                  ;;; Logging
-                 [ch.qos.logback/logback-classic "1.2.4"]
-                 [ch.qos.logback/logback-core "1.2.4"]
-                 [org.clojure/tools.logging "1.1.0"]
-                 [org.codehaus.janino/janino "3.1.4"]
-                 [org.slf4j/jul-to-slf4j "1.7.31"]
-                 [org.slf4j/slf4j-api "1.7.31"]
+                 [ch.qos.logback/logback-classic "1.2.8"]
+                 [ch.qos.logback/logback-core "1.2.8"]
+                 [org.clojure/tools.logging "1.2.2"]
+                 [org.codehaus.janino/janino "3.1.6"]
+                 [org.slf4j/jul-to-slf4j "1.7.32"]
+                 [org.slf4j/slf4j-api "1.7.32"]
+
+                 ;;; Libs (Java)
+                 [com.fasterxml.jackson.core/jackson-core "2.13.0"]
+                 [commons-codec/commons-codec "1.15"]
+                 [org.apache.commons/commons-lang3 "3.12.0"]
 
                  ;;; Libs (Clojure)
                  [clojurewerkz/propertied "1.3.0"]
                  [com.cognitect/transit-clj "1.0.324"]
-                 [commons-codec/commons-codec "1.15"]
                  [medley "1.3.0"]
-                 [org.apache.commons/commons-lang3 "3.12.0"]
                  [potemkin "0.4.5"]
 
                  ;;; Libs (ClojureScript)
                  [cljsjs/react "17.0.2-0"]
                  [cljsjs/react-dom "17.0.2-0"]
-                 [rum "0.12.6"]
+                 [rum "0.12.8"]
 
                  ;;; Daemon
                  [commons-daemon/commons-daemon "1.2.4"]]
@@ -81,7 +84,7 @@
                    :main ^:skip-aot dev.env.main
                    :dependencies [[compojure "1.6.2" #_"For ring-refresh"]
                                   [me.raynes/fs "1.4.6"]
-                                  [nrepl "0.8.3"]
+                                  [nrepl "0.9.0"]
                                   [ns-tracker "0.4.0"]
                                   [ring-refresh "0.1.2"]
                                   [ring/ring-devel "1.9.4"]
