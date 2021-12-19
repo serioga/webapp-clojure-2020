@@ -31,12 +31,12 @@
    (let [a ^HugsqlAdapter (next-jdbc/hugsql-adapter-next-jdbc default-command-options)]
      (reify
        adapter/HugsqlAdapter
-       (execute [this db sqlvec options] (.execute a db (embed-fn-name sqlvec options) options))
-       (query [this db sqlvec options] (.query a db (embed-fn-name sqlvec options) options))
-       (result-one [this result options] (.result_one a result options))
-       (result-many [this result options] (.result_many a result options))
-       (result-affected [this result options] (.result_affected a result options))
-       (result-raw [this result options] (.result_raw a result options))
-       (on-exception [this exception] (.on_exception a exception))))))
+       (execute [_ db sqlvec options] (.execute a db (embed-fn-name sqlvec options) options))
+       (query [_ db sqlvec options] (.query a db (embed-fn-name sqlvec options) options))
+       (result-one [_ result options] (.result_one a result options))
+       (result-many [_ result options] (.result_many a result options))
+       (result-affected [_ result options] (.result_affected a result options))
+       (result-raw [_ result options] (.result_raw a result options))
+       (on-exception [_ exception] (.on_exception a exception))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

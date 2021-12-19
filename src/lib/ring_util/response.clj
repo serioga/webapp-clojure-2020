@@ -1,5 +1,6 @@
 (ns lib.ring-util.response
-  (:require [potemkin :refer [import-vars]]))
+  (:require [lib.ring-util.cookie]
+            [potemkin :refer [import-vars]]))
 
 (set! *warn-on-reflection* true)
 
