@@ -30,7 +30,7 @@
                   (throw (Exception. (str "Folder not found " path))))
               (io/as-file)
               (.list (reify FilenameFilter
-                       (accept [_ _ name] (string/ends-with? name ext)))))))))
+                       (accept [_ _ filename] (string/ends-with? filename ext)))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
