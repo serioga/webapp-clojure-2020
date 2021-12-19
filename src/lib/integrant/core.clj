@@ -58,7 +58,7 @@
   [f]
   (not= f (get-method ig/suspend-key! :default)))
 
-(defn- fn'halt-key!
+(defn- get-halt-key!
   "Produce wrapped version of the `integrant.core/halt-key!`
    with logging and handling of returned futures."
   [!futures]
@@ -80,7 +80,7 @@
             (swap! !futures conj [k ret]))
           ret)))))
 
-(defn- fn'suspend-key!
+(defn- get-suspend-key!
   "Produce wrapped version of the `integrant.core/suspend-key!`
    with logging and handling of returned futures."
   [!futures]
@@ -136,7 +136,7 @@
   ([system ks]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [!futures (atom [])]
-     (ig/reverse-run! system ks (fn'halt-key! !futures))
+     (ig/reverse-run! system ks (get-halt-key! !futures))
      (await-futures @!futures (fn log-key-error [k throwable]
                                 (with-open [_ (mdc/put-closeable "integrant" (str ['halt-key! (decompose-key k)]))]
                                   (logger/log-throwable logger throwable (str "Stopping " k))))))))
@@ -151,7 +151,7 @@
   ([system ks]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
    (let [!futures (atom [])]
-     (ig/reverse-run! system ks (fn'suspend-key! !futures))
+     (ig/reverse-run! system ks (get-suspend-key! !futures))
      (await-futures @!futures (fn log-key-error [k throwable]
                                 (with-open [_ (mdc/put-closeable "integrant" (str ['suspend-key! (decompose-key k)]))]
                                   (logger/log-throwable logger throwable (str "Suspending " k))))))))

@@ -6,13 +6,13 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn- fn'route->path
+(defn- get-path-fn
   [reitit-router, route-tag]
   (let [match (reitit/match-by-name reitit-router, route-tag)]
     (if (reitit/partial-match? match)
       ;; Route with path parameters.
       (let [required (:required match)]
-        (fn param-route->path
+        (fn get-param-path
           ([]
            (reitit/match-by-name! reitit-router, route-tag))
           ([params]
@@ -21,23 +21,23 @@
                (reitit/match->path match)
                (reitit/match->path match (remove #(required (key %)) params)))))))
       ;; Route without path parameters.
-      (fn simple-route->path
+      (fn get-simple-path
         ([]
          (reitit/match->path match))
         ([params]
          (reitit/match->path match params))))))
 
-(defn- fn'path-for-route
+(defn- path-for-route-fn
   [reitit-router]
-  (let [compiled (reduce (fn [m tag] (assoc m tag (fn'route->path reitit-router, tag)))
-                         {} (reitit/route-names reitit-router))]
+  (let [get-path-fns (reduce (fn [m tag] (assoc m tag (get-path-fn reitit-router, tag)))
+                             {} (reitit/route-names reitit-router))]
     (fn path-for-route
       ([route-tag]
-       (when-some [route->path (compiled route-tag)]
-         (route->path)))
+       (when-some [get-path (get-path-fns route-tag)]
+         (get-path)))
       ([route-tag, params]
-       (when-some [route->path (compiled route-tag)]
-         (route->path params))))))
+       (when-some [get-path (get-path-fns route-tag)]
+         (get-path params))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -52,7 +52,7 @@
     (let [match (reitit/match-by-path reitit-router, (request :uri))
           route-tag (-> match :data :name)
           path-params (-> match :path-params not-empty)]
-      (handler (cond-> (assoc request :route-tag/path-for-route (fn'path-for-route reitit-router))
+      (handler (cond-> (assoc request :route-tag/path-for-route (path-for-route-fn reitit-router))
                  route-tag,, (assoc :route-tag route-tag)
                  path-params (update :params (fn merge-route-params [params]
                                                (p/merge-not-empty params path-params))))))))
