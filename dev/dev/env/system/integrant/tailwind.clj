@@ -14,13 +14,13 @@
           (doto (mount/stop)
                 (mount/start))))
 
-(defonce ^:private !handler-was-run (atom false))
+(defonce ^:private handler-was-run! (atom false))
 
 (defn- wrap-handler-was-run
   [handler]
   (fn [& args]
     (apply handler args)
-    (reset! !handler-was-run true)))
+    (reset! handler-was-run! true)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -33,7 +33,7 @@
                                                               (ring-refresh/send-refresh))}
                                                (tailwind/watch-handler)
                                                (wrap-handler-was-run))
-                                  :handler-run-on-init (not @!handler-was-run)))))
+                                  :handler-run-on-init (not @handler-was-run!)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

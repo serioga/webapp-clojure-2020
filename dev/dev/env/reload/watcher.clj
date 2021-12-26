@@ -12,14 +12,14 @@
 (defn- locking-handler
   "Wraps handler with locking for execution period."
   [handler]
-  (let [!running (atom false)]
+  (let [running! (atom false)]
     (fn [& args]
-      (when (compare-and-set! !running false true)
+      (when (compare-and-set! running! false true)
         (try
           (logger/debug logger (e/pr-str* "Trigger watcher" (str handler) args))
           (apply handler args)
           (finally
-            (reset! !running false)))))))
+            (reset! running! false)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

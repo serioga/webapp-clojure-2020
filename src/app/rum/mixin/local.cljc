@@ -17,9 +17,9 @@
                            (assoc state k (atom (init-state state))))
 
                    :cljs (fn [state]
-                           (let [!local-state (atom (init-state state))
+                           (let [local! (atom (init-state state))
                                  component (:rum/react-component state)]
-                             (add-watch !local-state k (fn [_ _ _ _] (rum/request-render component)))
-                             (assoc state k !local-state))))}))
+                             (add-watch local! k (fn [_ _ _ _] (rum/request-render component)))
+                             (assoc state k local!))))}))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

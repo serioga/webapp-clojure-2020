@@ -58,10 +58,10 @@
   [f]
   (not= f (get-method ig/suspend-key! :default)))
 
-(defn- get-halt-key!
+(defn- halt-key-fn
   "Produce wrapped version of the `integrant.core/halt-key!`
    with logging and handling of returned futures."
-  [!futures]
+  [futures!]
   (fn halt-key!
     [k value]
     (when-some [method (-> (get-method ig/halt-key! (#'ig/normalize-key k))
@@ -77,13 +77,13 @@
         (let [ret (try (method k value)
                        (catch Throwable e (logger/log-throwable logger e (str "Stopping " k))))]
           (when (future? ret)
-            (swap! !futures conj [k ret]))
+            (swap! futures! conj [k ret]))
           ret)))))
 
-(defn- get-suspend-key!
+(defn- suspend-key-fn
   "Produce wrapped version of the `integrant.core/suspend-key!`
    with logging and handling of returned futures."
-  [!futures]
+  [futures!]
   (fn suspend-key!
     [k value]
     (when-some [method (or (-> (get-method ig/suspend-key! (#'ig/normalize-key k))
@@ -101,28 +101,28 @@
         (let [ret (try (method k value)
                        (catch Throwable e (logger/log-throwable logger e (str "Suspending " k))))]
           (when (future? ret)
-            (swap! !futures conj [k ret]))
+            (swap! futures! conj [k ret]))
           ret)))))
 
 (defn- await-build-futures
   "Deref all future key values.
    If there are failed futures then log errors and throw exception to halt system back."
   [system, log-key-error]
-  (doseq [[k v] system :when (future? v)]
+  (doseq [[k value] system :when (future? value)]
     (try
-      (deref v)
+      (deref value)
       (catch Throwable e
         (let [e (or (ex-cause e) e)]
           (log-key-error k e)
-          (throw (#'ig/build-exception system nil k v e)))))))
+          (throw (#'ig/build-exception system nil k value e)))))))
 
 (defn- await-futures
   "Deref all future suspend results.
    Log errors for failed exceptions."
   [futures, log-key-error]
-  (doseq [[k ?future] futures]
+  (doseq [[k future-ref] futures]
     (try
-      (deref ?future)
+      (deref future-ref)
       (catch Throwable e
         (log-key-error k (or (ex-cause e) e))))))
 
@@ -135,9 +135,9 @@
    (halt! system (keys system)))
   ([system ks]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
-   (let [!futures (atom [])]
-     (ig/reverse-run! system ks (get-halt-key! !futures))
-     (await-futures @!futures (fn log-key-error [k throwable]
+   (let [futures! (atom [])]
+     (ig/reverse-run! system ks (halt-key-fn futures!))
+     (await-futures @futures! (fn log-key-error [k throwable]
                                 (with-open [_ (mdc/put-closeable "integrant" (str ['halt-key! (decompose-key k)]))]
                                   (logger/log-throwable logger throwable (str "Stopping " k))))))))
 
@@ -150,9 +150,9 @@
    (suspend! system (keys system)))
   ([system ks]
    {:pre [(map? system) (some-> system meta ::ig/origin)]}
-   (let [!futures (atom [])]
-     (ig/reverse-run! system ks (get-suspend-key! !futures))
-     (await-futures @!futures (fn log-key-error [k throwable]
+   (let [futures! (atom [])]
+     (ig/reverse-run! system ks (suspend-key-fn futures!))
+     (await-futures @futures! (fn log-key-error [k throwable]
                                 (with-open [_ (mdc/put-closeable "integrant" (str ['suspend-key! (decompose-key k)]))]
                                   (logger/log-throwable logger throwable (str "Suspending " k))))))))
 

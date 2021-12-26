@@ -82,19 +82,18 @@
   "Apply conform rules to props map values."
   [m rules]
   (let [apply-regex (fn [pattern rule]
-                      (fn [cm mk v]
-                        (if (re-matches pattern mk)
-                          (assoc! cm mk (conform-prop-val* pattern rule v))
-                          cm)))
-        conformed
-        (persistent! (reduce-kv (fn [cm k rule]
-                                  (cond
-                                    (instance? Pattern k), (reduce-kv (apply-regex k rule), cm, m)
-                                    :else (if-some [v (m k)]
-                                            (assoc! cm k (conform-prop-val* k rule v))
-                                            cm)))
-                                (transient {})
-                                rules))]
+                      (fn [cm! k v]
+                        (if (re-matches pattern k)
+                          (assoc! cm! k (conform-prop-val* pattern rule v))
+                          cm!)))
+        conformed (persistent! (reduce-kv (fn [cm! k rule]
+                                            (cond
+                                              (instance? Pattern k), (reduce-kv (apply-regex k rule), cm!, m)
+                                              :else (if-some [v (m k)]
+                                                      (assoc! cm! k (conform-prop-val* k rule v))
+                                                      cm!)))
+                                          (transient {})
+                                          rules))]
     (merge m, conformed)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

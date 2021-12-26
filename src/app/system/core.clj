@@ -194,22 +194,22 @@
 
 (defonce ^{:doc "Global reference to the running system"
            :private true}
-  !system (atom nil))
+  system! (atom nil))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn stop
   "Stop global system."
   []
-  (when-some [system @!system]
-    (reset! !system nil)
+  (when-some [system @system!]
+    (reset! system! nil)
     (ig/halt! system)
     (logger/info logger "[DONE] Application system stop")))
 
 (defn suspend
   "Suspend global system."
   []
-  (some-> @!system (ig/suspend!)))
+  (some-> @system! (ig/suspend!)))
 
 (defn start
   "Start global system."
@@ -219,7 +219,7 @@
   ([options]
    (stop)
    (let [config ((:prepare-config options identity) (system-config))]
-     (reset! !system (ig/init config, (or (:system-keys options) (keys config)))))
+     (reset! system! (ig/init config, (or (:system-keys options) (keys config)))))
    (logger/info logger "[DONE] Application system start")))
 
 (defn resume
@@ -228,11 +228,11 @@
   ([]
    (resume {}))
   ([options]
-   (if-some [system @!system]
+   (if-some [system @system!]
      (do
-       (reset! !system nil)
+       (reset! system! nil)
        (let [config ((:prepare-config options identity) (system-config))]
-         (reset! !system (ig/resume config, system, (or (:system-keys options) (keys system))))))
+         (reset! system! (ig/resume config, system, (or (:system-keys options) (keys system))))))
      (start options))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -255,7 +255,7 @@
   (let [prop-files (some-> system :app.system.service/app-config meta :prop-files)]
     (logger/info logger (e/pr-str* "Running config from" prop-files))))
 
-(add-watch !system :log-system-status
+(add-watch system! :log-system-status
            (fn [_ _ _ system]
              (some-> system (doto (log-prop-files)
                                   (log-running-webapps)))))

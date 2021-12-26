@@ -32,16 +32,16 @@
           "Hiccup-style element with pre-rendered react component.
            All react components are registered in registry to be added
            in page HTML later."
-          ([!registry, comp-id]
-           (mount-component! !registry :div comp-id nil))
+          ([registry!, comp-id]
+           (mount-component! registry! :div comp-id nil))
 
-          ([!registry, comp-id, comp-data]
-           (mount-component! !registry :div comp-id comp-data))
+          ([registry!, comp-id, comp-data]
+           (mount-component! registry! :div comp-id comp-data))
 
-          ([!registry, tag, comp-id, comp-data]
+          ([registry!, tag, comp-id, comp-data]
            (let [comp-data (-> comp-data
                                (react-component/set-component-id comp-id))]
-             (swap! !registry conj comp-data)
+             (swap! registry! conj comp-data)
              [tag
               {:id (react-component/instance-id comp-data)}
               (react-component/create-component comp-data)]))))
@@ -49,10 +49,10 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 #?(:clj (defn init-mounter
-          "Create `!components` and function to declare component mounting in page hiccup."
+          "Create `components!` and function to declare component mounting in page hiccup."
           [_]
-          (let [!components (atom [])]
-            [!components (partial mount-component! !components)])))
+          (let [components! (atom [])]
+            [components! (partial mount-component! components!)])))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

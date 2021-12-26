@@ -34,14 +34,14 @@
              (e/assert (partial instance? DataSource))))
 
 (defn- wrap-db-fn
-  [f nom ?data-source]
+  [f fn-name ds-var]
   (fn db-fn
-    ([] (db-fn @?data-source {}))
-    ([params] (db-fn @?data-source params))
+    ([] (db-fn @ds-var {}))
+    ([params] (db-fn @ds-var params))
     ([db params]
      (try (f db params)
           (catch Throwable e
-            (throw (->> e (ex-info nom {:sql-params params}))))))))
+            (throw (->> e (ex-info fn-name {:sql-params params}))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -49,9 +49,10 @@
   "Wraps db fn with customized behaviour."
   [fm]
   (let [fk (ffirst fm)
-        ?ds (if (-> fm fk :meta :command #{:query}) #'data-source-read-only #'data-source-read-write)]
+        ds-var (if (-> fm fk :meta :command #{:query}) #'data-source-read-only
+                                                       #'data-source-read-write)]
     (-> fm
-        (update-in [fk :fn] wrap-db-fn (str "db/" (name fk)) ?ds)
+        (update-in [fk :fn] wrap-db-fn (str "db/" (name fk)) ds-var)
         (update-in [fk :meta] assoc :arglists '([] [params] [db params])))))
 
 (defmacro dfn

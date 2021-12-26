@@ -52,7 +52,7 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defonce ^:private ^{:doc "Keeps namespace reload errors."}
-  !reload-errors (atom nil))
+  reload-errors! (atom nil))
 
 (defn watch-handler
   "Builds app reloading function to be used in file watcher."
@@ -63,11 +63,11 @@
       (when app-stop
         (try (app-stop) (catch Throwable e
                           (logger/log-throwable logger e "Stop application before namespace reloading"))))
-      (if-some [errors (seq (->> (concat always-reload-ns (ns-tracker) (map first @!reload-errors))
+      (if-some [errors (seq (->> (concat always-reload-ns (ns-tracker) (map first @reload-errors!))
                                  (remove (set never-reload-ns))
                                  (remove (fn [n] (->> never-reload-ns-in (some (partial string/starts-with? (str n "."))))))
                                  (reload-namespaces)
-                                 (reset! !reload-errors)))]
+                                 (reset! reload-errors!)))]
         (do
           (run! log-reload-error errors)
           (when on-failure

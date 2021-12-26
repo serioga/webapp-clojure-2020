@@ -55,9 +55,9 @@
   (when (seq map-of-await-for)
     (let [logger (logger/get-logger *ns*)]
       (logger/debug logger (str "Await before start " (keys map-of-await-for)))
-      (doseq [[k v] map-of-await-for]
+      (doseq [[k value] map-of-await-for]
         (try
-          (when (future? v) (deref v))
+          (when (future? value) (deref value))
           (catch Throwable e
             (logger/log-throwable logger e (str "Await for " k))))))))
 
