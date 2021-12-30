@@ -54,7 +54,7 @@
 
 ;;; HugSQL query functions
 
-(hugsql/dfn example-user--select-all :example-user/_)
+(hugsql/def example-user--select-all :example-user/_)
 
 (comment
   (example-user--select-all))

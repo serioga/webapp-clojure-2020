@@ -3,7 +3,7 @@
            :unsorted-required-namespaces {:level :warning}}
  :hooks {:analyze-call {rum.core/defc clj-kondo.rum/defc
                         rum.core/defcs clj-kondo.rum/defcs}}
- :lint-as {app.database.hugsql/dfn clojure.core/declare
+ :lint-as {app.database.hugsql/def clojure.core/declare
            mount.core/defstate clojure.core/def
            mount.tools.macrovich/deftime clojure.core/do
            rum.core/defcc rum.core/defc}

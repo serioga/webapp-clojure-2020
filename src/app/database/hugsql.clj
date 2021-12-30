@@ -55,8 +55,8 @@
         (update-in [fk :fn] wrap-db-fn (str "db/" (name fk)) ds-var)
         (update-in [fk :meta] assoc :arglists '([] [params] [db params])))))
 
-(defmacro dfn
-  "Declare single HugSQL function for symbol `sym`.
+(defmacro def
+  "Defines database function with name `sym` in the current namespace.
    The function definition string is loaded from resource file.
 
    If `namespaced-as` (string or namespaced keyword) provided
