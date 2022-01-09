@@ -1,8 +1,8 @@
 (ns app.rum.mount
-  #?(:clj  (:require [clojure.string :as str])
+  #?(:clj  (:require [clojure.string :as string])
      :cljs (:require [rum.core :as rum]))
-  (:require [app.rum.component :as react-component]
-            [lib.cognitect-transit.core :as transit]))
+  (:require [app.rum.component :as component]
+            [lib.cognitect-transit.core :as transit']))
 
 #?(:clj  (set! *warn-on-reflection* true)
    :cljs (set! *warn-on-infer* true))
@@ -17,11 +17,11 @@
            "Mount all components with data from server."
            []
            (let [components (some-> (aget js/window data-js-var)
-                                    (transit/read-transit-string))]
+                                    (transit'/read-transit-string))]
              (js-delete js/window data-js-var)
              (doseq [comp-data components]
-               (let [instance-id (react-component/instance-id comp-data)]
-                 (rum/hydrate (react-component/create-component comp-data)
+               (let [instance-id (component/instance-id comp-data)]
+                 (rum/hydrate (component/create-component comp-data)
                               (js/document.getElementById (name instance-id))))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -40,11 +40,11 @@
 
           ([registry!, tag, comp-id, comp-data]
            (let [comp-data (-> comp-data
-                               (react-component/set-component-id comp-id))]
+                               (component/set-component-id comp-id))]
              (swap! registry! conj comp-data)
              [tag
-              {:id (react-component/instance-id comp-data)}
-              (react-component/create-component comp-data)]))))
+              {:id (component/instance-id comp-data)}
+              (component/create-component comp-data)]))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -61,9 +61,9 @@
           [react-data]
           [:script {:dangerouslySetInnerHTML
                     {:__html (str "window." data-js-var "=`"
-                                  (-> (transit/write-transit-string react-data)
-                                      (str/replace "\\" "\\\\")
-                                      (str/replace "`" "\\`"))
+                                  (-> (transit'/write-transit-string react-data)
+                                      (string/replace "\\" "\\\\")
+                                      (string/replace "`" "\\`"))
                                   "`;")}}]))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

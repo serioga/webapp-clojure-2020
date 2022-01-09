@@ -3,7 +3,7 @@
             [app.system.integrant :as ig']
             [integrant.core :as ig]
             [lib.clojure-tools-logging.logger :as logger]
-            [lib.clojure.core :as e]
+            [lib.clojure.core :as c]
             [lib.clojure.ns :as ns]))
 
 (set! *warn-on-reflection* true)
@@ -120,7 +120,7 @@
   "Log info about loaded configuration files."
   [system]
   (let [prop-files (some-> system :app.system.service/app-config meta :prop-files)]
-    (logger/info (logger/get-logger *ns*) (e/pr-str* "Running config from" prop-files))))
+    (logger/info (logger/get-logger *ns*) (c/pr-str* "Running config from" prop-files))))
 
 (add-watch system! :log-system-status
            (fn [_ _ _ system]

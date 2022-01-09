@@ -1,6 +1,6 @@
 (ns app.system.config
   (:require [integrant.core :as ig]
-            [lib.clojure.core :as e]
+            [lib.clojure.core :as c]
             [lib.integrant.system :as ig.system]))
 
 (set! *warn-on-reflection* true)
@@ -29,16 +29,16 @@
   "Resolves mixin represented by keyword. By default, returns value as is."
   identity)
 
-(e/add-method mixin :default identity)
+(c/add-method mixin :default identity)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- merge-mixins
   [{:keys [mixins] :as params}]
   (if mixins
-    (apply e/deep-merge (dissoc params :mixins)
-           (map #(-> (mixin %) (e/assert map? "Mixin should be a map"))
-                (-> mixins (e/assert sequential? "Require :mixins to be a sequence"))))
+    (apply c/deep-merge (dissoc params :mixins)
+           (map #(-> (mixin %) (c/assert map? "Mixin should be a map"))
+                (-> mixins (c/assert sequential? "Require :mixins to be a sequence"))))
     params))
 
 (defn- install-awaits
@@ -76,7 +76,7 @@
   {:arglists '([config-map, key, {:keys [as, derive, config, import, mounts, mixins, awaits]}])}
   (fn [_ _ {:keys [as]}] as))
 
-(e/add-method install-as nil install)
+(c/add-method install-as nil install)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -96,7 +96,7 @@
 
 (defmethod install-as ::hikari-data-source
   [m, k, params]
-  (install m k (e/deep-merge params {:derive :app.system.service/hikari-data-source
+  (install m k (c/deep-merge params {:derive :app.system.service/hikari-data-source
                                      :config {:dev-mode (ig/ref ::dev-mode)}
                                      :import {:data-source-class "Database.DataSourceClassName"
                                               :database-url (if (-> params :config :read-only)

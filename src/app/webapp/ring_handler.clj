@@ -6,7 +6,7 @@
             [lib.ring-middleware.route-tag-reitit :as route-tag]
             [lib.slf4j.mdc :as mdc]
             [reitit.core :as reitit]
-            [ring.middleware.defaults :as ring-defaults])
+            [ring.middleware.defaults :as defaults])
   (:import (java.util UUID)))
 
 (set! *warn-on-reflection* true)
@@ -30,10 +30,10 @@
       (debug-response/wrap-response-logger)
       (wrap-mdc)
       (route-tag/wrap-route-tag (reitit/router routes))
-      (ring-defaults/wrap-defaults (-> ring-defaults/site-defaults
-                                       (assoc-in [:security :anti-forgery] false)
-                                       (assoc-in [:security :frame-options] false)
-                                       (dissoc :session)))
+      (defaults/wrap-defaults (-> defaults/site-defaults
+                                  (assoc-in [:security :anti-forgery] false)
+                                  (assoc-in [:security :frame-options] false)
+                                  (dissoc :session)))
       (error-exception/wrap-error-exception dev-mode)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

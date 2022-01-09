@@ -2,21 +2,11 @@
   "Extension of `clojure.string`. Similar to cuerdas, superstring etc."
   (:refer-clojure :exclude [concat empty? not-empty replace])
   (:require [clojure.string :as string]
-            [clojure.test :as test]
-            [potemkin :refer [import-vars]])
+            [clojure.test :as test])
   (:import (org.apache.commons.lang3 StringUtils)))
 
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* :warn-on-boxed)
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(import-vars [clojure.string blank?, starts-with?, ends-with?, includes?]
-             [clojure.string replace, replace-first, re-quote-replacement]
-             [clojure.string capitalize, upper-case, lower-case]
-             [clojure.string join, split, split-lines]
-             [clojure.string trim, triml, trimr, trim-newline]
-             [clojure.string index-of last-index-of])
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

@@ -4,7 +4,7 @@
             [dev.env.system.app :as app.system]
             [dev.env.system.integrant :as ig']
             [integrant.core :as ig]
-            [lib.clojure.core :as e]
+            [lib.clojure.core :as c]
             [lib.clojure.ns :as ns]
             [lib.integrant.system :as ig.system]
             [me.raynes.fs :as fs]))
@@ -32,7 +32,7 @@
                (edn/read-string)
                :dev.env.system/config)
        (catch Throwable e
-         (throw (->> e (Exception. (e/pr-str* #'read-config-edn f)))))))
+         (throw (->> e (Exception. (c/pr-str* #'read-config-edn f)))))))
 
 (defn- add-repl-dependency
   "Adds dependency for :dev.env.system.integrant/nrepl in every key to start
@@ -48,9 +48,9 @@
 
 (defn- read-config
   []
-  (-> (e/deep-merge (read-config-edn "./dev/dev/config/default.edn")
+  (-> (c/deep-merge (read-config-edn "./dev/dev/config/default.edn")
                     (some-> "./dev/dev/config/user.edn"
-                            (e/asserted fs/file?)
+                            (c/asserted fs/file?)
                             (read-config-edn)))
       (add-repl-dependency)))
 
@@ -75,7 +75,7 @@
   (try (reset! system! (ig'/init (read-config)))
        (catch Exception e
          (when-let [system (some-> (ig.system/ex-failed-system e)
-                                   (e/asserted :dev.env.system.integrant/nrepl))]
+                                   (c/asserted :dev.env.system.integrant/nrepl))]
            ;; Keep partially started system if repl started successfully.
            (reset! system! system))
          (throw e)))
@@ -101,8 +101,8 @@
 (defn- trigger-watcher
   [k]
   (-> (get @system! k) meta :handler
-      (e/assert fn? (str "Trigger watcher " k))
-      (e/invoke #'trigger-watcher k)))
+      (c/assert fn? (str "Trigger watcher " k))
+      (c/invoke #'trigger-watcher k)))
 
 (defn- reload
   "Reload actions on ENTER keypress."

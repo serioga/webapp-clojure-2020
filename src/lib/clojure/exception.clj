@@ -1,5 +1,5 @@
 (ns lib.clojure.exception
-  (:require [lib.clojure-string.core :as string]))
+  (:require [lib.clojure-string.core :as string']))
 
 (set! *warn-on-reflection* true)
 
@@ -8,7 +8,7 @@
 (defn ex-message-or-name
   "Returns the exception message or class name if the message is empty."
   [throwable]
-  (or (-> (.getMessage ^Throwable throwable) (string/not-empty))
+  (or (-> (.getMessage ^Throwable throwable) (string'/not-empty))
       (.getCanonicalName (class throwable))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

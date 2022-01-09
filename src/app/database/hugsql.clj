@@ -1,8 +1,8 @@
 (ns app.database.hugsql
   (:require [app.database.result-set :as rs]
             [hugsql.adapter.next-jdbc :as adapter]
-            [lib.clojure.core :as e]
-            [lib.hugsql.core :as hugsql]
+            [lib.clojure.core :as c]
+            [lib.hugsql.core :as hugsql']
             [mount.core :as mount])
   (:import (javax.sql DataSource)))
 
@@ -26,12 +26,12 @@
 (mount/defstate ^:private data-source-read-write
   {:on-reload :noop}
   :start (-> (::data-source-read-write (mount/args))
-             (e/assert (partial instance? DataSource))))
+             (c/assert (partial instance? DataSource))))
 
 (mount/defstate ^:private data-source-read-only
   {:on-reload :noop}
   :start (-> (::data-source-read-only (mount/args))
-             (e/assert (partial instance? DataSource))))
+             (c/assert (partial instance? DataSource))))
 
 (defn- wrap-db-fn
   [f fn-name ds-var]
@@ -62,8 +62,8 @@
    If `namespaced-as` (string or namespaced keyword) provided
    then all keys in result set are namespaced."
   ([sym]
-   `(hugsql/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts)))
+   `(hugsql'/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts)))
   ([sym, namespaced-as]
-   `(hugsql/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts (rs/as-namespaced-maps ~namespaced-as)))))
+   `(hugsql'/def-db-fn-from-file '~sym sql-rc-path wrap-db-fn-map (def-db-fns-opts (rs/as-namespaced-maps ~namespaced-as)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

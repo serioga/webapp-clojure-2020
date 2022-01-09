@@ -2,7 +2,7 @@
   ;; React components
   (:require [app.rum.core])
   ;; Imports
-  (:require [app.rum.mount :as rum-mount]))
+  (:require [app.rum.mount :as rum.mount]))
 
 (set! *warn-on-infer* true)
 
@@ -17,6 +17,6 @@
 
 (enable-console-print!)
 
-(rum-mount/mount-all)
+(rum.mount/mount-all)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

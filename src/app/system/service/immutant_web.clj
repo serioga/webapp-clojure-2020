@@ -2,7 +2,7 @@
   (:require [immutant.web :as web]
             [integrant.core :as ig]
             [lib.clojure-tools-logging.logger :as logger]
-            [lib.clojure.core :as e]))
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
 
@@ -11,14 +11,14 @@
 (defn- start-webapp
   [server, {webapp-name :name :as webapp}, server-options]
   (let [options (merge server-options (webapp :options))]
-    (logger/debug (logger/get-logger *ns*) (e/pr-str* "Start webapp" webapp-name options))
+    (logger/debug (logger/get-logger *ns*) (c/pr-str* "Start webapp" webapp-name options))
     (-> (web/run (webapp :handler) (merge server options))
         (with-meta (update (meta server) :running-webapps
                            conj [webapp-name options])))))
 
 (defn- skip-webapp
   [server, webapp]
-  (logger/debug (logger/get-logger *ns*) (e/pr-str* "Skip webapp" webapp))
+  (logger/debug (logger/get-logger *ns*) (c/pr-str* "Skip webapp" webapp))
   server)
 
 (defn- start-server

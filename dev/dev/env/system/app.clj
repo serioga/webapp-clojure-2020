@@ -1,7 +1,7 @@
 (ns dev.env.system.app
   "Wrap app system with development related adjustments."
   (:require [app.system.core :as app.system]
-            [clojure.string :as str]
+            [clojure.string :as string]
             [dev.env.reload.ring-refresh :as ring-refresh]
             [me.raynes.fs :as fs]
             [ring.middleware.lint :as lint]))
@@ -16,7 +16,7 @@
   [prop-files]
   (cond
     (not (fs/file? user-props-file)), prop-files
-    (string? prop-files), (str/join "," [prop-files user-props-file])
+    (string? prop-files), (string/join "," [prop-files user-props-file])
     (sequential? prop-files), (-> (into [] prop-files)
                                   (conj user-props-file))
     :else user-props-file))

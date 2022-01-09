@@ -1,7 +1,7 @@
 (ns dev.env.shadow-cljs.server
   (:require [shadow.cljs.devtools.api :as api]
             [shadow.cljs.devtools.server :as server]
-            [shadow.cljs.devtools.server.runtime :as server-runtime]))
+            [shadow.cljs.devtools.server.runtime :as runtime]))
 
 (set! *warn-on-reflection* true)
 
@@ -13,7 +13,7 @@
   (server/start!)
   (doseq [build builds-to-start]
     (api/watch build))
-  (server-runtime/get-instance))
+  (runtime/get-instance))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

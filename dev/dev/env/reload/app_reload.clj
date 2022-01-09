@@ -2,7 +2,7 @@
   (:require [clojure.main :as main]
             [clojure.string :as string]
             [lib.clojure-tools-logging.logger :as logger]
-            [lib.clojure.core :as e]
+            [lib.clojure.core :as c]
             [ns-tracker.core :as ns-tracker])
   (:import (java.io FileNotFoundException)))
 
@@ -71,7 +71,7 @@
         (do
           (run! log-reload-error errors)
           (when on-failure
-            (on-failure (ex-info (e/pr-str* "Failed to reload namespaces" (map first errors))
+            (on-failure (ex-info (c/pr-str* "Failed to reload namespaces" (map first errors))
                                  {:reason ::reload-namespaces, :errors errors}))))
         (try
           (when app-start (app-start))
@@ -96,7 +96,7 @@
 (defn log-reload-failure
   "Prints error if application reload failed."
   [throwable]
-  (logger/error logger (e/ex-message-all throwable))
+  (logger/error logger (c/ex-message-all throwable))
   (logger/info logger "[FAIL] Application reload")
   (print-reload-on-enter))
 

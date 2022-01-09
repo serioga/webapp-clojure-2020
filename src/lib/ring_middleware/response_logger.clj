@@ -1,7 +1,7 @@
 (ns lib.ring-middleware.response-logger
   (:require [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.perf :as p]
-            [lib.ring-util.request :as ring-request]))
+            [lib.ring-util.request :as ring.request']))
 
 (set! *warn-on-reflection* true)
 
@@ -13,7 +13,7 @@
   [request response time-millis]
   (let [{:keys [server-name, request-method, form-params, route-tag]} request
         {:keys [status, response-logger/log-response]} response
-        uri (ring-request/request-uri request)
+        uri (ring.request'/request-uri request)
         form-params (not-empty form-params)
         log-response (or log-response (some-> response :headers (get "Content-Type")))]
     (p/inline-str "HTTP " status " >> "

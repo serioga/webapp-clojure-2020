@@ -1,7 +1,7 @@
 (ns app.system.service.webapp-http-handler
   (:require [app.$example$-webapp.core :as example]
             [integrant.core :as ig]
-            [lib.clojure.core :as e]))
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
 
@@ -13,9 +13,9 @@
 
 (defmethod webapp-http-handler :default
   [{webapp-name :name}]
-  (throw (Exception. (e/pr-str* "Webapp handler is not found for name" webapp-name) nil)))
+  (throw (Exception. (c/pr-str* "Webapp handler is not found for name" webapp-name) nil)))
 
-(e/add-method webapp-http-handler "example"
+(c/add-method webapp-http-handler "example"
               example/example-http-handler)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

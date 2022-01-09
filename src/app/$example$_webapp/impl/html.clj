@@ -1,6 +1,6 @@
 (ns app.$example$-webapp.impl.html
   (:require [app.html.core :as html]
-            [lib.ring-util.response :as ring-response]
+            [lib.ring-util.response :as ring.response']
             [mount.core :as mount]))
 
 (set! *warn-on-reflection* true)
@@ -38,6 +38,6 @@
   [hiccup]
   (-> hiccup
       (html/render-page)
-      (ring-response/html)))
+      (ring.response'/html)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

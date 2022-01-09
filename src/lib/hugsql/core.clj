@@ -1,6 +1,6 @@
 (ns lib.hugsql.core
   (:require [hugsql.core :as hugsql]
-            [lib.clojure.core :as e]))
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
 
@@ -38,7 +38,7 @@
   (-> (str path sym ".sql")
       (hugsql/parsed-defs-from-file)
       (first)
-      (e/assert some? (str "Parsed SQL with name " sym))
+      (c/assert some? (str "Parsed SQL with name " sym))
       (name-parsed-def sym)
       (intern-db-fn options wrap-db-fn-map)))
 

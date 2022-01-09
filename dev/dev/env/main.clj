@@ -5,7 +5,7 @@
   (:require [dev.env.system.app :as app.system]
             [dev.env.system.core :as env.system]
             [lib.clojure-tools-logging.logger :as logger]
-            [lib.clojure.core :as e]))
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
 
@@ -23,14 +23,14 @@
          (catch Throwable e (throw (->> e (ex-info "Start application" {:reason ::app})))))
 
     (when-some [server (env.system/nrepl-server)]
-      (logger/info logger (e/pr-str* "Running nREPL server on port" (:port server))))
+      (logger/info logger (c/pr-str* "Running nREPL server on port" (:port server))))
 
     (logger/info logger "[DONE] Application has been started for development. Happy coding!")
 
     (env.system/prompt-reload-on-enter)
 
     (catch Throwable e
-      (logger/error logger (e/ex-message-all e))
+      (logger/error logger (c/ex-message-all e))
       (when (env.system/nrepl-server)
         (env.system/prompt-reload-on-enter)))))
 

@@ -1,6 +1,6 @@
 (ns app.database.core
   (:require [app.database.hugsql :as hugsql]
-            [lib.clojure.core :as e]
+            [lib.clojure.core :as c]
             [mount.core :as mount]
             [next.jdbc :as jdbc])
   (:import (java.sql Connection)
@@ -17,7 +17,7 @@
   {:arglists '([] [options]) :on-reload :noop}
 
   :start (let [data-source (-> (::data-source-read-write (mount/args))
-                               (e/assert (partial instance? DataSource)))]
+                               (c/assert (partial instance? DataSource)))]
            (fn get-read-write-connection
              ([]
               (get-read-write-connection {}))
@@ -29,7 +29,7 @@
   {:arglists '([] [options]) :on-reload :noop}
 
   :start (let [data-source (-> (::data-source-read-only (mount/args))
-                               (e/assert (partial instance? DataSource)))]
+                               (c/assert (partial instance? DataSource)))]
            (fn get-read-only-connection
              ([]
               (get-read-only-connection {}))

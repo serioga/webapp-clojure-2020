@@ -2,8 +2,8 @@
   "Logging macros using explicit logger instance."
   (:require [clojure.tools.logging :as log]
             [clojure.tools.logging.impl :as impl]
-            [lib.clojure-string.core :as string]
-            [lib.clojure.core :as e]))
+            [lib.clojure-string.core :as string']
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
 
@@ -27,8 +27,8 @@
 (comment
   (let [logger (impl/get-logger log/*logger-factory* "test")
         s "4" n nil]
-    (log-enabled logger :info (e/pr-str* 1 2 3 "X" s n :k))
-    (log-enabled logger :error (e/pr-str* 1 2 3 "X" s n :k))))
+    (log-enabled logger :info (c/pr-str* 1 2 3 "X" s n :k))
+    (log-enabled logger :error (c/pr-str* 1 2 3 "X" s n :k))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -50,7 +50,7 @@
   "Returns message string for the throwable."
   [throwable message]
   (let [data (str-ex-data throwable)]
-    (cond-> ^String (e/ex-message-all throwable (-> (str message) (string/not-empty)))
+    (cond-> ^String (c/ex-message-all throwable (-> (str message) (string'/not-empty)))
       data (-> (.concat " ") (.concat data)))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -85,7 +85,7 @@
 (comment
   (let [logger (get-logger "test")
         throwable (ex-info "Exception" {:error true} (ex-info "Cause" {:cause true}))
-        message (e/pr-str* 1 2 3 (str "4") "X")]
+        message (c/pr-str* 1 2 3 (str "4") "X")]
     (info logger message)
     (debug logger message)
     (error logger message)

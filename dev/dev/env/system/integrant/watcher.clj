@@ -2,7 +2,7 @@
   (:require [dev.env.reload.watcher :as watcher]
             [integrant.core :as ig]
             [lib.clojure-tools-logging.logger :as logger]
-            [lib.clojure.core :as e]))
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
 
@@ -19,7 +19,7 @@
       (try
         (handler :init-watcher)
         (catch Throwable e
-          (logger/log-throwable logger e (e/pr-str* "Run handler on init" handler options)))))
+          (logger/log-throwable logger e (c/pr-str* "Run handler on init" handler options)))))
     watcher))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

@@ -2,8 +2,8 @@
   "Application configuration."
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
-            [clojurewerkz.propertied.properties :as p]
-            [lib.clojure.core :as e])
+            [clojurewerkz.propertied.properties :as properties]
+            [lib.clojure.core :as c])
   (:import (java.util.regex Pattern)))
 
 (set! *warn-on-reflection* true)
@@ -15,8 +15,8 @@
   [file]
   (some-> file
           (io/file)
-          (p/load-from)
-          (p/properties->map)))
+          (properties/load-from)
+          (properties/properties->map)))
 
 (defn- string->filenames
   "Split comma separated file names to list."
@@ -30,7 +30,7 @@
   [filenames]
   (let [filenames (cond-> filenames
                     (string? filenames) string->filenames)]
-    (e/assert filenames sequential?)
+    (c/assert filenames sequential?)
     (with-meta (->> filenames
                     (map load-map-from-props-file)
                     (reduce merge {}))
@@ -67,14 +67,14 @@
   [k rule value]
   (try (conform-prop-val rule value)
        (catch Throwable e
-         (throw (->> e (Exception. (e/pr-str* 'conform-prop-val k rule value)))))))
+         (throw (->> e (Exception. (c/pr-str* 'conform-prop-val k rule value)))))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn add-conform-rule
   "Installs function f as a handler for the rule keyword in the `conform-prop-val`."
   [rule, f]
-  (e/add-method conform-prop-val rule #(f %2)))
+  (c/add-method conform-prop-val rule #(f %2)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

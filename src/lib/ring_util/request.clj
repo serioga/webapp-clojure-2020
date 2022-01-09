@@ -1,16 +1,8 @@
 (ns lib.ring-util.request
-  (:require [lib.clojure-string.core :as string]
-            [lib.ring-util.cookie]
-            [potemkin :refer [import-vars]]
-            [ring.util.request]))
+  (:require [lib.clojure-string.core :as string']
+            [lib.ring-util.cookie]))
 
 (set! *warn-on-reflection* true)
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(import-vars [ring.util.request request-url])
-
-(import-vars [lib.ring-util.cookie get-cookie-value])
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -19,7 +11,7 @@
   [request]
   (let [query (:query-string request)]
     (cond-> (:uri request)
-      query (string/concat "?" query))))
+      query (string'/concat "?" query))))
 
 (comment
   (request-uri {:uri "http://localhost/"})
@@ -31,9 +23,9 @@
   "Build URL for path with same scheme like incoming request."
   [request path]
   (let [headers (:headers request)]
-    (string/concat (or (headers "x-forwarded-proto")
-                       (-> request :scheme name))
-                   "://" (headers "host") path)))
+    (string'/concat (or (headers "x-forwarded-proto")
+                        (-> request :scheme name))
+                    "://" (headers "host") path)))
 
 (comment
   (url-for-path {:headers {"x-forwarded-proto" "http", "host" "localhost"}} "/")
@@ -51,14 +43,14 @@
 (defn- anonymize-ip
   "Replace last octet in IP address with zero."
   [ip]
-  (some-> (string/drop-end ip #(case % (\. \:) false true))
-          (string/concat "0")))
+  (some-> (string'/drop-end ip #(case % (\. \:) false true))
+          (string'/concat "0")))
 
 (defn client-ip
   "Read client IP address from ring request.
    Respects proxy headers. Anonymizes IP address."
   [request]
-  (-> (or (some-> request :headers (get "x-forwarded-for") (string/take-before ","))
+  (-> (or (some-> request :headers (get "x-forwarded-for") (string'/take-before ","))
           (:remote-addr request))
       (anonymize-ip)))
 

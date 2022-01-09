@@ -1,5 +1,5 @@
 (ns lib.util.uuid
-  (:require [lib.clojure.core :as e])
+  (:require [lib.clojure.core :as c])
   (:import (java.util UUID)))
 
 (set! *warn-on-reflection* true)
@@ -10,7 +10,7 @@
   "Initialize UUID from string representation.
    Accept only zero-padded representation."
   [s]
-  {:pre [(e/assert? s (some-fn string? nil?) (str #'from-string))]}
+  {:pre [(c/assert? s (some-fn string? nil?) (str #'from-string))]}
   (let [uuid (try (UUID/fromString s) (catch Throwable _))]
     (when (= s (str uuid))
       uuid)))

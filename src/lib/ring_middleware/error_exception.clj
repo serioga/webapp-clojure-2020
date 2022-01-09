@@ -1,7 +1,7 @@
 (ns lib.ring-middleware.error-exception
   (:require [lib.clojure-tools-logging.logger :as logger]
-            [lib.clojure.core :as e]
-            [lib.ring-util.response :as ring-response]))
+            [lib.clojure.core :as c]
+            [lib.ring-util.response :as ring.response']))
 
 (set! *warn-on-reflection* true)
 
@@ -11,13 +11,13 @@
   [throwable, dev-mode]
   (let [status 500
         message (str "[HTTP " status "] "
-                     (e/ex-message-all throwable)
+                     (c/ex-message-all throwable)
                      (when dev-mode
                        (str "\n\n" "---" "\n"
                             "Default exception handler, dev mode."
                             "\n\n"
                             (prn-str throwable))))]
-    (ring-response/plain-text message status)))
+    (ring.response'/plain-text message status)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

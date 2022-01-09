@@ -1,6 +1,6 @@
 (ns lib.integrant.system
   (:require [integrant.core :as ig]
-            [lib.clojure.core :as e]))
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
 
@@ -18,7 +18,7 @@
 
 (defmethod ig/init-key ::import-map
   [_ {:keys [import-from import-keys init-map]}]
-  (e/deep-merge (or init-map {})
+  (c/deep-merge (or init-map {})
                 (import-map import-keys import-from)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
