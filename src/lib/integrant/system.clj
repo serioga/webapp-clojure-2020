@@ -1,6 +1,5 @@
 (ns lib.integrant.system
   (:require [integrant.core :as ig]
-            [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
@@ -13,13 +12,9 @@
 
 (defn- import-map
   [m from]
-  (into {}
-        (keep (fn [[k v]] (cond
-                            (map? v) [k (import-map v from)]
-                            (fn? v) [k (v from)]
-                            :else (when (contains? from v)
-                                    [k (from v)])))
-              m)))
+  (->> m (into {} (keep (fn [[k v]] (cond (map? v),,,,,,,,,, [k (import-map v from)]
+                                          (fn? v),,,,,,,,,,, [k (v from)]
+                                          (contains? from v) [k (from v)]))))))
 
 (defmethod ig/init-key ::import-map
   [_ {:keys [import-from import-keys init-map]}]
@@ -49,16 +44,34 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn await-before-start
-  "Wait for start of all deferred components listed in `await-for`."
-  [map-of-await-for]
-  (when (seq map-of-await-for)
-    (let [logger (logger/get-logger *ns*)]
-      (logger/debug logger (str "Await before start " (keys map-of-await-for)))
-      (doseq [[k value] map-of-await-for]
-        (try
-          (when (future? value) (deref value))
-          (catch Throwable e
-            (logger/log-throwable logger e (str "Await for " k))))))))
+(defn simple-key
+  "Returns key or the last component of composite key."
+  [k]
+  (cond-> k (vector? k) (peek)))
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn get-key-method
+  "Given an integrant key multimethod and a dispatch value, returns the dispatch
+  fn that would apply to that value, or nil if none apply and no default."
+  [f k]
+  (get-method f (#'ig/normalize-key k)))
+
+(defn get-defined-key-method
+  "Given an integrant key multimethod and a dispatch value, returns the dispatch
+  fn that would apply to that value, or nil if none or default apply."
+  [f k]
+  (let [method (get-key-method f k)]
+    (when (and method (not= method (get-method f :default)))
+      method)))
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn ex-failed-system
+  "Returns system attached to the integrant build exception e."
+  [e]
+  (let [system (-> e ex-data :system)]
+    (when (and (map? system) (some-> system meta ::ig/origin))
+      system)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

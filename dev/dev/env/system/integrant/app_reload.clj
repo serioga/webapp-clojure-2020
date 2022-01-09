@@ -1,6 +1,6 @@
 (ns dev.env.system.integrant.app-reload
   (:require [dev.env.reload.app-reload :as app-reload]
-            [dev.env.system.app :as app]
+            [dev.env.system.app :as app.system]
             [integrant.core :as ig]))
 
 (set! *warn-on-reflection* true)
@@ -9,8 +9,8 @@
 
 (defn- build-watch-handler
   [config]
-  (app-reload/watch-handler (assoc config :app-stop #'app/suspend
-                                          :app-start #'app/resume
+  (app-reload/watch-handler (assoc config :app-stop #'app.system/suspend
+                                          :app-start #'app.system/resume
                                           :on-success #'app-reload/log-reload-success
                                           :on-failure #'app-reload/log-reload-failure)))
 

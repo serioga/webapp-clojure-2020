@@ -1,6 +1,6 @@
 (ns dev.env.system.app
   "Wrap app system with development related adjustments."
-  (:require [app.system.core :as app]
+  (:require [app.system.core :as app.system]
             [clojure.string :as str]
             [dev.env.reload.ring-refresh :as ring-refresh]
             [me.raynes.fs :as fs]
@@ -41,7 +41,7 @@
 
 (defn- prepare-system-config
   [config]
-  (assoc config ::app/dev-mode true
+  (assoc config :app.system.config/dev-mode true
                 :dev.env.system/prepare-prop-files prepare-prop-files
                 :dev.env.system/prepare-webapp prepare-webapp))
 
@@ -52,10 +52,10 @@
   ([]
    (start {}))
   ([{:keys [system-keys]}]
-   (try (app/start (cond-> {:prepare-config prepare-system-config}
-                     system-keys (assoc :system-keys system-keys)))
+   (try (app.system/start (cond-> {:prepare-config prepare-system-config}
+                            system-keys (assoc :system-keys system-keys)))
         (catch Throwable e
-          (throw (->> e (Exception. (str 'app/start))))))
+          (throw (->> e (Exception. (str 'app.system/start))))))
    (ring-refresh/send-refresh true)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -64,7 +64,7 @@
   "Stop `app` system."
   []
   (ring-refresh/send-refresh false)
-  (app/stop))
+  (app.system/stop))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -72,16 +72,16 @@
   "Suspend `app` system."
   []
   (ring-refresh/send-refresh false)
-  (app/suspend))
+  (app.system/suspend))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn resume
   "Resume `app` system."
   []
-  (try (app/resume {:prepare-config prepare-system-config})
+  (try (app.system/resume {:prepare-config prepare-system-config})
        (catch Throwable e
-         (throw (->> e (Exception. (str 'app/resume))))))
+         (throw (->> e (Exception. (str 'app.system/resume))))))
   (ring-refresh/send-refresh true))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

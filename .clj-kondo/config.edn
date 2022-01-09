@@ -1,5 +1,7 @@
 {:linters {:missing-docstring {:level :warning}
-           :shadowed-var {:level :warning}
+           :shadowed-var {:level :warning
+                          :exclude [ref]
+                          :suggest {key k val v keys ks}}
            :unsorted-required-namespaces {:level :warning}}
  :hooks {:analyze-call {rum.core/defc clj-kondo.rum/defc
                         rum.core/defcs clj-kondo.rum/defcs}}

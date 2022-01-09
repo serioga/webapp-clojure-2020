@@ -2,7 +2,7 @@
   "Initial namespace for release application.
    Affected in development mode!
    See `dev` namespace as initial for development."
-  (:require [app.system.core :as app]
+  (:require [app.system.core :as app.system]
             [lib.clojure-tools-logging.logger :as logger])
   (:import (org.slf4j.bridge SLF4JBridgeHandler))
   (:gen-class :implements [org.apache.commons.daemon.Daemon]))
@@ -24,7 +24,7 @@
 (defn- start
   []
   (try
-    (app/start)
+    (app.system/start)
     (logger/info (logger/get-logger *ns*) "[DONE] Application init")
     (catch Throwable e
       (logger/log-throwable e "[FAIL] Application init")
@@ -32,7 +32,7 @@
 
 (defn- stop
   []
-  (app/stop))
+  (app.system/stop))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

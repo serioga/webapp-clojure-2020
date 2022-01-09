@@ -2,8 +2,7 @@
   (:require [immutant.web :as web]
             [integrant.core :as ig]
             [lib.clojure-tools-logging.logger :as logger]
-            [lib.clojure.core :as e]
-            [lib.integrant.system :as system]))
+            [lib.clojure.core :as e]))
 
 (set! *warn-on-reflection* true)
 
@@ -23,13 +22,7 @@
   server)
 
 (defn- start-server
-  [{:keys [options
-           webapps
-           dev/prepare-webapp
-           await-before-start]}]
-
-  (system/await-before-start await-before-start)
-
+  [{:keys [options, webapps, dev/prepare-webapp]}]
   (let [prepare-webapp (or prepare-webapp identity)]
     (reduce (fn [server, {:keys [webapp-is-enabled] :or {webapp-is-enabled true} :as webapp}]
               (if webapp-is-enabled
@@ -47,13 +40,12 @@
 
 (defmethod ig/init-key :app.system.service/immutant-web
   [_ options]
-  (e/future (start-server options)))
+  (start-server options))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/halt-key! :app.system.service/immutant-web
   [_ server]
-  ;; Stop service synchronously to continue shutdown of other systems when server is fully stopped.
-  (stop-server (e/unwrap-future server)))
+  (stop-server server))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

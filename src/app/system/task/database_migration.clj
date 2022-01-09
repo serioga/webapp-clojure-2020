@@ -9,10 +9,10 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/init-key :app.system.task/database-migration
-  [_ {:keys [data-source changelog-path system-is-enabled] :as config}]
+  [_ {:keys [data-source, changelog-path, system-is-enabled] :as config}]
   (when system-is-enabled
-    (e/future
-      (logger/info (logger/get-logger *ns*) (e/pr-str* "Database migrations" config))
-      (liquibase/update-database (e/unwrap-future data-source), changelog-path))))
+    (logger/info (logger/get-logger *ns*) (e/pr-str* "Database migrations" config))
+    (liquibase/update-database data-source, changelog-path))
+  system-is-enabled)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
