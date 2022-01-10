@@ -36,9 +36,9 @@
 (defn- merge-mixins
   [{:keys [mixins] :as params}]
   (if mixins
-    (apply c/deep-merge (dissoc params :mixins)
-           (map #(-> (mixin %) (c/assert map? "Mixin should be a map"))
-                (-> mixins (c/assert sequential? "Require :mixins to be a sequence"))))
+    (do (c/assert-pred mixins sequential? "Require :mixins to be a sequence")
+        (apply c/deep-merge (dissoc params :mixins)
+               (->> mixins (map #(doto (mixin %) (c/assert-pred map? "Mixin should be a map"))))))
     params))
 
 (defn- install-awaits

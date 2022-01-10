@@ -16,8 +16,8 @@
   "Creates a connection to a database using read-write `data-source`."
   {:arglists '([] [options]) :on-reload :noop}
 
-  :start (let [data-source (-> (::data-source-read-write (mount/args))
-                               (c/assert (partial instance? DataSource)))]
+  :start (let [data-source (::data-source-read-write (mount/args))]
+           (c/assert-pred data-source (partial instance? DataSource) ::data-source-read-write)
            (fn get-read-write-connection
              ([]
               (get-read-write-connection {}))
@@ -28,8 +28,8 @@
   "Creates a connection to a database using read-only `data-source`."
   {:arglists '([] [options]) :on-reload :noop}
 
-  :start (let [data-source (-> (::data-source-read-only (mount/args))
-                               (c/assert (partial instance? DataSource)))]
+  :start (let [data-source (::data-source-read-only (mount/args))]
+           (c/assert-pred data-source (partial instance? DataSource) ::data-source-read-only)
            (fn get-read-only-connection
              ([]
               (get-read-only-connection {}))

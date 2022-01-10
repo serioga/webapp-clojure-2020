@@ -50,7 +50,7 @@
   []
   (-> (c/deep-merge (read-config-edn "./dev/dev/config/default.edn")
                     (some-> "./dev/dev/config/user.edn"
-                            (c/asserted fs/file?)
+                            (c/only-if fs/file?)
                             (read-config-edn)))
       (add-repl-dependency)))
 
@@ -75,7 +75,7 @@
   (try (reset! system! (ig'/init (read-config)))
        (catch Exception e
          (when-let [system (some-> (ig.system/ex-failed-system e)
-                                   (c/asserted :dev.env.system.integrant/nrepl))]
+                                   (c/only-if :dev.env.system.integrant/nrepl))]
            ;; Keep partially started system if repl started successfully.
            (reset! system! system))
          (throw e)))
@@ -101,7 +101,7 @@
 (defn- trigger-watcher
   [k]
   (-> (get @system! k) meta :handler
-      (c/assert fn? (str "Trigger watcher " k))
+      (doto (c/assert-pred fn? (str "Trigger watcher " k)))
       (c/invoke #'trigger-watcher k)))
 
 (defn- reload

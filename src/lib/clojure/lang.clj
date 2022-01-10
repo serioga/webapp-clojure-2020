@@ -26,11 +26,11 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn asserted
+(defn only-if
   "Returns `x` if `(pred x)` is logical true, else `nil`.
-   Returns #(asserted % pred) in case of 1-arity."
+   Returns #(only-if % pred) in case of 1-arity."
   ([pred]
-   #(asserted % pred))
+   #(only-if % pred))
   ([x pred]
    (when (pred x) x)))
 

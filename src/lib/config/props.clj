@@ -30,7 +30,7 @@
   [filenames]
   (let [filenames (cond-> filenames
                     (string? filenames) string->filenames)]
-    (c/assert filenames sequential?)
+    (c/assert-pred filenames sequential?)
     (with-meta (->> filenames
                     (map load-map-from-props-file)
                     (reduce merge {}))

@@ -12,7 +12,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(import-vars [lib.clojure.error assert, assert?]
+(import-vars [lib.clojure.error assert, assert-pred]
 
              [lib.clojure.exception ex-message-all, ex-root-cause]
 
@@ -20,7 +20,7 @@
 
              [lib.clojure.print pr-str*]
 
-             [lib.clojure.lang add-method, invoke, asserted, unwrap-fn, unwrap-future])
+             [lib.clojure.lang add-method, invoke, only-if, unwrap-fn, unwrap-future])
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

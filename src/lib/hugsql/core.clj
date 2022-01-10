@@ -38,7 +38,7 @@
   (-> (str path sym ".sql")
       (hugsql/parsed-defs-from-file)
       (first)
-      (c/assert some? (str "Parsed SQL with name " sym))
+      (doto (c/assert-pred some? (str "Parsed SQL with name " sym)))
       (name-parsed-def sym)
       (intern-db-fn options wrap-db-fn-map)))
 

@@ -26,12 +26,12 @@
 (mount/defstate ^:private data-source-read-write
   {:on-reload :noop}
   :start (-> (::data-source-read-write (mount/args))
-             (c/assert (partial instance? DataSource))))
+             (doto (c/assert-pred (partial instance? DataSource) ::data-source-read-write))))
 
 (mount/defstate ^:private data-source-read-only
   {:on-reload :noop}
   :start (-> (::data-source-read-only (mount/args))
-             (c/assert (partial instance? DataSource))))
+             (doto (c/assert-pred (partial instance? DataSource) ::data-source-read-only))))
 
 (defn- wrap-db-fn
   [f fn-name ds-var]

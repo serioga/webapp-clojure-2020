@@ -10,7 +10,7 @@
   "Initialize UUID from string representation.
    Accept only zero-padded representation."
   [s]
-  {:pre [(c/assert? s (some-fn string? nil?) (str #'from-string))]}
+  {:pre [(any? (c/assert-pred s (some-fn string? nil?) "UUID string"))]}
   (let [uuid (try (UUID/fromString s) (catch Throwable _))]
     (when (= s (str uuid))
       uuid)))

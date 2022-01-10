@@ -41,7 +41,8 @@
   [ns-tag]
   (let [column-ns (cond-> ns-tag
                     (ident? ns-tag) (namespace))]
-    (c/assert column-ns (every-pred string? seq))
+    (c/assert-pred column-ns string?)
+    (c/assert-pred column-ns seq)
     (fn as-maps
       [^ResultSet rs _]
       (let [rsmeta (.getMetaData rs)
