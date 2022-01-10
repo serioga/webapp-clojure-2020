@@ -21,19 +21,18 @@
   [system ks f]
   {:pre [(map? system) (some-> system meta ::ig/origin)]}
   (let [origin (#'ig/system-origin system)
-        keys-promises (zipmap (#'ig/reverse-dependent-keys origin ks)
-                              (repeatedly promise))]
-    (->> keys-promises
-         (map (fn [[k p]]
-                (future
-                  (try
-                    (some->> (#'ig/reverse-dependent-keys origin (list k))
-                             (remove (partial identical? k))
-                             (seq)
-                             (run! (comp try-deref keys-promises)))
-                    (f k (system k))
-                    (finally
-                      (deliver p nil))))))
+        ks (#'ig/reverse-dependent-keys origin ks)
+        promises (zipmap ks (repeatedly promise))]
+    (->> ks
+         (map (fn [k] (future
+                        (try
+                          (some->> (#'ig/reverse-dependent-keys origin (list k))
+                                   (remove (partial identical? k))
+                                   (seq)
+                                   (run! (comp try-deref promises)))
+                          (f k (system k))
+                          (finally
+                            (deliver (promises k) nil))))))
          (doall)
          (run! try-deref))))
 
