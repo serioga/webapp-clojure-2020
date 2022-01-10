@@ -10,7 +10,7 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn update-database
-  "Database migration using liquibase."
+  "Updates database schema using liquibase."
   [^DataSource ds, ^String changelog-path]
 
   (with-open [jdbc-conn (JdbcConnection. (.getConnection ds))]

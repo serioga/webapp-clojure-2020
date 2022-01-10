@@ -10,9 +10,9 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(derive :app.system.service/hikari-data-source :lib.integrant.system/keep-running-on-suspend)
-(derive :app.system.task/database-migration,,, :lib.integrant.system/keep-running-on-suspend)
-(derive :lib.integrant.system/import-map,,,,,, :lib.integrant.system/keep-running-on-suspend)
+(derive :app.system.service/hikari-data-source, :lib.integrant.system/keep-running-on-suspend)
+(derive :app.system.task/update-database-schema :lib.integrant.system/keep-running-on-suspend)
+(derive :lib.integrant.system/import-map,,,,,,, :lib.integrant.system/keep-running-on-suspend)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -49,7 +49,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(def ^:private changelog-track-dir "resources/app/database/migration")
+(def ^:private changelog-track-dir "resources/app/database/schema")
 
 (defn- dir-mod-time
   [dir]

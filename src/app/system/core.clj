@@ -29,7 +29,7 @@
                                                             #".+\.Password" :secret
                                                             #".+\.Secret" :secret
                                                             #"Webapp\.Hosts\(.+\)" :set
-                                                            "Development.DatabaseMigration" :edn}
+                                                            "Feature.DatabaseSchemaUpdate" :edn}
                                             :prop-defaults {"HttpServer.Port" 8080}}}
 
    ::data-source-read-write {:as ::config/hikari-data-source
@@ -43,11 +43,11 @@
 
    :dev.env.system/db-changelog-mod-time nil
 
-   :app.system.task/database-migration {:config {:data-source (ig/ref ::data-source-read-write)
-                                                 :changelog-path "app/database/migration/changelog.xml"
-                                                 :dev/changelog-mod-time (ig/ref :dev.env.system/db-changelog-mod-time)
-                                                 :system-is-enabled true}
-                                        :import {:system-is-enabled "Development.DatabaseMigration"}}
+   :app.system.task/update-database-schema {:config {:data-source (ig/ref ::data-source-read-write)
+                                                     :changelog-path "app/database/schema/changelog.xml"
+                                                     :dev/changelog-mod-time (ig/ref :dev.env.system/db-changelog-mod-time)
+                                                     :system-is-enabled true}
+                                            :import {:system-is-enabled "Feature.DatabaseSchemaUpdate"}}
 
    :app.system.service/immutant-web {:as ::config/http-server
                                      :webapps {:app.system.service/homepage-http-handler {:config {:name "example"}
@@ -55,7 +55,7 @@
                                      :config {:options {:host "0.0.0.0"}}
                                      :import {:options {:host "HttpServer.Host"
                                                         :port "HttpServer.Port"}}
-                                     :awaits [:app.system.task/database-migration
+                                     :awaits [:app.system.task/update-database-schema
                                               :app.system.service/mount]}})
 
 (defn- system-config
