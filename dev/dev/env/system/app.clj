@@ -10,6 +10,12 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(derive :app.system.service/hikari-data-source :lib.integrant.system/keep-running-on-suspend)
+(derive :app.system.task/database-migration,,, :lib.integrant.system/keep-running-on-suspend)
+(derive :lib.integrant.system/import-map,,,,,, :lib.integrant.system/keep-running-on-suspend)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (def ^:private user-props-file "dev/app/config/user.props")
 
 (defn- prepare-prop-files
@@ -27,6 +33,8 @@
   (prepare-prop-files ["dev/app/config/default.props"])
   (prepare-prop-files '("dev/app/config/default.props")))
 
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defn- wrap-webapp-handler
   [_webapp]
   (fn [handler]
@@ -39,11 +47,24 @@
   (-> webapp
       (update :handler (wrap-webapp-handler webapp))))
 
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(def ^:private changelog-track-dir "resources/app/database/migration")
+
+(defn- dir-mod-time
+  [dir]
+  (->> (fs/iterate-dir dir)
+       (map (comp fs/mod-time first))
+       (reduce max 0)))
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defn- prepare-system-config
   [config]
   (assoc config :app.system.config/dev-mode true
                 :dev.env.system/prepare-prop-files prepare-prop-files
-                :dev.env.system/prepare-webapp prepare-webapp))
+                :dev.env.system/prepare-webapp prepare-webapp
+                :dev.env.system/db-changelog-mod-time (dir-mod-time changelog-track-dir)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

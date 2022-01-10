@@ -20,11 +20,6 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(derive :app.system.service/hikari-data-source
-        :lib.integrant.system/keep-running-on-suspend)
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
 (defmethod ig/init-key :app.system.service/hikari-data-source
   [_ {:keys [dev-mode] :as options}]
   (init-data-source (-> {:minimum-idle 1

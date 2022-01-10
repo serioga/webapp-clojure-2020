@@ -15,6 +15,10 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(derive :dev.env.system/db-changelog-mod-time :lib.integrant.system/identity)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defn- config-template
   []
   {::config/dev-mode {:config false}
@@ -37,8 +41,11 @@
                                      :app.database.hugsql/data-source-read-only]
                             :config {:read-only true}}
 
+   :dev.env.system/db-changelog-mod-time nil
+
    :app.system.task/database-migration {:config {:data-source (ig/ref ::data-source-read-write)
                                                  :changelog-path "app/database/migration/changelog.xml"
+                                                 :dev/changelog-mod-time (ig/ref :dev.env.system/db-changelog-mod-time)
                                                  :system-is-enabled true}
                                         :import {:system-is-enabled "Development.DatabaseMigration"}}
 
