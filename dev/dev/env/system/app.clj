@@ -61,7 +61,7 @@
 
 (defn- prepare-system-config
   [config]
-  (assoc config :app.system.config/dev-mode true
+  (assoc config ::app.system/dev-mode true
                 :dev.env.system/prepare-prop-files prepare-prop-files
                 :dev.env.system/prepare-webapp prepare-webapp
                 :dev.env.system/db-changelog-mod-time (dir-mod-time changelog-track-dir)))

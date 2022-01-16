@@ -1,6 +1,6 @@
 (ns app.system.core
-  (:require [app.system.config :as config]
-            [app.system.integrant :as ig']
+  (:require [app.system.integrant :as ig']
+            [app.system.integrant-config :as config]
             [integrant.core :as ig]
             [lib.clojure-tools-logging.logger :as logger]
             [lib.clojure.core :as c]
@@ -10,53 +10,55 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(ns/require-dir 'app.system.integrant-config._)
 (ns/require-dir 'app.system.service._)
 (ns/require-dir 'app.system.task._)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(derive ::dev-mode,,,,,,,,,,,,,,,,,,,,,,,,,,, :lib.integrant.system/identity)
 (derive :dev.env.system/db-changelog-mod-time :lib.integrant.system/identity)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defn- config-template
   []
-  {::config/dev-mode {:config false}
+  {::dev-mode false
 
-   :app.system.service/app-config {:as ::config/app-config
-                                   :mounts [:app.config.core/app-config]
-                                   :config {:conform-rules {#"System\.Switch\..+" :edn
-                                                            #".+\.Password" :secret
-                                                            #".+\.Secret" :secret
-                                                            #"Webapp\.Hosts\(.+\)" :set
-                                                            "Feature.DatabaseSchemaUpdate" :edn}
-                                            :prop-defaults {"HttpServer.Port" 8080}}}
+   :app.system.service/app-config #::config{:setup ::app-config-setup
+                                            :mounts [:app.config.core/app-config]
+                                            :config {:conform-rules {#"System\.Switch\..+" :edn
+                                                                     #".+\.Password" :secret
+                                                                     #".+\.Secret" :secret
+                                                                     #"Webapp\.Hosts\(.+\)" :set
+                                                                     "Feature.DatabaseSchemaUpdate" :edn}
+                                                     :prop-defaults {"HttpServer.Port" 8080}}}
 
-   ::data-source-read-write {:as ::config/hikari-data-source
-                             :mounts [:app.database.core/data-source-read-write
-                                      :app.database.hugsql/data-source-read-write]}
+   ::data-source-read-write #::config{:mixins [::hikari-data-source-mixin]
+                                      :mounts [:app.database.core/data-source-read-write
+                                               :app.database.hugsql/data-source-read-write]}
 
-   ::data-source-read-only {:as ::config/hikari-data-source
-                            :mounts [:app.database.core/data-source-read-only
-                                     :app.database.hugsql/data-source-read-only]
-                            :config {:read-only true}}
+   ::data-source-read-only #::config{:mixins [::hikari-data-source-mixin]
+                                     :mounts [:app.database.core/data-source-read-only
+                                              :app.database.hugsql/data-source-read-only]
+                                     :config {:read-only true}}
 
    :dev.env.system/db-changelog-mod-time nil
 
-   :app.system.task/update-database-schema {:config {:data-source (ig/ref ::data-source-read-write)
-                                                     :changelog-path "app/database/schema/changelog.xml"
-                                                     :dev/changelog-mod-time (ig/ref :dev.env.system/db-changelog-mod-time)
-                                                     :system-is-enabled true}
-                                            :import {:system-is-enabled "Feature.DatabaseSchemaUpdate"}}
+   :app.system.task/update-database-schema #::config{:config {:data-source (ig/ref ::data-source-read-write)
+                                                              :changelog-path "app/database/schema/changelog.xml"
+                                                              :dev/changelog-mod-time (ig/ref :dev.env.system/db-changelog-mod-time)
+                                                              :system-is-enabled true}
+                                                     :import {:system-is-enabled "Feature.DatabaseSchemaUpdate"}}
 
-   :app.system.service/immutant-web {:as ::config/http-server
-                                     :webapps {:app.system.service/homepage-http-handler {:config {:name "example"}
-                                                                                          :import {:hosts "Webapp.Hosts(example)"}}}
-                                     :config {:options {:host "0.0.0.0"}}
-                                     :import {:options {:host "HttpServer.Host"
-                                                        :port "HttpServer.Port"}}
-                                     :awaits [:app.system.task/update-database-schema
-                                              :app.system.service/mount]}})
+   :app.system.service/immutant-web #::config{:setup ::http-server-setup
+                                              :webapps {:app.system.service/homepage-http-handler #::config{:config {:name "example"}
+                                                                                                            :import {:hosts "Webapp.Hosts(example)"}}}
+                                              :config {:options {:host "0.0.0.0"}}
+                                              :import {:options {:host "HttpServer.Host"
+                                                                 :port "HttpServer.Port"}}
+                                              :awaits [:app.system.task/update-database-schema
+                                                       :app.system.service/mount]}})
 
 (defn- system-config
   "Returns app system configuration."
