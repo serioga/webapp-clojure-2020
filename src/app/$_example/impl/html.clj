@@ -1,4 +1,4 @@
-(ns app.$example$-webapp.impl.html
+(ns app.$-example.impl.html
   (:require [app.html.core :as html]
             [lib.ring-util.response :as ring.response']
             [mount.core :as mount]))

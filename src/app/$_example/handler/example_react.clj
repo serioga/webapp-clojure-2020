@@ -1,6 +1,6 @@
-(ns app.$example$-webapp.handler.example-react
-  (:require [app.$example$-webapp.impl.handler :as impl]
-            [app.$example$-webapp.impl.html :as html]
+(ns app.$-example.handler.example-react
+  (:require [app.$-example.impl.handler :as impl]
+            [app.$-example.impl.html :as html]
             [app.rum.mount :as rum.mount]))
 
 (set! *warn-on-reflection* true)

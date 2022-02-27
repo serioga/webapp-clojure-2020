@@ -76,7 +76,7 @@
 
             "css-example-release" ["shell"
                                    "node_modules/.bin/postcss"
-                                   "tailwind/app/\\$example\\$_webapp/main.css"
+                                   "tailwind/app/\\$_example/main.css"
                                    "-o" "resources/public/app/example/main.css"
                                    "--config" "tailwind/app/config/"]}
 

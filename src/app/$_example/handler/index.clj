@@ -1,6 +1,6 @@
-(ns app.$example$-webapp.handler.index
-  (:require [app.$example$-webapp.impl.handler :as impl]
-            [app.$example$-webapp.impl.html :as html]))
+(ns app.$-example.handler.index
+  (:require [app.$-example.impl.handler :as impl]
+            [app.$-example.impl.html :as html]))
 
 (set! *warn-on-reflection* true)
 

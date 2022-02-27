@@ -1,8 +1,8 @@
-(ns app.$example$-webapp.core
+(ns app.$-example.core
   ;; React components
   (:require [app.rum.core])
   ;; Imports
-  (:require [app.$example$-webapp.impl.handler :as handler]
+  (:require [app.$-example.impl.handler :as handler]
             [app.webapp.ring-handler :as ring-handler]
             [lib.clojure.ns :as ns]))
 
@@ -10,7 +10,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(ns/require-dir 'app.$example$-webapp.handler._)
+(ns/require-dir 'app.$-example.handler._)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

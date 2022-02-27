@@ -18,6 +18,6 @@
 
   :dev.env.system.integrant/tailwind
   {:webapp "example"
-   :watcher {:options {:dirs ["tailwind/app/config" "tailwind/app/$example$_webapp"]
+   :watcher {:options {:dirs ["tailwind/app/config" "tailwind/app/$_example"]
                        :files [".css" ".js$"]}}
-   :dependent-mount-states ["#'app.$example$-webapp.impl.html/styles-css-uri"]}}}
+   :dependent-mount-states ["#'app.$-example.impl.html/styles-css-uri"]}}}
