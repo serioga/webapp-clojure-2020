@@ -5,7 +5,7 @@
 
                  ;;; ClojureScript (shadow-cljs)
                  [com.google.guava/guava "31.0.1-jre" :scope "provided"]
-                 [thheller/shadow-cljs "2.16.12" :scope "provided"]
+                 [thheller/shadow-cljs "2.17.5" :scope "provided"]
 
                  ;;; System
                  [integrant "0.8.0"]
@@ -13,21 +13,21 @@
                  [tolitius/mount-up "0.1.3"]
 
                  ;;; Web Server
-                 [io.undertow/undertow-core,,,,,,,,,, "2.2.14.Final"]
-                 [io.undertow/undertow-servlet,,,,,,, "2.2.14.Final"]
-                 [io.undertow/undertow-websockets-jsr "2.2.14.Final"]
-                 [metosin/reitit-core "0.5.15"]
+                 [io.undertow/undertow-core,,,,,,,,,, "2.2.16.Final"]
+                 [io.undertow/undertow-servlet,,,,,,, "2.2.16.Final"]
+                 [io.undertow/undertow-websockets-jsr "2.2.16.Final"]
+                 [metosin/reitit-core "0.5.16"]
                  [org.immutant/web "2.1.10"]
                  [ring/ring-core "1.9.5"]
                  [ring/ring-defaults "0.3.3"]
 
                  ;;; Database
-                 [com.h2database/h2 "2.0.206"]
+                 [com.h2database/h2 "2.1.210"]
                  [com.layerware/hugsql "0.5.1" :exclusions [com.layerware/hugsql-adapter-clojure-java-jdbc]]
                  [com.layerware/hugsql-adapter-next-jdbc "0.5.1"]
                  [com.mattbertolini/liquibase-slf4j "4.0.0"]
                  [com.zaxxer/HikariCP "5.0.1" :exclusions [org.slf4j/slf4j-api]]
-                 [org.liquibase/liquibase-core "4.7.0"]
+                 [org.liquibase/liquibase-core "4.8.0"]
                  [seancorfield/next.jdbc "1.2.659"]
                  [p6spy/p6spy "3.9.1"]
 
@@ -36,8 +36,8 @@
                  [ch.qos.logback/logback-core "1.2.10"]
                  [org.clojure/tools.logging "1.2.4"]
                  [org.codehaus.janino/janino "3.1.6"]
-                 [org.slf4j/jul-to-slf4j "1.7.33"]
-                 [org.slf4j/slf4j-api "1.7.33"]
+                 [org.slf4j/jul-to-slf4j "1.7.36"]
+                 [org.slf4j/slf4j-api "1.7.36"]
 
                  ;;; Libs (Java)
                  [com.fasterxml.jackson.core/jackson-core "2.13.1"]
@@ -46,7 +46,7 @@
 
                  ;;; Libs (Clojure)
                  [clojurewerkz/propertied "1.3.0"]
-                 [com.cognitect/transit-clj "1.0.324"]
+                 [com.cognitect/transit-clj "1.0.329"]
                  [medley "1.3.0"]
                  [potemkin "0.4.5"]
 
