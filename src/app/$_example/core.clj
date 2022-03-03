@@ -1,8 +1,6 @@
 (ns app.$-example.core
-  ;; React components
-  (:require [app.rum.core])
-  ;; Imports
   (:require [app.$-example.impl.handler :as handler]
+            [app.rum.core #_"React components"]
             [app.webapp.ring-handler :as ring-handler]
             [lib.clojure.ns :as ns]))
 
@@ -16,10 +14,10 @@
 
 (defn- example-routes
   []
-  [["/" :route/index]
-   ["/example-database" :route/example-database]
-   ["/example-react" :route/example-react]
-   ["/example-path-param/:name" :route/example-path-param]])
+  (ring-handler/collect-routes handler/route-path))
+
+(comment
+  (example-routes))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

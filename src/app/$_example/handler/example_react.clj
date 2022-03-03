@@ -1,9 +1,14 @@
 (ns app.$-example.handler.example-react
   (:require [app.$-example.impl.handler :as impl]
             [app.$-example.impl.html :as html]
-            [app.rum.mount :as rum.mount]))
+            [app.rum.mount :as rum.mount]
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(c/add-method impl/route-path :route/example-react (constantly "/example-react"))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

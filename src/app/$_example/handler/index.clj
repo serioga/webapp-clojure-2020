@@ -1,8 +1,13 @@
 (ns app.$-example.handler.index
   (:require [app.$-example.impl.handler :as impl]
-            [app.$-example.impl.html :as html]))
+            [app.$-example.impl.html :as html]
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(c/add-method impl/route-path :route/index (constantly "/"))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

@@ -5,6 +5,13 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(defmulti route-path
+  "Returns route path for tag."
+  {:arglists '([route-tag])}
+  c/first-arg)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defmulti example-handler
   "Handle ring request by route-tag."
   :route-tag)

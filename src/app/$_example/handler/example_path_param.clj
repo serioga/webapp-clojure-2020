@@ -1,9 +1,14 @@
 (ns app.$-example.handler.example-path-param
   (:require [app.$-example.impl.handler :as impl]
             [app.$-example.impl.html :as html]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk]
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(c/add-method impl/route-path :route/example-path-param (constantly "/example-path-param/:name"))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

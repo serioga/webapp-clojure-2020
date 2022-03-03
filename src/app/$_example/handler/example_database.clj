@@ -2,9 +2,14 @@
   (:require [app.$-example.impl.handler :as impl]
             [app.$-example.impl.html :as html]
             [app.database.core :as db]
-            [clojure.pprint :as pprint]))
+            [clojure.pprint :as pprint]
+            [lib.clojure.core :as c]))
 
 (set! *warn-on-reflection* true)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(c/add-method impl/route-path :route/example-database (constantly "/example-database"))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

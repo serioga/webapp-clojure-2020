@@ -1,6 +1,7 @@
 (ns app.webapp.ring-handler
   "Ring-based definition for request-response handling."
-  (:require [lib.ring-middleware.error-exception :as error-exception]
+  (:require [lib.clojure.core :as c]
+            [lib.ring-middleware.error-exception :as error-exception]
             [lib.ring-middleware.error-not-found :as error-not-found]
             [lib.ring-middleware.response-logger :as debug-response]
             [lib.ring-middleware.route-tag-reitit :as route-tag]
@@ -10,6 +11,18 @@
   (:import (java.util UUID)))
 
 (set! *warn-on-reflection* true)
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(defn collect-routes
+  "Returns vector of reitit routes defined by `route-path` multimethod."
+  [route-path]
+  (->> (keys (methods route-path))
+       (group-by route-path)
+       (sort-by first)
+       (mapv (fn [[path tags]]
+               (c/assert (= 1 (count tags)) (c/pr-str* "Duplicate route-path" path "for tags" tags))
+               [path (first tags)]))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
