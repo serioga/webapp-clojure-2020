@@ -49,8 +49,7 @@
 (defn- read-config
   []
   (-> (c/deep-merge (read-config-edn "./dev/dev/config/default.edn")
-                    (some-> "./dev/dev/config/user.edn"
-                            (c/only-if fs/file?)
+                    (some-> (c/select "./dev/dev/config/user.edn" fs/file?)
                             (read-config-edn)))
       (add-repl-dependency)))
 
@@ -75,7 +74,7 @@
   (try (reset! system! (ig'/init (read-config)))
        (catch Exception e
          (when-let [system (some-> (ig.system/ex-failed-system e)
-                                   (c/only-if :dev.env.system.integrant/nrepl))]
+                                   (c/select :dev.env.system.integrant/nrepl))]
            ;; Keep partially started system if repl started successfully.
            (reset! system! system))
          (throw e)))

@@ -26,11 +26,11 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn only-if
+(defn select
   "Returns `x` if `(pred x)` is logical true, else `nil`.
-   Returns #(only-if % pred) in case of 1-arity."
+   Returns #(select % pred) in case of 1-arity."
   ([pred]
-   #(only-if % pred))
+   #(select % pred))
   ([x pred]
    (when (pred x) x)))
 

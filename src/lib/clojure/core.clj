@@ -20,7 +20,7 @@
 
              [lib.clojure.print pr-str*]
 
-             [lib.clojure.lang add-method, invoke, only-if, unwrap-fn, unwrap-future])
+             [lib.clojure.lang add-method, invoke, select, unwrap-fn, unwrap-future])
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
