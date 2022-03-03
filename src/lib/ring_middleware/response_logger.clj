@@ -16,11 +16,11 @@
         uri (ring.request'/request-uri request)
         form-params (not-empty form-params)
         log-response (or log-response (some-> response :headers (get "Content-Type")))]
-    (p/inline-str "HTTP " status " >> "
+    (p/inline-str "HTTP " status " << "
                   route-tag (when route-tag " ")
                   request-method " " server-name " " uri
                   (when form-params " ") form-params
-                  (when log-response "   >>   ") log-response
+                  (when log-response "   >   ") log-response
                   " | " time-millis " ms")))
 
 (defn- session-update-description
