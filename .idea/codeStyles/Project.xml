@@ -2,12 +2,16 @@
   <code_scheme name="Project" version="173">
     <option name="RIGHT_MARGIN" value="100" />
     <option name="SOFT_MARGINS" value="80" />
-    <ClojureCodeStyleSettings>{
-  :clojure.core/cond-&gt; 1
-  :clojure.core/defmulti 1
-  :clojure.core/defonce :only-indent
-  :clojure.test/are 2
-  :cursive.formatting/align-maps false
-}</ClojureCodeStyleSettings>
+    <ClojureCodeStyleSettings>
+      <option name="alignMapValues" value="false" />
+      <option name="indentCustomisations">
+        <map>
+          <entry key="clojure.core/cond-&gt;" value="1" />
+          <entry key="clojure.core/defmulti" value="1" />
+          <entry key="clojure.core/defonce" value="-1" />
+          <entry key="clojure.test/are" value="2" />
+        </map>
+      </option>
+    </ClojureCodeStyleSettings>
   </code_scheme>
 </component>
