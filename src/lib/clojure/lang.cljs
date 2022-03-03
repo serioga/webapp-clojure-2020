@@ -11,6 +11,21 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
+(defn first-arg
+  "Returns first argument. To be used as multimethod dispatch function."
+  ([a] a)
+  ([a _] a)
+  ([a _ _] a)
+  ([a _ _ & _] a))
+
+(defn second-arg
+  "Returns second argument. To be used as multimethod dispatch function."
+  ([_ a] a)
+  ([_ a _] a)
+  ([_ a _ & _] a))
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 (defn invoke
   "Invokes function `f` with arguments.
    Performance implications for 5+ arguments."

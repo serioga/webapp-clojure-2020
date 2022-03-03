@@ -20,14 +20,14 @@
 (defmulti builder-mixin
   "Returns customized builder params."
   {:arglists '([id {:builder/keys [config-map config-key params] :as builder}])}
-  (fn [id _] id))
+  c/first-arg)
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmulti ^:private build-param
   "Returns transformed builder or nil if builder does not change."
   {:arglists '([id {:builder/keys [config-map config-key params] :as builder}])}
-  (fn [id _] id))
+  c/first-arg)
 
 (defn- reduce-builder-params
   [builder ks]

@@ -61,7 +61,8 @@
 
 (defmulti ^:private conform-prop-val
   "Define conform rule by rule keyword."
-  (fn [rule _value] rule))
+  {:arglists '([rule value])}
+  c/first-arg)
 
 (defn- conform-prop-val*
   [k rule value]
