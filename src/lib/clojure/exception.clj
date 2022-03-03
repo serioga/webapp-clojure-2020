@@ -21,22 +21,24 @@
    (when throwable
      (loop [sb (-> (StringBuilder.)
                    (cond-> context (-> (.append (str context))
-                                       (.append " -> ")))
+                                       (.append "  >  ")))
                    (.append (ex-message-or-name throwable)))
             cause (.getCause ^Throwable throwable)]
        (if cause
-         (recur (-> sb (.append " -> ") (.append (ex-message-or-name cause)))
+         (recur (-> sb (.append "  >  ") (.append (ex-message-or-name cause)))
                 (.getCause cause))
          (.toString sb))))))
 
 (comment
-  (def e (ex-info "One" {:x :one}
-                  (ex-info "Two" {:x :two}
-                           (ex-info "Three" {:x :three}))))
-  (ex-message-all e)
-  #_"One -> Two -> Three"
-  (ex-message-all e "Prefix")
-  #_"Prefix -> One -> Two -> Three")
+  (ex-message-all (ex-info "One" {:x :one}
+                           (ex-info "Two" {:x :two}
+                                    (ex-info "Three" {:x :three}))))
+  #_"One  >  Two  >  Three"
+  (ex-message-all (ex-info "One" {:x :one}
+                           (ex-info "Two" {:x :two}
+                                    (ex-info "Three" {:x :three})))
+                  "Prefix")
+  #_"Prefix  >  One  >  Two  >  Three")
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 

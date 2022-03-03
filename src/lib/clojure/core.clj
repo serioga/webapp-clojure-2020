@@ -1,6 +1,6 @@
 (ns lib.clojure.core
-  (:refer-clojure :exclude [future, assert])
-  (:require [lib.clojure.error]
+  (:refer-clojure :exclude [assert, future])
+  (:require [lib.clojure.assert]
             [lib.clojure.exception]
             [lib.clojure.future]
             [lib.clojure.lang]
@@ -12,7 +12,7 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(import-vars [lib.clojure.error assert, assert-pred]
+(import-vars [lib.clojure.assert assert, assert-pred, assert-try]
 
              [lib.clojure.exception ex-message-all, ex-root-cause]
 

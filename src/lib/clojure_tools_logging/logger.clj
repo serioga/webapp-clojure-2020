@@ -35,13 +35,11 @@
 (defn- str-ex-data
   "Converts all nested ex-data to the logging string."
   [throwable]
-  (loop [sb (StringBuilder.), nothing true, throwable throwable]
+  (loop [sb (StringBuilder.), throwable throwable]
     (if throwable
       (let [data (not-empty (ex-data throwable))]
-        (recur (cond-> sb data (-> (cond-> nothing (.append "~//~"))
-                                   (.append \space)
+        (recur (cond-> sb data (-> (.append "   $   ")
                                    (.append (str data))))
-               (and nothing (not data))
                (.getCause ^Throwable throwable)))
       (when (pos? (.length sb))
         (.toString sb)))))
@@ -51,7 +49,7 @@
   [throwable message]
   (let [data (str-ex-data throwable)]
     (cond-> ^String (c/ex-message-all throwable (-> (str message) (string'/not-empty)))
-      data (-> (.concat " ") (.concat data)))))
+      data (.concat data))))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -69,7 +67,7 @@
   "Error level logging.
    Uses logger `(get-logger *ns*)` if not specified."
   ([message]
-   `(error (get-logger *ns*) ~message))
+   `(error (get-logger ~*ns*) ~message))
   ([logger message]
    `(log-enabled ~logger :error ~message)))
 
@@ -77,7 +75,7 @@
   "Error level logging of the throwable.
    Uses logger `(get-logger *ns*)` if not specified."
   ([throwable message]
-   `(log-throwable (get-logger *ns*) ~throwable ~message))
+   `(log-throwable (get-logger ~*ns*) ~throwable ~message))
   ([logger throwable message]
    `(let [throwable# ~throwable]
       (log/log* ~logger :error throwable# (str-throwable throwable# ~message)))))
