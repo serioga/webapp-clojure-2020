@@ -13,6 +13,11 @@
   (equals [_ obj] (and (secret? obj) (= value (.value ^Secret obj))))
   (toString [_] "******"))
 
+(test/deftest deftype-test
+  (test/are [expr result] (= result expr)
+    (str (->Secret "secret value")) #_=> "******"
+    (= (->Secret "secret value") (->Secret "secret value")) #_=> true))
+
 (comment
   (str (->Secret "xxx"))
   (str "My secret: " (->Secret "xxx"))
@@ -35,32 +40,22 @@
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-(defn read-secret
-  "Read value from secret."
-  {:test #(test/are [form] form
-            (= "xxx" (read-secret (->Secret "xxx")))
-            (= "xxx" (read-secret "xxx")))}
-  [value]
-  (if (secret? value)
-    (.value ^Secret value)
-    value))
+(test/with-test
+
+  (defn read-secret
+    "Read value from secret."
+    [value]
+    (if (secret? value)
+      (.value ^Secret value)
+      value))
+
+  (test/are [expr result] (= result expr)
+    (read-secret (->Secret "xxx")) #_=> "xxx"
+    (read-secret "xxx"),,,,,,,,,,, #_=> "xxx"))
 
 (comment
   (read-secret "xxx")
   (read-secret (->Secret "xxx"))
   (test/test-var #'read-secret))
-
-;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-
-(test/deftest secret-test
-  (let [v "secret value"
-        s (->Secret v)]
-    (test/are [form] form
-      (= "******" (str s))
-      (= v,,,,,,, (read-secret s))
-      (= s,,,,,,, (->Secret v)))))
-
-(comment
-  (secret-test))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

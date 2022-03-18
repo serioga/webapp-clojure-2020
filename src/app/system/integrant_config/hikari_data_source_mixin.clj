@@ -29,25 +29,25 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (test/deftest hikari-data-source-mixin-test
-  (test/are [arg ret] (= ret (config/build-config arg))
-    #_arg {:test/read-write #::config{:mixins [:app.system.core/hikari-data-source-mixin], :mounts [:test/mount-rw]}
-           :test/read-only, #::config{:mixins [:app.system.core/hikari-data-source-mixin], :mounts [:test/mount-ro], :config {:read-only true}}}
-    #_ret {:app.system.service/mount {:test/mount-ro #integrant.core.Ref{:key :test/read-only}
-                                      :test/mount-rw #integrant.core.Ref{:key :test/read-write}}
-           [:app.system.service/hikari-data-source :test/read-only] #integrant.core.Ref{:key :test/read-only.config}
-           [:app.system.service/hikari-data-source :test/read-write] #integrant.core.Ref{:key :test/read-write.config}
-           [:lib.integrant.system/import-map :test/read-only.config] {:import-from #integrant.core.Ref{:key :app.system.service/app-config}
+  (test/are [expr result] (= result expr)
+    (config/build-config {:test/read-write #::config{:mixins [:app.system.core/hikari-data-source-mixin], :mounts [:test/mount-rw]}
+                          :test/read-only, #::config{:mixins [:app.system.core/hikari-data-source-mixin], :mounts [:test/mount-ro], :config {:read-only true}}})
+    #_=> {:app.system.service/mount {:test/mount-ro #integrant.core.Ref{:key :test/read-only}
+                                     :test/mount-rw #integrant.core.Ref{:key :test/read-write}}
+          [:app.system.service/hikari-data-source :test/read-only] #integrant.core.Ref{:key :test/read-only.config}
+          [:app.system.service/hikari-data-source :test/read-write] #integrant.core.Ref{:key :test/read-write.config}
+          [:lib.integrant.system/import-map :test/read-only.config] {:import-from #integrant.core.Ref{:key :app.system.service/app-config}
+                                                                     :import-keys {:data-source-class "Database.DataSourceClassName"
+                                                                                   :database-password "Database.Password"
+                                                                                   :database-url "Database.Url.ReadOnly"
+                                                                                   :database-user "Database.User"}
+                                                                     :init-map {:dev-mode #integrant.core.Ref{:key :app.system.core/dev-mode}
+                                                                                :read-only true}}
+          [:lib.integrant.system/import-map :test/read-write.config] {:import-from #integrant.core.Ref{:key :app.system.service/app-config}
                                                                       :import-keys {:data-source-class "Database.DataSourceClassName"
                                                                                     :database-password "Database.Password"
-                                                                                    :database-url "Database.Url.ReadOnly"
+                                                                                    :database-url "Database.Url"
                                                                                     :database-user "Database.User"}
-                                                                      :init-map {:dev-mode #integrant.core.Ref{:key :app.system.core/dev-mode}
-                                                                                 :read-only true}}
-           [:lib.integrant.system/import-map :test/read-write.config] {:import-from #integrant.core.Ref{:key :app.system.service/app-config}
-                                                                       :import-keys {:data-source-class "Database.DataSourceClassName"
-                                                                                     :database-password "Database.Password"
-                                                                                     :database-url "Database.Url"
-                                                                                     :database-user "Database.User"}
-                                                                       :init-map {:dev-mode #integrant.core.Ref{:key :app.system.core/dev-mode}}}}))
+                                                                      :init-map {:dev-mode #integrant.core.Ref{:key :app.system.core/dev-mode}}}}))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

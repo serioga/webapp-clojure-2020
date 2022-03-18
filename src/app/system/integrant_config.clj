@@ -158,52 +158,52 @@
         (update ::awaits conj :test/mixin-await-key)))
 
   (test/testing "Builder ignores values without builder params."
-    (test/are [arg ret] (= ret (build-config arg))
-      #_arg {:test/key true},,, #_ret {:test/key true}
-      #_arg {:test/key {:a 1}}, #_ret {:test/key {:a 1}}
-      #_arg {:test/key [1 2 3]} #_ret {:test/key [1 2 3]}))
+    (test/are [expr result] (= result expr)
+      (build-config {:test/key true}),,, #_=> {:test/key true}
+      (build-config {:test/key {:a 1}}), #_=> {:test/key {:a 1}}
+      (build-config {:test/key [1 2 3]}) #_=> {:test/key [1 2 3]}))
 
   (test/testing "Builder parameter: config."
-    (test/are [arg ret] (= ret (build-config arg))
-      #_arg {:test/key #::{:config {:test/value true}}}
-      #_ret {:test/key {:test/value true}}))
+    (test/are [expr result] (= result expr)
+      (build-config {:test/key #::{:config {:test/value true}}})
+      #_=> {:test/key {:test/value true}}))
 
   (test/testing "Builder parameter: mixins."
-    (test/are [arg ret] (= ret (build-config arg))
-      #_arg {:test/key #::{:mixins [:test/mixin]}}
-      #_ret {:test/key {:test/mixin-value true,
-                        :app.system.integrant-config/await-refs {:test/mixin-await-key #integrant.core.Ref{:key :test/mixin-await-key}}}}))
+    (test/are [expr result] (= result expr)
+      (build-config {:test/key #::{:mixins [:test/mixin]}})
+      #_=> {:test/key {:test/mixin-value true,
+                       :app.system.integrant-config/await-refs {:test/mixin-await-key #integrant.core.Ref{:key :test/mixin-await-key}}}}))
 
   (test/testing "Builder parameter: mounts."
-    (test/are [arg ret] (= ret (build-config arg))
-      #_arg {:test/key #::{:mounts #{:test/mount-key},}}
-      #_ret {:app.system.service/mount {:test/mount-key #integrant.core.Ref{:key :test/key},},
-             :test/key nil}))
+    (test/are [expr result] (= result expr)
+      (build-config {:test/key #::{:mounts #{:test/mount-key}}})
+      #_=> {:app.system.service/mount {:test/mount-key #integrant.core.Ref{:key :test/key},},
+            :test/key nil}))
 
   (test/testing "Builder parameter: awaits."
-    (test/are [arg ret] (= ret (build-config arg))
-      #_arg {:test/key #::{:awaits #{:test/await-key},}}
-      #_ret {:test/key {:app.system.integrant-config/await-refs {:test/await-key #integrant.core.Ref{:key :test/await-key}}}}))
+    (test/are [expr result] (= result expr)
+      (build-config {:test/key #::{:awaits #{:test/await-key}}})
+      #_=> {:test/key {:app.system.integrant-config/await-refs {:test/await-key #integrant.core.Ref{:key :test/await-key}}}}))
 
   (test/testing "Builder parameter: derive."
-    (test/are [arg ret] (= ret (build-config arg))
-      #_arg {:test/key #::{:derive :test/parent-key}}
-      #_ret {[:test/parent-key :test/key] nil}))
+    (test/are [expr result] (= result expr)
+      (build-config {:test/key #::{:derive :test/parent-key}})
+      #_=> {[:test/parent-key :test/key] nil}))
 
   (test/testing "Builder parameter: import."
-    (test/are [arg ret] (= ret (build-config arg))
-      #_arg {:test/key #::{:config {:test/value true}
-                           :import {:test/value "TestValue"}}}
-      #_ret {[:lib.integrant.system/import-map :test/key] {:init-map {:test/value true},
-                                                           :import-from #integrant.core.Ref{:key :app.system.service/app-config},
-                                                           :import-keys {:test/value "TestValue"}}}
-      #_arg {:test/key #::{:derive :test/parent-key
-                           :config {:test/value true}
-                           :import {:test/value "TestValue"}}}
-      #_ret {[:test/parent-key :test/key] #integrant.core.Ref{:key :test/key.config},
-             [:lib.integrant.system/import-map :test/key.config] {:init-map {:test/value true},
-                                                                  :import-from #integrant.core.Ref{:key :app.system.service/app-config},
-                                                                  :import-keys {:test/value "TestValue"}}}))
+    (test/are [expr result] (= result expr)
+      (build-config {:test/key #::{:config {:test/value true}
+                                   :import {:test/value "TestValue"}}})
+      #_=> {[:lib.integrant.system/import-map :test/key] {:init-map {:test/value true},
+                                                          :import-from #integrant.core.Ref{:key :app.system.service/app-config},
+                                                          :import-keys {:test/value "TestValue"}}}
+      (build-config {:test/key #::{:derive :test/parent-key
+                                   :config {:test/value true}
+                                   :import {:test/value "TestValue"}}})
+      #_=> {[:test/parent-key :test/key] #integrant.core.Ref{:key :test/key.config},
+            [:lib.integrant.system/import-map :test/key.config] {:init-map {:test/value true},
+                                                                 :import-from #integrant.core.Ref{:key :app.system.service/app-config},
+                                                                 :import-keys {:test/value "TestValue"}}}))
 
   (defmethod setup-builder :test/setup
     [{:builder/keys [config-map config-key params]}]
@@ -211,10 +211,10 @@
                               :test/setup-key (ig/ref config-key)}))
 
   (test/testing "Builder parameter: setup."
-    (test/are [arg ret] (= ret (build-config arg))
-      #_arg {:test/key #::{:setup :test/setup
-                           :config {:test/value true}}}
-      #_ret {:test/key {:test/value true}
-             :test/setup-key #integrant.core.Ref{:key :test/key}})))
+    (test/are [expr result] (= result expr)
+      (build-config {:test/key #::{:setup :test/setup
+                                   :config {:test/value true}}})
+      #_=> {:test/key {:test/value true}
+            :test/setup-key #integrant.core.Ref{:key :test/key}})))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

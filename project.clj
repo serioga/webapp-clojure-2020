@@ -97,6 +97,9 @@
              :uberjar {:aot :all
                        :prep-tasks ["compile"
                                     ["shadow-cljs" "release" "example"]
-                                    "css-example-release"]}}
+                                    "css-example-release"]
+                       :injections [(do (println "Disable clojure.test/*load-tests*")
+                                        (require 'clojure.test)
+                                        (alter-var-root #'clojure.test/*load-tests* (constantly false)))]}}
 
   :uberjar-name "website.jar")

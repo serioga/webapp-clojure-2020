@@ -42,15 +42,15 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (test/deftest app-config-setup-test
-  (test/are [arg ret] (= ret (config/build-config arg))
-    #_arg {:test/app-config #::config{:setup :app.system.core/app-config-setup
-                                      :mounts [:test/app-config-mount]
-                                      :config {:default-props "default.props"}}}
-    #_ret {:dev.env.system/prepare-prop-files nil,
-           [:lib.integrant.system/system-property :test/app-config.prop-files] {:key "config.file"},
-           :app.system.service/mount #:test{:app-config-mount #integrant.core.Ref{:key :test/app-config}},
-           :test/app-config {:prop-files #integrant.core.Ref{:key :test/app-config.prop-files},
-                             :dev/prepare-prop-files #integrant.core.Ref{:key :dev.env.system/prepare-prop-files},
-                             :default-props "default.props"}}))
+  (test/are [expr result] (= result expr)
+    (config/build-config {:test/app-config #::config{:setup :app.system.core/app-config-setup
+                                                     :mounts [:test/app-config-mount]
+                                                     :config {:default-props "default.props"}}})
+    #_=> {:dev.env.system/prepare-prop-files nil,
+          [:lib.integrant.system/system-property :test/app-config.prop-files] {:key "config.file"},
+          :app.system.service/mount #:test{:app-config-mount #integrant.core.Ref{:key :test/app-config}},
+          :test/app-config {:prop-files #integrant.core.Ref{:key :test/app-config.prop-files},
+                            :dev/prepare-prop-files #integrant.core.Ref{:key :dev.env.system/prepare-prop-files},
+                            :default-props "default.props"}}))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
