@@ -26,8 +26,8 @@
             [:tt (str (walk/prewalk-replace {'name-param name-param 'value-param value-param}
                                             '(path-for-route :route/example-path-param {:name name-param :value value-param})))]]
            [:ul
-            [:li "Name: " [:tt.bg-gray-200 name-param]]
-            [:li "Value: " [:tt.bg-gray-200 value-param]]]
+            [:li "Name: " [:tt.bg-gray-100 name-param]]
+            [:li "Value: " [:tt.bg-gray-100 value-param]]]
            (html/link-to-index)]]]
         (html/response))))
 

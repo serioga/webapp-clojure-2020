@@ -1,8 +1,9 @@
 module.exports = {
-  plugins: [
-    require('postcss-import')({path: ['tailwind', 'node_modules']}),
-    require('tailwindcss')('tailwind/app/config/tailwind.config.js'),
-    require('postcss-nested'),
-    require('postcss-reporter'),
-  ]
+  plugins: {
+    'postcss-import': {path: ['tailwind', 'node_modules']},
+    'tailwindcss/nesting': {},
+    'tailwindcss': 'tailwind/app/config/tailwind.config.js',
+    'postcss-nested': {},
+    'postcss-reporter': {},
+  }
 };

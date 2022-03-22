@@ -3,6 +3,7 @@
   (:require [app.system.core :as app.system]
             [clojure.string :as string]
             [dev.env.reload.ring-refresh :as ring-refresh]
+            [dev.env.tailwind.watcher :as tailwind]
             [me.raynes.fs :as fs]
             [ring.middleware.lint :as lint]))
 
@@ -100,6 +101,7 @@
 (defn resume
   "Resume `app` system."
   []
+  (tailwind/build-content-if-updated)
   (try (app.system/resume {:prepare-config prepare-system-config})
        (catch Throwable e
          (throw (->> e (Exception. (str 'app.system/resume))))))

@@ -41,3 +41,20 @@
     (build-webapp-css options)))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+(def ^:private content-build-fn! (atom nil))
+
+(defn build-content-if-updated
+  "Invokes [[content-build-fn!]] once if it’s set by [[content-watch-handler]]."
+  []
+  (when-let [f @content-build-fn!]
+    (reset! content-build-fn! nil)
+    (f)))
+
+(defn content-watch-handler
+  "Watch handler for Tailwind CSS content changes."
+  [options]
+  (fn [& _]
+    (reset! content-build-fn! (partial build-webapp-css options))))
+
+;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••

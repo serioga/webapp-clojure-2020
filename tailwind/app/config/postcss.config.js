@@ -1,10 +1,10 @@
 module.exports = {
-  plugins: [
-    require('postcss-import')({path: ['tailwind', 'node_modules']}),
-    require('tailwindcss')('tailwind/app/config/tailwind.config.js'),
-    require('postcss-nested'),
-    require('autoprefixer'),
-    require('cssnano')({preset: 'default'}),
-    require('postcss-reporter'),
-  ]
+  plugins: {
+    'postcss-import': {path: ['tailwind', 'node_modules']},
+    'tailwindcss/nesting': {},
+    'tailwindcss': 'tailwind/app/config/tailwind.config.js',
+    'autoprefixer': {},
+    'cssnano': {preset: 'default'},
+    'postcss-reporter': {},
+  }
 };

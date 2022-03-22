@@ -20,4 +20,5 @@
   {:webapp "example"
    :watcher {:options {:dirs ["tailwind/app/config" "tailwind/app/$_example"]
                        :files [".css" ".js$"]}}
+   :content-watcher {:options {:dirs ["src/app/$_example"] :files [".clj"]}}
    :dependent-mount-states ["#'app.$-example.impl.html/styles-css-uri"]}}}

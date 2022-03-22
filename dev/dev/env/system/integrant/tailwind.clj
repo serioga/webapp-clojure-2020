@@ -25,20 +25,24 @@
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/init-key :dev.env.system.integrant/tailwind
-  [_ {:keys [webapp watcher dependent-mount-states]}]
-  (ig/init-key :dev.env.system.integrant/watcher
-               (-> watcher (assoc :handler (-> {:webapp webapp
-                                                :on-rebuild (fn []
-                                                              (->> dependent-mount-states (run! mount-restart-running))
-                                                              (ring-refresh/send-refresh))}
-                                               (tailwind/watch-handler)
-                                               (wrap-handler-was-run))
-                                  :handler-run-on-init (not @handler-was-run!)))))
+  [_ {:keys [webapp, watcher, content-watcher, dependent-mount-states]}]
+  {::watcher (ig/init-key :dev.env.system.integrant/watcher
+                          (-> watcher (assoc :handler (-> {:webapp webapp
+                                                           :on-rebuild (fn []
+                                                                         (->> dependent-mount-states (run! mount-restart-running))
+                                                                         (ring-refresh/send-refresh))}
+                                                          (tailwind/watch-handler)
+                                                          (wrap-handler-was-run))
+                                             :handler-run-on-init (not @handler-was-run!))))
+   ::content-watcher (ig/init-key :dev.env.system.integrant/watcher
+                                  (assoc content-watcher
+                                    :handler (tailwind/content-watch-handler {:webapp webapp})))})
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 (defmethod ig/halt-key! :dev.env.system.integrant/tailwind
-  [_ watcher]
-  (ig/halt-key! :dev.env.system.integrant/watcher watcher))
+  [_ {::keys [watcher, content-watcher]}]
+  (ig/halt-key! :dev.env.system.integrant/watcher watcher)
+  (ig/halt-key! :dev.env.system.integrant/watcher content-watcher))
 
 ;;••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
