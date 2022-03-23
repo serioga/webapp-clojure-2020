@@ -1,7 +1,7 @@
 (defproject name.trofimov/webapp-clojure-2020 "1.0.0-SNAPSHOT"
   :description "Multi-page web application prototype with Clojure(Script)"
   :dependencies [;;; Clojure
-                 [org.clojure/clojure "1.10.3"]
+                 [org.clojure/clojure "1.11.0"]
 
                  ;;; ClojureScript (shadow-cljs)
                  [com.google.guava/guava "31.1-jre" :scope "provided"]
